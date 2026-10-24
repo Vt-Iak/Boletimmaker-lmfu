@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>teste nuvem</title>
+<link rel="stylesheet" href="__ROOT__/css/style.css">
+<script>
+// Banco falso em memória que imita a API db do Artifact.
+// ?scenario=empty  -> banco vazio (primeiro acesso)
+// ?scenario=remote -> banco já tem uma edição de outro aparelho
+// ?scenario=revisor -> como remote, mas quem abre é o professor (não é o dono)
+// ?scenario=autor   -> como remote, dono abrindo; já há uma observação do professor
+var scenario = (location.search.match(/scenario=(\w+)/) || [])[1] || "empty";
+try { localStorage.clear(); } catch (e) {}
+var docs = {}; // path -> body
+var log = [];
+var comoRemoto = scenario === "remote" || scenario === "revisor" || scenario === "autor";
+if (comoRemoto) {
+  docs["editions/ed_remote_1"] = { name: "Edição do notebook", updatedAt: 1000, json: JSON.stringify({ meta: { title: "VINDO DA NUVEM", subtitle: "x", logo: "data:image/png;base64,iVBORw0KGgo=" }, locked: false, elements: [], blockLayout: {}, masthead: { line1: "a", line2: "b" }, headline: { tag: "T", title: "Manchete remota", deck: "d", image: null, paragraphs: ["p"] }, ticker: [], columns: [], note: "", weekTable: { title: "", rows: [] }, footerFront: { fontes: "", autoria: "", verso: "", disclaimer: "" }, page2Header: { editionLabel: "", note: "" }, thermometer: { title: "", subtitle: "", groups: [] }, calendar: { title: "", subtitle: "", rows: [] }, superQuarta: { title: "", body: "" }, glossary: { title: "", items: [] }, footerBack: { editionInfo: "", fontes: "", disclaimer: "" } }) };
+  docs["app/settings"] = { json: JSON.stringify({ order: ["ed_remote_1"], customDefaultTemplate: null, migrations: {} }), updatedAt: 1 };
+}
+if (scenario === "autor") {
+  docs["notas/nota_prof_1"] = { id: "nota_prof_1", edicaoId: "ed_remote_1", alvo: "headline.title", trecho: "Manchete", texto: "Detalhe melhor a manchete.", autorId: "prof_1", papel: "revisor", criadoEm: 1000, status: "aberta", respostas: [] };
+}
+// Identidade de quem abre (recurso "user")
+var userMock = scenario === "revisor"
+  ? { me: function () { return Promise.resolve({ id: "prof_1", name: "Prof. Ana", isOwner: false, canEdit: true }); }, isOwner: function () { return Promise.resolve(false); }, profiles: function (ids) { var o = {}; ids.forEach(function (i) { o[i] = { name: i === "owner_1" ? "João" : "" }; }); return Promise.resolve(o); } }
+  : { me: function () { return Promise.resolve({ id: "owner_1", name: "João", isOwner: true, canEdit: true }); }, isOwner: function () { return Promise.resolve(true); }, profiles: function (ids) { var o = {}; ids.forEach(function (i) { o[i] = { name: i === "prof_1" ? "Prof. Ana" : "" }; }); return Promise.resolve(o); } };
+var listeners = [];
+function snapDoc(path) {
+  var id = path.split("/").pop(), body = docs[path];
+  return { id: id, exists: !!body, data: function () { return body; }, metadata: {} };
+}
+function collSnap(coll, changes) {
+  var list = Object.keys(docs).filter(function (p) { return p.indexOf(coll + "/") === 0; }).map(snapDoc);
+  return { docs: list, size: list.length, empty: !list.length, docChanges: function () { return changes || list.map(function (d) { return { type: "added", doc: d }; }); }, metadata: {} };
+}
+function notify(path, type) {
+  listeners.forEach(function (l) {
+    if (l.coll && path.indexOf(l.coll + "/") === 0) l.next(collSnap(l.coll, [{ type: type, doc: type === "removed" ? { id: path.split("/").pop(), exists: true, data: function () { return {}; } } : snapDoc(path) }]));
+    if (l.doc === path) l.next(snapDoc(path));
+  });
+}
+var db = {
+  collection: function (c) {
+    return {
+      get: function () { return Promise.resolve(collSnap(c)); },
+      onSnapshot: function (next) { listeners.push({ coll: c, next: next }); setTimeout(function () { next(collSnap(c)); }, 10); return function () {}; }
+    };
+  },
+  doc: function (p) {
+    return {
+      get: function () { return Promise.resolve(snapDoc(p)); },
+      set: function (b) { log.push("set " + p + " (" + JSON.stringify(b).length + " chars)"); docs[p] = JSON.parse(JSON.stringify(b)); setTimeout(function () { notify(p, "modified"); }, 5); return Promise.resolve(); },
+      delete: function () { log.push("delete " + p); delete docs[p]; setTimeout(function () { notify(p, "removed"); }, 5); return Promise.resolve(); },
+      onSnapshot: function (next) { listeners.push({ doc: p, next: next }); setTimeout(function () { next(snapDoc(p)); }, 10); return function () {}; }
+    };
+  }
+};
+var assets = { upload: function (blob) { log.push("upload " + blob.type + " " + blob.size + "b"); return Promise.resolve({ id: "0123456789abcdef0123456789abcdef", url: "/_blob/0123456789abcdef0123456789abcdef", sizeBytes: blob.size, contentType: blob.type }); } };
+window.claude = { use: function (n) { return new Promise(function (r) { setTimeout(function () { r(n === "db" ? db : n === "user" ? userMock : n === "assets" ? assets : n === "downloads" ? { save: function () { return Promise.resolve({ status: "saved" }); } } : null); }, 50); }); } };
+
+// Depois de tudo assentar: simula outro aparelho alterando a edição aberta,
+// e depois uma digitação local; despeja o resultado no DOM.
+setTimeout(function () {
+  var curId = Object.keys(docs).filter(function (p) { return p.indexOf("editions/") === 0; })[0];
+  var b = JSON.parse(JSON.stringify(docs[curId]));
+  var d = JSON.parse(b.json); d.headline.title = "ALTERADO EM OUTRO APARELHO"; b.json = JSON.stringify(d); b.updatedAt = Date.now() + 5000;
+  docs[curId] = b; notify(curId, "modified");
+}, 2500);
+setTimeout(function () {
+  var t = document.querySelector('[data-path="headline.tag"]');
+  t.focus(); t.textContent = "DIGITADO AQUI"; t.dispatchEvent(new Event("input", { bubbles: true })); t.blur();
+}, 3200);
+// Revisor: deixa uma observação geral pela aba Revisão
+if (scenario === "revisor") setTimeout(function () {
+  document.getElementById("btnNotaGeral").click();
+  var ta = document.getElementById("notaTexto"); ta.value = "Conferir a fonte do Brent.";
+  ta.dispatchEvent(new Event("input", { bubbles: true }));
+  document.querySelector('[data-nota-action="salvar"]').click();
+}, 3800);
+setTimeout(function () {
+  var out = document.createElement("pre"); out.id = "testout";
+  out.textContent = JSON.stringify({
+    scenario: scenario,
+    log: log,
+    docIds: Object.keys(docs),
+    status: document.getElementById("saveStatus").textContent,
+    overlayHidden: document.getElementById("cloudOverlay").hidden,
+    titleOnPage: (document.querySelector('[data-path="meta.title"]') || {}).textContent,
+    headlineOnPage: (document.querySelector('[data-path="headline.title"]') || {}).textContent,
+    tagInCloud: (function () { var p = Object.keys(docs).filter(function (x) { return x.indexOf("editions/") === 0; })[0]; return JSON.parse(docs[p].json).headline.tag; })(),
+    logoInCloud: (function () { var p = Object.keys(docs).filter(function (x) { return x.indexOf("editions/") === 0; })[0]; return JSON.parse(docs[p].json).meta.logo; })(),
+    printLabel: document.getElementById("btnPrint").textContent,
+    reviewer: document.body.classList.contains("is-reviewer"),
+    bannerVisible: !document.getElementById("reviewBanner").hidden,
+    editableOff: Array.prototype.every.call(document.querySelectorAll("#workspace [contenteditable]"), function (e) { return e.getAttribute("contenteditable") === "false"; }),
+    editionWrites: log.filter(function (l) { return l.indexOf("set editions/") === 0 || l.indexOf("set app/") === 0; }).length,
+    notas: Object.keys(docs).filter(function (p) { return p.indexOf("notas/") === 0; }).map(function (p) { return docs[p]; }),
+    notasCount: document.getElementById("notasCount").textContent,
+    pins: document.querySelectorAll("#workspace .nota-pin").length,
+    notaMeta: Array.prototype.map.call(document.querySelectorAll("#notasList .nota-meta"), function (e) { return e.textContent; }),
+    editions: Array.prototype.map.call(document.querySelectorAll("#editionSelect option"), function (o) { return o.textContent; })
+  }, null, 1);
+  document.body.appendChild(out);
+}, 5500);
+</script>
+</head><body>
+<!--BODY-->
+</body></html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>teste firebase</title>
+<link rel="stylesheet" href="__ROOT__/css/style.css">
+<script>
+// Firebase falso (API "compat") em memória. Cenários (?cenario=):
+//   semlogin   -> ninguém logado: tela de entrada, envio do link
+//   semacesso  -> logado com e-mail fora da lista
+//   dono       -> dono, banco vazio: envia edições e cria a lista de acesso; adiciona o professor
+//   editor     -> professor (editor) editando ao mesmo tempo que o dono
+//   revisor    -> e-mail na lista de revisores: só comenta
+var cenario = (location.search.match(/cenario=(\w+)/) || [])[1] || "dono";
+try { localStorage.clear(); } catch (e) {}
+var DONO = "joaovcsoares5@gmail.com", PROF = "prof@uniso.br";
+// O index.html carrega js/firebase-config.js depois: fixa a configuração de teste.
+var CFG = { config: { apiKey: "x", authDomain: "x", projectId: "teste" }, owner: DONO, hosts: [], teste: true };
+Object.defineProperty(window, "BOLETIM_FIREBASE", { get: function () { return CFG; }, set: function () {} });
+
+var docs = {}, log = [], listeners = [];
+var ED = JSON.stringify({ meta: { title: "BOLETIM", subtitle: "s", logo: null, vars: { edicao: "07/2026", data: "2026-10-31", coberturaInicio: "2026-10-26", coberturaFim: "2026-10-30", proxima: "2026-11-07" }, overrides: {} },
+  locked: false, elements: [], blockLayout: {}, masthead: { line1: "a", line2: "b" },
+  headline: { tag: "T", title: "Manchete original", deck: "d", image: null, paragraphs: [] }, ticker: [],
+  columns: [{ tag: "A", title: "Notícia um original", body: "b1", linkText: "" }, { tag: "B", title: "Notícia dois original", body: "b2", linkText: "" }],
+  note: "", weekTable: { title: "", rows: [] }, footerFront: { fontes: "", autoria: "", verso: "", disclaimer: "" }, page2Header: { editionLabel: "", note: "" },
+  thermometer: { title: "", subtitle: "", groups: [] }, calendar: { title: "", subtitle: "", rows: [] }, superQuarta: { title: "", body: "" },
+  glossary: { title: "", items: [] }, footerBack: { editionInfo: "", fontes: "", disclaimer: "" } });
+if (cenario === "editor" || cenario === "revisor") {
+  docs["editions/ed_1"] = { name: "Edição 07/2026", updatedAt: 1000, json: ED };
+  docs["app/settings"] = { json: JSON.stringify({ order: ["ed_1"], migrations: {} }), updatedAt: 1 };
+}
+if (cenario !== "dono") docs["app/acesso"] = { editores: [PROF], revisores: ["leitor@uniso.br"] };
+var usuario = cenario === "semlogin" ? null
+  : cenario === "semacesso" ? { uid: "u_x", email: "estranho@gmail.com", displayName: "Estranho" }
+  : cenario === "editor" ? { uid: "u_prof", email: PROF, displayName: "Prof. Ana" }
+  : cenario === "revisor" ? { uid: "u_leitor", email: "leitor@uniso.br", displayName: "Leitor" }
+  : { uid: "u_dono", email: DONO, displayName: "João" };
+
+function clone(o) { return o == null ? o : JSON.parse(JSON.stringify(o)); }
+function snapDoc(path) { var b = docs[path]; return { id: path.split("/").pop(), exists: !!b, data: function () { return clone(b); } }; }
+function collSnap(c, changes) {
+  var list = Object.keys(docs).filter(function (p) { return p.indexOf(c + "/") === 0 && p.split("/").length === c.split("/").length + 1; }).map(snapDoc);
+  return { docs: list, empty: !list.length, size: list.length, docChanges: function () { return changes || list.map(function (d) { return { type: "added", doc: d }; }); } };
+}
+function notify(path, type) {
+  listeners.forEach(function (l) {
+    if (l.coll && path.indexOf(l.coll + "/") === 0) l.next(collSnap(l.coll, [{ type: type, doc: snapDoc(path) }]));
+    if (l.doc === path) l.next(snapDoc(path));
+  });
+}
+function gravar(p, b, quem) {
+  if (b && JSON.stringify(b).indexOf("undefined") !== -1) log.push("ERRO undefined em " + p);
+  log.push("set " + p + (quem ? " (" + quem + ")" : ""));
+  docs[p] = clone(b);
+  setTimeout(function () { notify(p, "modified"); }, 5);
+}
+function ref(p) {
+  return {
+    _p: p,
+    get: function () { return Promise.resolve(snapDoc(p)); },
+    set: function (b) { gravar(p, b); return Promise.resolve(); },
+    delete: function () { log.push("delete " + p); delete docs[p]; setTimeout(function () { notify(p, "removed"); }, 5); return Promise.resolve(); },
+    onSnapshot: function (next) { listeners.push({ doc: p, next: next }); setTimeout(function () { next(snapDoc(p)); }, 10); return function () {}; }
+  };
+}
+var db = {
+  collection: function (c) {
+    return {
+      get: function () { return Promise.resolve(collSnap(c)); },
+      onSnapshot: function (next) { listeners.push({ coll: c, next: next }); setTimeout(function () { next(collSnap(c)); }, 10); return function () {}; }
+    };
+  },
+  doc: ref,
+  runTransaction: function (fn) {
+    var pend = [];
+    var t = { get: function (r) { return r.get(); }, set: function (r, b) { pend.push([r._p, b]); } };
+    return Promise.resolve(fn(t)).then(function (res) { log.push("transacao"); pend.forEach(function (x) { gravar(x[0], x[1]); }); return res; });
+  }
+};
+var authObj = {
+  currentUser: usuario,
+  onAuthStateChanged: function (cb) { setTimeout(function () { cb(usuario); }, 10); return function () {}; },
+  isSignInWithEmailLink: function () { return false; },
+  sendSignInLinkToEmail: function (email, s) { log.push("link para " + email + " volta em " + (s && s.url ? "url" : "?")); return Promise.resolve(); },
+  signOut: function () { return Promise.resolve(); }
+};
+window.firebase = { apps: [], initializeApp: function (c) { this.apps.push(c); return {}; }, auth: function () { return authObj; }, firestore: function () { return db; } };
+window.firebase.auth.GoogleAuthProvider = function () {};
+
+function edJson() { return JSON.parse((docs["editions/ed_1"] || {}).json || "null"); }
+function digita(path, txt) {
+  var t = document.querySelector('#workspace [data-path="' + path + '"]');
+  t.focus(); t.textContent = txt; t.dispatchEvent(new Event("input", { bubbles: true })); t.blur();
+}
+// Professor (editor) e dono ao mesmo tempo:
+if (cenario === "editor") {
+  // 1) Chega a alteração do outro (dono) enquanto o professor tem alteração ainda não enviada
+  setTimeout(function () { digita("columns.0.title", "Notícia um — editada pelo professor"); }, 2000);
+  setTimeout(function () {
+    var d = edJson(); d.columns[1].title = "Notícia dois — editada pelo dono";
+    docs["editions/ed_1"] = { name: "Edição 07/2026", updatedAt: Date.now() + 1000, json: JSON.stringify(d) };
+    notify("editions/ed_1", "modified");
+  }, 2100);
+  // 2) O dono grava sem o aviso chegar a tempo (latência): o envio do professor junta na transação
+  setTimeout(function () { digita("headline.title", "Manchete — editada pelo professor"); }, 3500);
+  setTimeout(function () {
+    var d = edJson(); d.headline.deck = "Resumo — editado pelo dono";
+    docs["editions/ed_1"] = { name: "Edição 07/2026", updatedAt: Date.now() + 2000, json: JSON.stringify(d) };
+  }, 3550);
+}
+if (cenario === "revisor") setTimeout(function () {
+  document.getElementById("btnNotaGeral").click();
+  var ta = document.getElementById("notaTexto"); ta.value = "Rever a manchete.";
+  document.querySelector('[data-nota-action="salvar"]').click();
+}, 2500);
+if (cenario === "semlogin") setTimeout(function () {
+  document.getElementById("loginEmail").value = "Prof@Uniso.br";
+  document.getElementById("loginForm").dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+}, 1500);
+if (cenario === "dono") setTimeout(function () {
+  document.getElementById("btnSettings").click();
+  document.querySelector('#settingsDialog [data-settings-aba="acesso"]').click();
+  var f = document.querySelector('#settingsBody .acesso-add[data-lista="editores"]');
+  f.querySelector("input").value = "Prof@Uniso.br";
+  f.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+}, 2500);
+
+setTimeout(function () {
+  var out = document.createElement("pre"); out.id = "testout";
+  var nota = Object.keys(docs).filter(function (p) { return p.indexOf("notas/") === 0; }).map(function (p) { return docs[p]; })[0] || null;
+  out.textContent = JSON.stringify({
+    cenario: cenario, log: log, docIds: Object.keys(docs),
+    loginVisivel: !document.getElementById("loginScreen").hidden,
+    loginMsg: document.getElementById("loginMsg").textContent,
+    reviewer: document.body.classList.contains("is-reviewer"),
+    notOwner: document.body.classList.contains("not-owner"),
+    editableOff: Array.prototype.every.call(document.querySelectorAll("#workspace [contenteditable]"), function (e) { return e.getAttribute("contenteditable") === "false"; }),
+    status: document.getElementById("saveStatus").textContent,
+    acesso: docs["app/acesso"] || null,
+    edicao: edJson(),
+    editionWrites: log.filter(function (l) { return l.indexOf("set editions/") === 0; }).length,
+    nota: nota,
+    versao: document.getElementById("versionChip").title,
+    abas: Array.prototype.filter.call(document.querySelectorAll("#settingsDialog [data-settings-aba]"), function (b) { return !b.hidden; }).map(function (b) { return b.dataset.settingsAba; })
+  }, null, 1);
+  document.body.appendChild(out);
+}, 7000);
+</script>
+</head><body>
+<!--BODY-->
+</body></html>

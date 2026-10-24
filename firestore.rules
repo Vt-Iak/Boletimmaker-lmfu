@@ -1,0 +1,69 @@
+rules_version = '2';
+
+// Boletim Maker — regras do banco (Firestore).
+// Cole este arquivo inteiro em: Firebase → Firestore Database → Regras → Publicar.
+//
+// Quem entra: o dono (e-mail abaixo) e os e-mails que ele cadastra no app,
+// em Configurações → Acesso (documento app/acesso):
+//   editores  → leem, editam e comentam
+//   revisores → leem e comentam
+// Qualquer outra pessoa, logada ou não, não lê nem grava nada.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    function email() {
+      return request.auth.token.email.lower();
+    }
+    function dono() {
+      return logado() && email() == 'joaovcsoares5@gmail.com';
+    }
+    function acesso() {
+      return get(/databases/$(database)/documents/app/acesso).data;
+    }
+    function editor() {
+      return dono() || (logado() && email() in acesso().editores);
+    }
+    function membro() {
+      return editor() || (logado() && email() in acesso().revisores);
+    }
+
+    // Edições: membros leem; editores gravam; só o dono exclui.
+    match /editions/{id} {
+      allow read: if membro();
+      allow create, update: if editor();
+      allow delete: if dono();
+    }
+
+    // Lista de acesso: cada pessoa logada pode ler (para saber o próprio papel); só o dono altera.
+    match /app/acesso {
+      allow read: if logado();
+      allow write: if dono();
+    }
+
+    // Ordem das edições, padrão, canais: membros leem; editores gravam.
+    match /app/settings {
+      allow read: if membro();
+      allow write: if editor();
+    }
+
+    // Imagens das edições (uma por documento).
+    match /imagens/{hash} {
+      allow read: if membro();
+      allow create, update: if editor();
+      allow delete: if dono();
+    }
+
+    // Observações de revisão: todo membro lê e escreve.
+    match /notas/{id} {
+      allow read, write: if membro();
+    }
+
+    // Configurações pessoais (atalhos, tema): só a própria pessoa.
+    match /data/users/{uid}/{doc=**} {
+      allow read, write: if logado() && request.auth.uid == uid;
+    }
+  }
+}

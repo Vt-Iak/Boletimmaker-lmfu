@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boletim Maker</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Ícones (SVG em traço) usados na interface: <svg class="ic"><use href="#i-nome"/></svg> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
+      <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></symbol>
+      <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+      <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></symbol>
+      <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></symbol>
+      <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+      <symbol id="i-note" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-11 6.6L4 19.5l1.4-4.3A7.5 7.5 0 1 1 20 11.5z"/><path d="M8.5 10h7M8.5 13h4.5"/></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></symbol>
+      <symbol id="i-news" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10"/><path d="M7 12h10"/><path d="M7 16h6"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M3 10h18"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5V21h16"/></symbol>
+      <symbol id="i-paragraph" viewBox="0 0 24 24"><path d="M13 4v16"/><path d="M17 4v16"/><path d="M19 4H9.5a4.5 4.5 0 0 0 0 9H13"/></symbol>
+      <symbol id="i-line" viewBox="0 0 24 24"><path d="M4 12h16"/></symbol>
+      <symbol id="i-band" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="1"/></symbol>
+      <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/></symbol>
+      <symbol id="i-panels" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="M15 4v16"/></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+      <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 8"/></symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></symbol>
+      <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><path d="m9 6 3-3 3 3"/><path d="m9 18 3 3 3-3"/><path d="m6 9-3 3 3 3"/><path d="m18 9 3 3-3 3"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3l4 4L8 20H4v-4z"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></symbol>
+      <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M7 3v5h8"/><path d="M7 21v-7h10v7"/></symbol>
+      <symbol id="i-fit" viewBox="0 0 24 24"><path d="M3 8V5a2 2 0 0 1 2-2h3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M21 16v3a2 2 0 0 1-2 2h-3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.9 4.2A10.8 10.8 0 0 1 12 4c6.5 0 10 8 10 8a17 17 0 0 1-2.2 3.2"/><path d="M6.6 6.6A17 17 0 0 0 2 12s3.5 8 10 8a10 10 0 0 0 5.4-1.6"/><path d="M14.1 14.1a3 3 0 0 1-4.2-4.2"/><path d="m2 2 20 20"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+      <symbol id="i-auto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" style="fill:currentColor"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="toolbar no-print" id="toolbar">
+    <div class="tb-row">
+      <div class="tb-group">
+        <span class="brand-mark" aria-hidden="true">B</span>
+        <strong class="brand-mini">Boletim Maker</strong>
+        <span class="version-chip" id="versionChip" title="Versão 1.3.0-beta">Beta</span>
+      </div>
+      <div class="tb-group edition-picker">
+        <select id="editionSelect" title="Edição atual" aria-label="Edição atual"></select>
+        <select id="editionStatus" class="status-pill" title="Status da edição (não aparece no PDF)" aria-label="Status da edição">
+          <option value="rascunho">Rascunho</option>
+          <option value="revisado">Revisado</option>
+          <option value="aprovado">Aprovado</option>
+        </select>
+      </div>
+      <div class="tb-group menu-wrap">
+        <button id="btnMenu" class="icon-btn" title="Mais ações" aria-label="Mais ações" aria-haspopup="true" aria-expanded="false"><svg class="ic"><use href="#i-more"/></svg></button>
+        <div class="menu" id="mainMenu" role="menu" hidden>
+          <button role="menuitem" id="btnNewEdition" title="Cria uma edição a partir do padrão definido (ou em branco)"><svg class="ic"><use href="#i-file"/></svg>Nova edição</button>
+          <button role="menuitem" id="btnNextEdition" title="Cria a edição da semana seguinte: número +1, datas +7 dias, mesmo layout"><svg class="ic"><use href="#i-calendar"/></svg>Próxima edição…</button>
+          <button role="menuitem" id="btnDuplicate" title="Duplica a edição atual (ideal para a próxima semana)"><svg class="ic"><use href="#i-copy"/></svg>Duplicar</button>
+          <button role="menuitem" id="btnRename"><svg class="ic"><use href="#i-edit"/></svg>Renomear…</button>
+          <button role="menuitem" id="btnDelete" class="danger"><svg class="ic"><use href="#i-trash"/></svg>Excluir…</button>
+          <div class="menu-sep"></div>
+          <button role="menuitem" id="btnImportJson" title="Carregar uma edição ou um backup completo (.json)"><svg class="ic"><use href="#i-upload"/></svg>Importar JSON…</button>
+          <input type="file" id="importFileInput" accept="application/json" hidden>
+          <button role="menuitem" id="btnExportJson" title="Salvar a edição como arquivo .json"><svg class="ic"><use href="#i-download"/></svg>Exportar JSON</button>
+          <button role="menuitem" id="btnBackupAll" title="Todas as edições, o padrão e os canais num arquivo só (restaure em Importar JSON)"><svg class="ic"><use href="#i-save"/></svg>Backup completo</button>
+          <div class="menu-sep"></div>
+          <button role="menuitem" id="btnThermoCalc" title="Calcula as variações do Termômetro da Semana a partir do fechamento e das bases (ou da sua planilha)"><svg class="ic"><use href="#i-chart"/></svg>Calculadora do termômetro…</button>
+          <div class="menu-sep"></div>
+          <button role="menuitem" id="btnSetDefault" title="Usa a edição atual como ponto de partida de toda nova edição"><svg class="ic"><use href="#i-save"/></svg>Definir como padrão</button>
+          <button role="menuitem" id="btnClearDefault" title="Volta 'Nova edição' a criar em branco"><svg class="ic"><use href="#i-reset"/></svg>Padrão original</button>
+          <button role="menuitem" id="btnCleanAssets" title="Apaga do armazenamento online as imagens que nenhuma edição usa mais" hidden><svg class="ic"><use href="#i-image"/></svg>Limpar imagens sem uso…</button>
+          <div class="menu-sep"></div>
+          <label class="menu-check"><input type="checkbox" id="chkLockAll"> Travar tudo (bloqueia mover e redimensionar)</label>
+          <button role="menuitem" id="btnToggleSidebar" title="Esconde os painéis laterais para ver só a página"><svg class="ic"><use href="#i-panels"/></svg>Ocultar painéis</button>
+        </div>
+      </div>
+      <div class="tb-group">
+        <button id="btnUndo" class="icon-btn" title="Desfazer (Ctrl+Z)" aria-label="Desfazer"><svg class="ic"><use href="#i-undo"/></svg></button>
+        <button id="btnRedo" class="icon-btn" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer"><svg class="ic"><use href="#i-redo"/></svg></button>
+      </div>
+      <div class="tb-spacer"></div>
+      <div class="tb-group">
+        <span id="reviewBanner" class="review-banner" hidden title="Você pode ler tudo e deixar observações; o texto só o autor altera">Modo revisão</span>
+        <span id="saveStatus" class="save-status"></span>
+        <button id="btnAcervo" class="icon-btn" title="Acervo de matérias: busca em todas as edições (F6)" aria-label="Acervo de matérias"><svg class="ic"><use href="#i-search"/></svg></button>
+        <button id="btnSettings" class="icon-btn" title="Configurações e atalhos (Ctrl+,)" aria-label="Configurações"><svg class="ic"><use href="#i-gear"/></svg></button>
+        <button id="btnTheme" class="icon-btn" title="Tema do editor" aria-label="Tema do editor"><svg class="ic"><use href="#i-auto"/></svg></button>
+      </div>
+      <div class="tb-group">
+        <button id="btnCheck" class="btn-check" title="Confere estouro de página, campos vazios, links das notícias, números dos cards e variáveis da edição"><svg class="ic"><use href="#i-alert"/></svg>Verificar <span class="check-badge" id="checkBadge" hidden></span></button>
+        <button id="btnPrint" class="primary" title="Mostra a verificação e depois gera o PDF"><svg class="ic"><use href="#i-download"/></svg><span id="btnPrintLabel">Exportar PDF</span></button>
+      </div>
+    </div>
+
+    <!-- Variáveis da edição: digitadas uma vez, usadas no cabeçalho, verso,
+         rodapé e nome do PDF -->
+    <div class="vars-bar" id="varsBar">
+      <span class="vars-title">Variáveis da edição</span>
+      <label class="vars-field">Edição nº <input type="text" id="varEdicao" data-var-field="edicao" placeholder="05/2026" size="7"></label>
+      <label class="vars-field">Data <input type="date" id="varData" data-var-field="data"></label>
+      <span class="vars-field">Cobertura
+        <input type="date" id="varCobIni" data-var-field="coberturaInicio" aria-label="Início da cobertura">
+        a
+        <input type="date" id="varCobFim" data-var-field="coberturaFim" aria-label="Fim da cobertura">
+      </span>
+      <label class="vars-field">Próxima <input type="date" id="varProxima" data-var-field="proxima"></label>
+      <span class="vars-hint" id="varsHint"></span>
+      <button type="button" id="btnVarsAutoAll" class="vars-auto-all" hidden></button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <!-- Painel esquerdo: estrutura (adicionar blocos + camadas) -->
+    <aside class="side-panel left-panel no-print" id="structurePanel" aria-label="Estrutura">
+      <div class="panel-tabs" role="tablist">
+        <button type="button" class="panel-tab is-active" role="tab" id="tabBtnEstrutura" data-tab="estrutura" aria-selected="true">Estrutura</button>
+        <button type="button" class="panel-tab" role="tab" id="tabBtnFontes" data-tab="fontes" aria-selected="false">Fontes <span class="tab-count" id="sourcesCount"></span></button>
+        <button type="button" class="panel-tab" role="tab" id="tabBtnRevisao" data-tab="revisao" aria-selected="false">Revisão <span class="tab-count tab-count-notes" id="notasCount"></span></button>
+      </div>
+      <div id="tabRevisao" class="tab-pane" role="tabpanel" hidden>
+        <div class="panel-section">
+          <div class="sources-head">
+            <span class="sources-title">Observações de revisão</span>
+            <button type="button" class="prop-btn" id="btnNotaGeral"><svg class="ic"><use href="#i-note"/></svg>Geral</button>
+          </div>
+          <p class="prop-note" style="margin:0 0 10px">Aparecem só no editor, nunca no PDF. Para comentar um trecho, selecione o texto na página e use <svg class="ic"><use href="#i-note"/></svg> na barrinha; para um bloco, use o mesmo ícone na barra do bloco.</p>
+          <div id="notasList" class="notas-list"></div>
+        </div>
+      </div>
+      <div id="tabFontes" class="tab-pane" role="tabpanel" hidden>
+        <div class="panel-section">
+          <div class="sources-head">
+            <span class="sources-title" id="sourcesTitle">Fontes da edição</span>
+            <button type="button" class="prop-btn primary-btn" data-action="add-source"><svg class="ic"><use href="#i-plus"/></svg>Adicionar fonte</button>
+          </div>
+          <div id="sourcesList" class="sources-list"></div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-label">Rodapé de fontes (verso)</div>
+          <label class="add-page">Formato
+            <select id="refFormat" title="Formato das referências no rodapé do verso">
+              <option value="simples">Simples</option>
+              <option value="abnt">ABNT NBR 6023 (a confirmar)</option>
+            </select>
+          </label>
+          <p class="prop-note" style="margin-top:10px">Simples: "[1] Veículo · Título · data · site". O rodapé do verso é montado a partir desta lista; na notícia aparece só o selo "[n] Veículo · data", com o link.</p>
+        </div>
+        <div class="panel-section">
+          <div class="sources-head">
+            <span class="sources-title">Canais de referência <span class="canais-count" id="canaisCount"></span></span>
+            <button type="button" class="prop-btn" data-action="add-canal"><svg class="ic"><use href="#i-plus"/></svg>Canal</button>
+          </div>
+          <p class="prop-note" style="margin:0 0 10px">Veículos que o boletim cita, válidos para todas as edições. Ao colar um link numa fonte, o veículo é preenchido pelo canal do domínio.</p>
+          <div id="canaisList" class="canais-list"></div>
+        </div>
+      </div>
+      <div id="tabEstrutura" class="tab-pane" role="tabpanel">
+      <div class="panel-section add-section">
+        <div class="panel-label">Adicionar bloco</div>
+        <div class="add-grid">
+          <button data-action="add-column"><svg class="ic"><use href="#i-news"/></svg>Notícia</button>
+          <button data-action="add-ticker"><svg class="ic"><use href="#i-chart"/></svg>Cotação</button>
+          <button data-action="add-calendar-row"><svg class="ic"><use href="#i-calendar"/></svg>Agenda</button>
+          <button data-action="add-glossary-item"><svg class="ic"><use href="#i-book"/></svg>Termo</button>
+          <button data-action="add-paragraph"><svg class="ic"><use href="#i-paragraph"/></svg>Parágrafo</button>
+          <button id="btnAddText"><svg class="ic"><use href="#i-text"/></svg>Caixa de texto</button>
+          <button id="btnAddLine"><svg class="ic"><use href="#i-line"/></svg>Linha</button>
+          <button id="btnAddBand"><svg class="ic"><use href="#i-band"/></svg>Faixa</button>
+        </div>
+        <label class="add-page">Caixa, linha e faixa entram na
+          <select id="freeElPageSelect" title="Página onde adicionar o elemento livre">
+            <option value="1">página 1</option>
+            <option value="2">página 2</option>
+          </select>
+        </label>
+      </div>
+      <div class="panel-section layers-section">
+        <div class="panel-label layers-head"><span>Camadas</span><span class="panel-hint">arraste notícias para reordenar</span></div>
+        <div id="layersList" class="layers"></div>
+      </div>
+      </div>
+    </aside>
+
+    <div class="workspace-scale-wrap" id="workspaceScaleWrap">
+      <div class="workspace" id="workspace">
+        <div class="page-wrap">
+          <div class="page" id="page1"></div>
+          <div class="page-overflow-badge no-print" id="page1Overflow" hidden></div>
+        </div>
+        <div class="page-wrap">
+          <div class="page" id="page2"></div>
+          <div class="page-overflow-badge no-print" id="page2Overflow" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Painel direito: propriedades do item selecionado -->
+    <aside class="side-panel inspector no-print" id="inspector" aria-label="Propriedades">
+      <div class="inspector-selection" id="inspectorSelection"></div>
+    </aside>
+  </div>
+
+  <!-- Zoom flutuante sobre a página -->
+  <div class="zoom-bar no-print" id="zoomBar">
+    <button id="btnZoomOut" class="icon-btn" title="Diminuir zoom (ou Ctrl+roda do mouse)" aria-label="Diminuir zoom"><svg class="ic"><use href="#i-minus"/></svg></button>
+    <button id="btnZoomReset" class="zoom-level" title="Voltar para 100%"><span id="zoomLevel">100%</span></button>
+    <button id="btnZoomIn" class="icon-btn" title="Aumentar zoom (ou Ctrl+roda do mouse)" aria-label="Aumentar zoom"><svg class="ic"><use href="#i-plus"/></svg></button>
+    <span class="zoom-sep"></span>
+    <button id="btnZoomFit" class="zoom-fit" title="Ajustar a página à largura disponível"><svg class="ic"><use href="#i-fit"/></svg>Ajustar à largura</button>
+  </div>
+
+  <!-- Barra de status: uso de cada página -->
+  <footer class="status-bar no-print" id="statusBar">
+    <div class="status-pages">
+      <span class="status-page" id="statusPage1"></span>
+      <span class="status-page" id="statusPage2"></span>
+    </div>
+    <span class="status-right">A4 · 2 páginas</span>
+  </footer>
+
+  <!-- Mini barra do bloco selecionado (subir, descer, travar, duplicar, remover) -->
+  <div class="block-toolbar no-print" id="blockToolbar" hidden></div>
+
+  <!-- Aviso temporário -->
+  <div class="toast no-print" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <div id="textFormatBubble" class="text-format-bubble no-print" hidden>
+    <button type="button" id="bubbleBold" class="bubble-style-btn" style="font-weight:700;" title="Negrito (trecho selecionado)">N</button>
+    <button type="button" id="bubbleItalic" class="bubble-style-btn" style="font-style:italic;" title="Itálico (trecho selecionado)">I</button>
+    <button type="button" id="bubbleUnderline" class="bubble-style-btn" style="text-decoration:underline;" title="Sublinhado (trecho selecionado)">S</button>
+    <input type="color" id="bubbleColor" title="Cor do trecho selecionado">
+    <select id="bubbleFont" title="Fonte do trecho selecionado">
+      <option value="">Fonte do trecho…</option>
+      <option value="Arial, Helvetica, sans-serif">Arial</option>
+      <option value="Georgia, 'Times New Roman', serif">Georgia</option>
+      <option value="'Courier New', monospace">Courier</option>
+    </select>
+    <button type="button" id="bubbleLink" class="bubble-style-btn" title="Inserir link no trecho selecionado" aria-label="Inserir link"><svg class="ic"><use href="#i-link"/></svg></button>
+    <button type="button" id="bubbleNote" class="bubble-style-btn bubble-note" title="Observação de revisão sobre este trecho (só no editor)" aria-label="Observação sobre o trecho"><svg class="ic"><use href="#i-note"/></svg></button>
+    <span id="bubbleLinkRow" class="bubble-link-row" hidden>
+      <input type="url" id="bubbleLinkUrl" placeholder="Colar link (URL)…">
+      <button type="button" id="bubbleLinkApply" class="bubble-style-btn bubble-text-btn" title="Aplicar link">OK</button>
+      <button type="button" id="bubbleUnlink" class="bubble-style-btn bubble-text-btn" title="Remover link do trecho" hidden>Remover</button>
+    </span>
+  </div>
+
+  <!-- Caixa de diálogo própria (confirmar / avisar / pedir um nome) — no
+       Artifact do claude.ai, confirm()/alert()/prompt() do navegador não
+       aparecem. -->
+  <div id="appDialog" class="app-dialog no-print" hidden>
+    <div class="app-dialog-box" role="dialog" aria-modal="true" aria-labelledby="appDialogMsg">
+      <div id="appDialogMsg" class="app-dialog-msg"></div>
+      <input type="text" id="appDialogInput" class="app-dialog-input" hidden>
+      <div class="app-dialog-actions">
+        <button type="button" id="appDialogCancel">Cancelar</button>
+        <button type="button" id="appDialogOk" class="primary">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verificação antes do PDF (Fase 3) — conteúdo montado pelo JS -->
+  <div id="checkDialog" class="app-dialog no-print" hidden>
+    <div class="check-box" role="dialog" aria-modal="true" aria-labelledby="checkTitle">
+      <div class="check-head">
+        <h2 id="checkTitle" class="check-title">Antes de exportar o PDF</h2>
+        <p id="checkSummary" class="check-summary"></p>
+      </div>
+      <ul id="checkList" class="check-list"></ul>
+      <div class="check-foot">
+        <p id="checkNote" class="check-note"></p>
+        <div class="check-foot-actions">
+          <button type="button" id="checkClose" class="check-btn">Fechar</button>
+          <button type="button" id="checkExport" class="check-btn"></button>
+          <button type="button" id="checkFix" class="check-btn primary">Corrigir pendências</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Configurações pessoais e atalhos de teclado -->
+  <div id="settingsDialog" class="app-dialog no-print" hidden>
+    <div class="check-box settings-box" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="check-head">
+        <h2 id="settingsTitle" class="check-title">Configurações</h2>
+        <div class="settings-tabs" role="tablist">
+          <button type="button" role="tab" data-settings-aba="atalhos">Atalhos de teclado</button>
+          <button type="button" role="tab" data-settings-aba="interface">Interface</button>
+          <button type="button" role="tab" data-settings-aba="conta" hidden>Conta</button>
+          <button type="button" role="tab" data-settings-aba="acesso" hidden>Acesso</button>
+        </div>
+      </div>
+      <p id="settingsMsg" class="calc-msg" aria-live="polite"></p>
+      <div id="settingsBody" class="settings-body"></div>
+      <div class="check-foot">
+        <p class="check-note">Para mudar um atalho, clique em Alterar e pressione a combinação nova.</p>
+        <div class="check-foot-actions">
+          <button type="button" id="settingsReset" class="check-btn">Restaurar padrão</button>
+          <button type="button" id="settingsClose" class="check-btn primary">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acervo: busca em todas as edições -->
+  <div id="acervoDialog" class="app-dialog no-print" hidden>
+    <div class="check-box acervo-box" role="dialog" aria-modal="true" aria-labelledby="acervoTitle">
+      <div class="check-head">
+        <h2 id="acervoTitle" class="check-title">Acervo de matérias</h2>
+        <p class="check-summary" id="acervoTotal"></p>
+        <div class="acervo-filtros">
+          <input type="search" id="acervoBusca" placeholder="Buscar por palavra, ativo, veículo… (ex.: Selic Copom)" aria-label="Buscar no acervo">
+          <select id="acervoTipo" aria-label="Tipo"><option value="">Tudo</option><option value="noticia">Notícias</option><option value="manchete">Manchetes</option><option value="glossario">Glossário</option></select>
+          <select id="acervoAno" aria-label="Ano"></select>
+          <select id="acervoTag" aria-label="Editoria"></select>
+        </div>
+        <p class="check-summary" id="acervoResumo" aria-live="polite"></p>
+      </div>
+      <ul id="acervoLista" class="acervo-lista"></ul>
+      <div class="check-foot">
+        <p class="check-note">Todas as edições salvas formam o acervo. Exporte o resultado para abrir no Excel.</p>
+        <div class="check-foot-actions">
+          <button type="button" id="acervoCsv" class="check-btn">Exportar planilha (.csv)</button>
+          <button type="button" id="acervoClose" class="check-btn primary">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calculadora do termômetro (mesma conta da planilha de cotações) -->
+  <div id="calcDialog" class="app-dialog no-print" hidden>
+    <div class="check-box calc-box" role="dialog" aria-modal="true" aria-labelledby="calcTitle">
+      <div class="check-head calc-head">
+        <div>
+          <h2 id="calcTitle" class="check-title">Calculadora do termômetro</h2>
+          <p class="check-summary">Fechamento e bases de cada ativo. Preço: variação % (fechamento ÷ base − 1). Taxa: diferença em bps.</p>
+        </div>
+        <div class="calc-tools">
+          <label class="check-btn calc-file"><svg class="ic"><use href="#i-upload"/></svg>Importar planilha (.xlsx)<input type="file" id="calcXlsx" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></label>
+          <button type="button" id="calcPasteBtn" class="check-btn">Colar do Excel</button>
+        </div>
+      </div>
+      <div id="calcPaste" class="calc-paste" hidden>
+        <textarea id="calcPasteText" rows="4" placeholder="No Excel, selecione as linhas dos ativos (da coluna Índice até Fontes), copie e cole aqui."></textarea>
+        <button type="button" id="calcPasteApply" class="check-btn primary">Preencher</button>
+      </div>
+      <p id="calcMsg" class="calc-msg" aria-live="polite"></p>
+      <div class="calc-scroll"><table id="calcTable" class="calc-table"></table></div>
+      <div class="check-foot">
+        <div class="calc-opts">
+          <label class="calc-date">Data do fechamento <input type="date" id="calcDate"></label>
+          <label class="prop-check"><input type="checkbox" id="calcTicker" checked> Atualizar também os cards de cotação da página 1</label>
+        </div>
+        <div class="check-foot-actions">
+          <button type="button" id="calcClose" class="check-btn">Fechar</button>
+          <button type="button" id="calcApply" class="check-btn primary">Aplicar ao boletim</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pré-visualização do PDF gerado (versão online), antes de baixar -->
+  <div id="pdfPreview" class="app-dialog no-print" hidden>
+    <div class="pdf-preview-box" role="dialog" aria-modal="true" aria-labelledby="pdfPreviewTitle">
+      <div class="pdf-preview-head">
+        <div>
+          <h2 id="pdfPreviewTitle" class="check-title">Pré-visualização do PDF</h2>
+          <p id="pdfPreviewInfo" class="check-summary"></p>
+        </div>
+        <button type="button" id="pdfPreviewClose" class="icon-btn pdf-preview-x" title="Fechar sem baixar" aria-label="Fechar sem baixar"><svg class="ic"><use href="#i-plus"/></svg></button>
+      </div>
+      <div id="pdfPreviewPages" class="pdf-preview-pages"></div>
+      <div class="check-foot">
+        <p class="check-note">Confira as páginas. Ao baixar, o claude.ai ainda pede a confirmação final do download.</p>
+        <div class="check-foot-actions">
+          <button type="button" id="pdfPreviewCancel" class="check-btn">Cancelar</button>
+          <button type="button" id="pdfPreviewDownload" class="check-btn primary">Baixar PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cloudOverlay" class="cloud-overlay no-print" hidden>
+    <div class="cloud-overlay-box">Carregando suas edições…</div>
+  </div>
+
+  <!-- Tela de entrada da plataforma própria (Firebase): link por e-mail ou Google -->
+  <div id="loginScreen" class="login-screen no-print" hidden>
+    <div class="login-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <span class="brand-mark login-mark" aria-hidden="true">B</span>
+      <h1 id="loginTitle" class="login-title">Boletim Maker</h1>
+      <p id="loginMsg" class="login-msg" aria-live="polite"></p>
+      <form id="loginForm" class="login-form">
+        <input type="email" id="loginEmail" required autocomplete="email" placeholder="seu@email.com" aria-label="Seu e-mail">
+        <button type="submit" class="check-btn primary">Enviar link de acesso</button>
+      </form>
+      <div id="loginOr" class="login-or">ou</div>
+      <button type="button" id="loginGoogle" class="check-btn login-google">Entrar com Google</button>
+      <button type="button" id="loginSair" class="check-btn" hidden>Usar outro e-mail</button>
+    </div>
+  </div>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

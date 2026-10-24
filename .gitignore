@@ -1,0 +1,11 @@
+# Arquivos pessoais e gerados — não vão para o GitHub (repositório público)
+Claude outputs/
+Controle-de-cotacoes.xlsx
+*.xlsx
+!tests/fixtures/*.xlsx
+dist/
+.claude/
+desktop/app.ico
+*.log
+Thumbs.db
+desktop.ini
