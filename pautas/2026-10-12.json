@@ -1,0 +1,4104 @@
+{
+ "formato": "boletimMaker.pauta",
+ "versao": 1,
+ "geradoEm": "2026-10-25T20:25:47.614Z",
+ "cobertura": {
+  "inicio": "2026-10-12",
+  "fim": "2026-10-16"
+ },
+ "canais": [
+  "bcb.gov.br",
+  "ibge.gov.br",
+  "senado.leg.br",
+  "b3.com.br",
+  "reuters.com",
+  "infomoney.com.br",
+  "advisorperspectives.com",
+  "opovo.com.br",
+  "investing.com",
+  "finance.yahoo.com"
+ ],
+ "coleta": {
+  "origem": "github-actions",
+  "termo": null,
+  "descartadas": {
+   "foraDaLista": 0,
+   "foraDoPeriodo": 83,
+   "semData": 0,
+   "foraDoTema": 703,
+   "duplicadas": 2
+  },
+  "porCanal": {
+   "Banco Central do Brasil": {
+    "brutos": 20,
+    "aceitas": 3
+   },
+   "IBGE": {
+    "brutos": 0,
+    "aceitas": 0
+   },
+   "IFI/Senado": {
+    "brutos": 0,
+    "aceitas": 0
+   },
+   "B3": {
+    "brutos": 2,
+    "aceitas": 2
+   },
+   "Reuters": {
+    "brutos": 100,
+    "aceitas": 10
+   },
+   "InfoMoney": {
+    "brutos": 575,
+    "aceitas": 156
+   },
+   "Advisor Perspectives": {
+    "brutos": 20,
+    "aceitas": 5
+   },
+   "O Povo": {
+    "brutos": 100,
+    "aceitas": 30
+   },
+   "Investing.com": {
+    "brutos": 100,
+    "aceitas": 8
+   },
+   "Yahoo Finance": {
+    "brutos": 100,
+    "aceitas": 15
+   }
+  }
+ },
+ "temas": [
+  {
+   "id": "tema_1",
+   "titulo": "Bilionário colombiano deve receber US$ 500 milhões com petróleo da Venezuela",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "Após anos de má gestão e sanções paralisantes, a Venezuela emergiu como o epicentro da reafirmação da hegemonia hemisférica do governo Trump. O pedido foi iniciativa da campanha do candidato do PL à Presidência, Flávio Bolsonaro, que pediu tutela de urgência, disse a Fup. O movimento do bitcoin na sessão ocorreu em meio a alta do petróleo, um fator de inflação e que torna ativos como a principal criptomoeda menos atrativa para investidores que buscam lugares mais seguros para investir.",
+   "resumoDe": [
+    "m_21",
+    "m_23",
+    "m_26"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Após anos de má gestão e sanções paralisantes, a Venezuela emergiu como o epicentro da reafirmação da hegemonia hemisférica do governo Trump.",
+     "de": "m_21"
+    },
+    {
+     "texto": "O pedido foi iniciativa da campanha do candidato do PL à Presidência, Flávio Bolsonaro, que pediu tutela de urgência, disse a Fup.",
+     "de": "m_23"
+    },
+    {
+     "texto": "O movimento do bitcoin na sessão ocorreu em meio a alta do petróleo, um fator de inflação e que torna ativos como a principal criptomoeda menos atrativa para investidores que buscam lugares mais seguros para investir.",
+     "de": "m_26"
+    }
+   ],
+   "relevancia": 4,
+   "veiculos": 3,
+   "materias": [
+    {
+     "id": "m_21",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Bilionário colombiano deve receber US$ 500 milhões com petróleo da Venezuela",
+     "url": "https://www.infomoney.com.br/mundo/bilionario-colombiano-deve-receber-us-500-milhoes-com-petroleo-da-venezuela/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-12",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Após anos de má gestão e sanções paralisantes, a Venezuela emergiu como o epicentro da reafirmação da hegemonia hemisférica do governo Trump"
+    },
+    {
+     "id": "m_23",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Kassio Nunes atende Flávio e proíbe distribuição de jornal ‘Petróleo dos Brasileiros'",
+     "url": "https://www.infomoney.com.br/politica/kassio-nunes-atende-flavio-e-proibe-distribuicao-de-jornal-petroleo-dos-brasileiros/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-12",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "O pedido foi iniciativa da campanha do candidato do PL à Presidência, Flávio Bolsonaro, que pediu tutela de urgência, disse a Fup"
+    },
+    {
+     "id": "m_26",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Bitcoin hoje: cripto cai com cenário geopolítico incerto e petróleo em alta",
+     "url": "https://www.infomoney.com.br/mercados/bitcoin-hoje-cripto-cai-com-cenario-geopolitico-incerto-e-petroleo-em-alta/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-12",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "O movimento do bitcoin na sessão ocorreu em meio a alta do petróleo, um fator de inflação e que torna ativos como a principal criptomoeda menos atrativa para investidores que buscam lugares mais seguros para investir"
+    },
+    {
+     "id": "m_28",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Petróleo sobe com ataques houthis contra sauditas e falha de cessar-fogo na Ucrânia",
+     "url": "https://www.infomoney.com.br/mercados/petroleo-abertura-fechamento-ira-eua-12102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-12",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Negociado na Intercontinental Exchange de Londres (ICE), o petróleo Brent para dezembro fechou em alta de 1,84% (US$ 1,93), a US$ 106,65 o barril"
+    },
+    {
+     "id": "m_45",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Petróleo fecha sem direção única com alta da oferta russa e tensões no Oriente Médio",
+     "url": "https://www.infomoney.com.br/mercados/petroleo-abertura-fechamento-ira-eua-13102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "A commodity oscilou no pregão após ter subido nas três sessões anteriores"
+    },
+    {
+     "id": "m_183",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Opep reduz previsão para avanço da demanda global por petróleo em 2026, mas eleva para 2027",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/13/opep-reduz-previsao-para-avanco-da-demanda-global-por-petroleo-em-2026-mas-eleva-para-2027.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "A Organização dos Países Exportadores de Petróleo (Opep) reduziu em 200 mil bpd a previsão de crescimento da demanda global por petróleo em 2026, para 200 mil bpd. Se confirmada, a estimativa indica que o consumo mundial somará 105,72 milhões de bpd em 2026, de acordo com relatório mensal divulgado…"
+    },
+    {
+     "id": "m_189",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Equinor e parceiras anunciam descoberta de milhões em barris de petróleo e gás no Mar do Norte",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/14/equinor-e-parceiras-anunciam-descoberta-de-milhoes-em-barris-de-petroleo-e-gas-no-mar-do-norte.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "A Equinor informou nesta quarta-feira, 14, que fez uma descoberta de óleo e gás no Mar do Norte em parceria com a Petoro e a TotalEnergies. Segundo a empresa norueguesa, a estimativa preliminar de volume recuperável fica entre 19 milhões e 50 milhões de barris de óleo equivalente.A companhia…"
+    },
+    {
+     "id": "m_208",
+     "canalId": "canal_investing",
+     "veiculo": "Investing.com",
+     "dominio": "investing.com",
+     "grupo": "intl",
+     "prioridade": 9,
+     "titulo": "Os Futuros do Petróleo caíram durante a sessão asiática",
+     "url": "https://br.investing.com/news/commodities-news/os-futuros-do-petroleo-cairam-durante-a-sessao-asiatica-2089645",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_209",
+     "canalId": "canal_investing",
+     "veiculo": "Investing.com",
+     "dominio": "investing.com",
+     "grupo": "intl",
+     "prioridade": 9,
+     "titulo": "Bloqueio dos EUA zera exportações de petróleo iraniano em outubro",
+     "url": "https://br.investing.com/news/economy-news/bloqueio-dos-eua-zera-exportacoes-de-petroleo-iraniano-em-outubro-2090633",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    }
+   ]
+  },
+  {
+   "id": "tema_2",
+   "titulo": "Petróleo fecha em alta com ataque à Saudi Aramco e riscos de navegação em Ormuz",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "Um navio de carga afundou após atingir uma mina naval no Estreito de Ormuz, informou a força naval do Corpo da Guarda Revolucionária Islâmica do Irã. O presidente dos Estados Unidos, Donald Trump, tem pressionado os ⁠países ‌da União Europeia a utilizarem suas reservas ou a ⁠enfrentarem uma possível proibição das exportações de diesel pelos EUA. Durante a sessão, a commodity energética apresentou volatilidade com o WTI registrando uma alta mais acentuada em meio aos escassos sinais de redução das tensões entre Rússia e Ucrânia.",
+   "resumoDe": [
+    "m_80",
+    "m_118",
+    "m_124"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Um navio de carga afundou após atingir uma mina naval no Estreito de Ormuz, informou a força naval do Corpo da Guarda Revolucionária Islâmica do Irã.",
+     "de": "m_80"
+    },
+    {
+     "texto": "O presidente dos Estados Unidos, Donald Trump, tem pressionado os ⁠países ‌da União Europeia a utilizarem suas reservas ou a ⁠enfrentarem uma possível proibição das exportações de diesel pelos EUA.",
+     "de": "m_118"
+    },
+    {
+     "texto": "Durante a sessão, a commodity energética apresentou volatilidade com o WTI registrando uma alta mais acentuada em meio aos escassos sinais de redução das tensões entre Rússia e Ucrânia.",
+     "de": "m_124"
+    }
+   ],
+   "relevancia": 4,
+   "veiculos": 3,
+   "materias": [
+    {
+     "id": "m_80",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Petróleo fecha em alta com ataque à Saudi Aramco e riscos de navegação em Ormuz",
+     "url": "https://www.infomoney.com.br/mercados/petroleo-abertura-fechamento-ira-eua-14102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Um navio de carga afundou após atingir uma mina naval no Estreito de Ormuz, informou a força naval do Corpo da Guarda Revolucionária Islâmica do Irã"
+    },
+    {
+     "id": "m_118",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "AIE acelerará liberação de estoques de petróleo e mais de 20 mi de barris de diesel",
+     "url": "https://www.infomoney.com.br/mundo/aie-acelerara-liberacao-de-estoques-de-petroleo-e-mais-de-20-mi-de-barris-de-diesel/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "O presidente dos Estados Unidos, Donald Trump, tem pressionado os ⁠países ‌da União Europeia a utilizarem suas reservas ou a ⁠enfrentarem uma possível proibição das exportações de diesel pelos EUA"
+    },
+    {
+     "id": "m_124",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Petróleo fecha sem direção única em meio a ataques no Oriente Médio e alta da oferta",
+     "url": "https://www.infomoney.com.br/mercados/petroleo-abertura-fechamento-ira-eua-15102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Durante a sessão, a commodity energética apresentou volatilidade com o WTI registrando uma alta mais acentuada em meio aos escassos sinais de redução das tensões entre Rússia e Ucrânia"
+    },
+    {
+     "id": "m_160",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Zelensky desafia apelo de Trump e volta a atacar refinarias de petróleo da Rússia",
+     "url": "https://www.infomoney.com.br/mundo/zelensky-desafia-apelo-de-trump-e-volta-a-atacar-refinarias-de-petroleo-da-russia/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Decisão aprofunda atrito entre os dois líderes em meio a críticas sobre limitações impostas ao acesso da Ucrânia a serviços de inteligência e satélites"
+    },
+    {
+     "id": "m_161",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Petróleo Brent supera US$ 110 pela 1ª vez desde maio com temor sobre oferta global",
+     "url": "https://www.infomoney.com.br/mercados/petroleo-abertura-fechamento-ira-eua-16102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Bloqueio a acordo dos EUA com a Rússia e conflitos no Oriente Médio e no Leste Europeu impulsionam apostas de alta para a commodity"
+    },
+    {
+     "id": "m_198",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Estoques de petróleo nos EUA caem 8,557 milhões de barris, aponta DoE",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/15/estoques-de-petroleo-nos-eua-caem-8557-milhoes-de-barris-aponta-doe.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Os estoques de petróleo nos Estados Unidos tiveram queda de 8,557 milhões de barris, a 415,577 milhões de barris, na semana encerrada em 9 de outubro, informou nesta quinta-feira, 15, o Departamento de Energia (DoE, na sigla em inglês) do país. Analistas consultados pelo The Wall Street Journal…"
+    },
+    {
+     "id": "m_214",
+     "canalId": "canal_investing",
+     "veiculo": "Investing.com",
+     "dominio": "investing.com",
+     "grupo": "intl",
+     "prioridade": 9,
+     "titulo": "Os Futuros do Petróleo caíram durante a sessão europeia",
+     "url": "https://br.investing.com/news/commodities-news/os-futuros-do-petroleo-cairam-durante-a-sessao-europeia-2094068",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    }
+   ]
+  },
+  {
+   "id": "tema_3",
+   "titulo": "Germany to unveil Nvidia AI agreement next week, government sources say",
+   "editoria": "EXTERIOR · BOLSAS",
+   "resumo": "A Nvidia anunciou nesta quarta-feira, 13, uma doação de capacidade computacional avaliada em US$ 250 milhões ao longo de cinco anos para fortalecer a pesquisa de segurança e proteção ligada a sistemas de inteligência artificial (IA) agêntica no Reino Unido.",
+   "resumoDe": [
+    "m_188"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "A Nvidia anunciou nesta quarta-feira, 13, uma doação de capacidade computacional avaliada em US$ 250 milhões ao longo de cinco anos para fortalecer a pesquisa de segurança e proteção ligada a sistemas de inteligência artificial (IA) agêntica no Reino Unido.",
+     "de": "m_188"
+    }
+   ],
+   "relevancia": 4,
+   "veiculos": 4,
+   "materias": [
+    {
+     "id": "m_13",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Germany to unveil Nvidia AI agreement next week, government sources say",
+     "url": "https://www.reuters.com/world/europe/germany-unveil-nvidia-ai-agreement-next-week-government-sources-say-2026-10-16/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · BOLSAS",
+     "trecho": ""
+    },
+    {
+     "id": "m_188",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Nvidia promete US$ 250 milhões em computação para pesquisa de segurança de IA no Reino Unido",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/14/nvidia-promete-uss-250-milhoes-em-computacao-para-pesquisa-de-seguranca-de-ia-no-reino-unido.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · BOLSAS",
+     "trecho": "A Nvidia anunciou nesta quarta-feira, 13, uma doação de capacidade computacional avaliada em US$ 250 milhões ao longo de cinco anos para fortalecer a pesquisa de segurança e proteção ligada a sistemas de inteligência artificial (IA) agêntica no Reino Unido. O compromisso prevê a oferta de US$ 50…"
+    },
+    {
+     "id": "m_199",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "CEO da Nvidia diz que não precisará resgatar a CoreWeave",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/15/ceo-da-nvidia-diz-que-nao-precisara-resgatar-a-coreweave.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · BOLSAS",
+     "trecho": "O CEO da Nvidia, Jensen Huang, rebateu nesta quinta-feira as preocupações financeiras sobre a CoreWeave, um de seus principais clientes, e disse que não acredita que a operadora de data center de inteligência artificial (IA) precisará de um resgate de sua empresa.A força da CoreWeave está…"
+    },
+    {
+     "id": "m_212",
+     "canalId": "canal_investing",
+     "veiculo": "Investing.com",
+     "dominio": "investing.com",
+     "grupo": "intl",
+     "prioridade": 9,
+     "titulo": "Mercedes-Benz e Nvidia ampliam parceria em sistemas de condução",
+     "url": "https://br.investing.com/news/company-news/mercedesbenz-e-nvidia-ampliam-parceria-em-sistemas-de-conducao-93CH-2093565",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · BOLSAS",
+     "trecho": ""
+    },
+    {
+     "id": "m_219",
+     "canalId": "canal_yahoo",
+     "veiculo": "Yahoo Finance",
+     "dominio": "finance.yahoo.com",
+     "grupo": "intl",
+     "prioridade": 10,
+     "titulo": "Volvo makes a bigger bet on Nvidia for hands-free automated driving",
+     "url": "https://finance.yahoo.com/technology/ai/articles/volvo-makes-bigger-bet-nvidia-173440471.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · BOLSAS",
+     "trecho": ""
+    },
+    {
+     "id": "m_224",
+     "canalId": "canal_yahoo",
+     "veiculo": "Yahoo Finance",
+     "dominio": "finance.yahoo.com",
+     "grupo": "intl",
+     "prioridade": 10,
+     "titulo": "Nvidia-Backed AI Biotech Iambic Up 16% After $150 Million IPO",
+     "url": "https://finance.yahoo.com/healthcare/articles/nvidia-backed-ai-biotech-iambic-163100460.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · BOLSAS",
+     "trecho": ""
+    }
+   ]
+  },
+  {
+   "id": "tema_4",
+   "titulo": "BC divulga o IBC-Br de agosto de 2026",
+   "editoria": "BRASIL · ATIVIDADE",
+   "resumo": "Acesse o Índice de Atividade Econômica do Banco Central (IBC-Br)​ ​​​​​​ de agosto de 2026, com os dados mais recentes sobre a atividade econômica no Brasil. Economistas consultados em pesquisa da Reuters esperavam alta de 0,3%. Indicador de atividade do BC avançou acima das expectativas, mas resultados negativos nos dois meses anteriores indicam desempenho fraco no dado consolidado do terceiro trimestre.",
+   "resumoDe": [
+    "m_3",
+    "m_145",
+    "m_152"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Acesse o Índice de Atividade Econômica do Banco Central (IBC-Br)​ ​​​​​​ de agosto de 2026, com os dados mais recentes sobre a atividade econômica no Brasil.",
+     "de": "m_3"
+    },
+    {
+     "texto": "Economistas consultados em pesquisa da Reuters esperavam alta de 0,3%.",
+     "de": "m_145"
+    },
+    {
+     "texto": "Indicador de atividade do BC avançou acima das expectativas, mas resultados negativos nos dois meses anteriores indicam desempenho fraco no dado consolidado do terceiro trimestre.",
+     "de": "m_152"
+    }
+   ],
+   "relevancia": 4,
+   "veiculos": 3,
+   "materias": [
+    {
+     "id": "m_3",
+     "canalId": "canal_bcb",
+     "veiculo": "Banco Central do Brasil",
+     "dominio": "bcb.gov.br",
+     "grupo": "oficial",
+     "prioridade": 1,
+     "titulo": "BC divulga o IBC-Br de agosto de 2026",
+     "url": "https://www.bcb.gov.br/detalhenoticia/21285/nota",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · ATIVIDADE",
+     "trecho": "<div class=\"ExternalClassB2BDA2413D2948FF9F7F6043383B8D75\"><div>Acesse o <a href=\"/estatisticas/ibc-br\" target=\"_blank\">Índice de Atividade Econômica do Banco Central (IBC-Br)​</a>​​​​​​ de agosto de 2026, com os dados mais recentes sobre a atividade econômica no Brasil.<br></div></div>"
+    },
+    {
+     "id": "m_145",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "IBC-Br: “prévia do PIB” sobe 0,3% em agosto, em linha com o esperado",
+     "url": "https://www.infomoney.com.br/economia/ibc-br-previa-do-pib-agosto-2026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · ATIVIDADE",
+     "trecho": "Economistas consultados em pesquisa da Reuters esperavam alta de 0,3%"
+    },
+    {
+     "id": "m_152",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Indústria ajuda IBC-Br de agosto, mas não alivia recuo no PIB do terceiro trimestre",
+     "url": "https://www.infomoney.com.br/economia/ibc-br-agosto-previa-pib-recuo-terceiro-trimestre/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · ATIVIDADE",
+     "trecho": "Indicador de atividade do BC avançou acima das expectativas, mas resultados negativos nos dois meses anteriores indicam desempenho fraco no dado consolidado do terceiro trimestre"
+    },
+    {
+     "id": "m_205",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Atividade econômica tem alta de 0,3% em agosto, mostra IBC-Br",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/16/atividade-economica-tem-alta-de-03-em-agosto-mostra-ibc-br.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · ATIVIDADE",
+     "trecho": "O Índice de Atividade Econômica do Banco Central (IBC-Br), indicador usado para acompanhar a evolução da economia brasileira, ficou estável com variação de 0,3% em agosto de 2026 na comparação com julho, informou nesta sexta-feira (16) o Banco Central. Em relação a agosto de 2025, o indicador…"
+    }
+   ]
+  },
+  {
+   "id": "tema_5",
+   "titulo": "Quaest: Celina Leão registra 53% das intenções de voto no DF; Leandro Grass tem 33%",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Segundo a pesquisa, 88% dos entrevistados afirmaram que já fizeram uma escolha definitiva no DF. Escolha do voto é definitiva para 91% dos entrevistados, mostra pesquisa. Levantamento mostra como os eleitores dos candidatos derrotados no primeiro turno pretendem votar na disputa entre Lula e Flávio Bolsonaro.",
+   "resumoDe": [
+    "m_53",
+    "m_91",
+    "m_94"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Segundo a pesquisa, 88% dos entrevistados afirmaram que já fizeram uma escolha definitiva no DF.",
+     "de": "m_53"
+    },
+    {
+     "texto": "Escolha do voto é definitiva para 91% dos entrevistados, mostra pesquisa.",
+     "de": "m_91"
+    },
+    {
+     "texto": "Levantamento mostra como os eleitores dos candidatos derrotados no primeiro turno pretendem votar na disputa entre Lula e Flávio Bolsonaro.",
+     "de": "m_94"
+    }
+   ],
+   "relevancia": 3,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_53",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest: Celina Leão registra 53% das intenções de voto no DF; Leandro Grass tem 33%",
+     "url": "https://www.infomoney.com.br/politica/quaest-celina-leao-registra-53-das-intencoes-de-voto-no-df-leandro-grass-tem-33/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Segundo a pesquisa, 88% dos entrevistados afirmaram que já fizeram uma escolha definitiva no DF"
+    },
+    {
+     "id": "m_91",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest: Flávio Bolsonaro tem 46% e Lula, 44% no 2º turno",
+     "url": "https://www.infomoney.com.br/politica/quaest-2-turno-flavio-lula/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Escolha do voto é definitiva para 91% dos entrevistados, mostra pesquisa"
+    },
+    {
+     "id": "m_94",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest: como os eleitores de Caiado, Cury e Renan se dividem entre Lula e Flávio",
+     "url": "https://www.infomoney.com.br/politica/quaest-transferencia-de-votos-lula-flavio/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Levantamento mostra como os eleitores dos candidatos derrotados no primeiro turno pretendem votar na disputa entre Lula e Flávio Bolsonaro"
+    },
+    {
+     "id": "m_95",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest: governo Lula é desaprovado por 49% e aprovado por 45% dos eleitores",
+     "url": "https://www.infomoney.com.br/politica/quaest-governo-lula-aprovacao-desaprovacao/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Levantamento mostra que 49% desaprovam a gestão petista, enquanto 45% a aprovam; resultado está dentro da margem de erro em relação à pesquisa anterior."
+    },
+    {
+     "id": "m_96",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest: 64% dos eleitores aprovam fim das bets e 61% aprovam o fim da escala 6×1",
+     "url": "https://www.infomoney.com.br/politica/quaest-64-dos-eleitores-aprovam-fim-das-bets-e-61-aprovam-o-fim-da-escala-6x1/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Conforme o levantamento, 64% dos entrevistados disseram que sabiam do fim das bets e apoiam a medida"
+    },
+    {
+     "id": "m_97",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest/ES: Pazolini tem 47% e Ferraço, 38%, no 2º turno",
+     "url": "https://www.infomoney.com.br/politica/quaest-es-pazolini-tem-47-e-ferraco-38-no-2o-turno/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Primeira pesquisa após o primeiro turno mostra vantagem do candidato do Republicanos; para 84% dos eleitores, o voto já está definido"
+    },
+    {
+     "id": "m_114",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest/TO: No 2º turno, Vicentinho Júnior tem 49% e Professora Dorinha, 42%",
+     "url": "https://www.infomoney.com.br/politica/quaest-to-no-2o-turno-vicentinho-junior-tem-49-e-professora-dorinha-42/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Para 82% dos entrevistados, a escolha do candidato é definitiva"
+    },
+    {
+     "id": "m_131",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Dólar hoje sobe a R$ 5,09, à espera de Datafolha após reação à pesquisa Quaest",
+     "url": "https://www.infomoney.com.br/mercados/dolar-hoje-abertura-fechamento-comercial-turismo-15102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "No início da noite desta quinta o Datafolha divulgará um novo levantamento sobre o segundo turno da eleição presidencial"
+    }
+   ]
+  },
+  {
+   "id": "tema_6",
+   "titulo": "Bolsas de NY abrem perto da estabilidade, com balanços de bancos e CPI em foco",
+   "editoria": "EXTERIOR · INFLAÇÃO",
+   "resumo": "O feriado do Dia de Colombo, que mantém o mercado de Treasuries fechado hoje, deve reforçar a cautela dos investidores após uma semana de ganhos. Queda dos rendimentos dos Treasuries ajuda a criptomoeda, mas investidores continuam cautelosos diante do cenário para os juros. O contrato futuro do ouro fechou em queda nesta segunda-feira, 12, em correção aos ganhos recentes, em um dia de liquidez reduzida por conta do feriado do Dia de Colombo nos EUA.",
+   "resumoDe": [
+    "m_20",
+    "m_46",
+    "m_178"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "O feriado do Dia de Colombo, que mantém o mercado de Treasuries fechado hoje, deve reforçar a cautela dos investidores após uma semana de ganhos.",
+     "de": "m_20"
+    },
+    {
+     "texto": "Queda dos rendimentos dos Treasuries ajuda a criptomoeda, mas investidores continuam cautelosos diante do cenário para os juros.",
+     "de": "m_46"
+    },
+    {
+     "texto": "O contrato futuro do ouro fechou em queda nesta segunda-feira, 12, em correção aos ganhos recentes, em um dia de liquidez reduzida por conta do feriado do Dia de Colombo nos EUA.",
+     "de": "m_178"
+    }
+   ],
+   "relevancia": 3,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_20",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Bolsas de NY abrem perto da estabilidade, com balanços de bancos e CPI em foco",
+     "url": "https://www.infomoney.com.br/mercados/bolsas-de-ny-abrem-perto-da-estabilidade-com-balancos-de-bancos-e-cpi-em-foco/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-12",
+     "editoria": "EXTERIOR · INFLAÇÃO",
+     "trecho": "O feriado do Dia de Colombo, que mantém o mercado de Treasuries fechado hoje, deve reforçar a cautela dos investidores após uma semana de ganhos"
+    },
+    {
+     "id": "m_46",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Bitcoin hoje: cripto sobe e testa força do suporte de US$ 82 mil à espera do CPI",
+     "url": "https://www.infomoney.com.br/mercados/bitcoin-hoje-cripto-sobe-e-testa-forca-do-suporte-de-us-82-mil-a-espera-do-cpi/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "EXTERIOR · INFLAÇÃO",
+     "trecho": "Queda dos rendimentos dos Treasuries ajuda a criptomoeda, mas investidores continuam cautelosos diante do cenário para os juros"
+    },
+    {
+     "id": "m_178",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Metais: ouro fecha em queda, em correção de ganhos, antes do CPI dos EUA",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/12/metais-ouro-fecha-em-queda-em-correcao-de-ganhos-antes-do-cpi-dos-eua.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-12",
+     "editoria": "EXTERIOR · INFLAÇÃO",
+     "trecho": "O contrato futuro do ouro fechou em queda nesta segunda-feira, 12, em correção aos ganhos recentes, em um dia de liquidez reduzida por conta do feriado do Dia de Colombo nos EUA. Os investidores mantêm a atenção na publicação do índice de preços ao consumidor (CPI), na quarta-feira, que pode trazer…"
+    },
+    {
+     "id": "m_187",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Bolsas da Ásia fecham majoritariamente em baixa à espera do CPI dos EUA -",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/14/bolsas-da-asia-fecham-majoritariamente-em-baixa-a-espera-do-cpi-dos-eua.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · INFLAÇÃO",
+     "trecho": "As bolsas asiáticas fecharam majoritariamente em baixa nesta quarta-feira, com investidores à espera dos dados de inflação ao consumidor (CPI, na sigla em inglês) dos EUA, que podem influenciar as expectativas para a trajetória dos juros básicos norte-americanos.O CPI de setembro, a ser divulgado…"
+    },
+    {
+     "id": "m_190",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "CPI dos EUA sobe 0,6% em setembro ante agosto e avança 3,7% no comparativo anual",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/14/cpi-dos-eua-sobe-06-em-setembro-ante-agosto-e-avanca-37-no-comparativo-anual.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · INFLAÇÃO",
+     "trecho": "O índice de preços ao consumidor (CPI, na sigla em inglês) dos Estados Unidos subiu 0,6% em setembro ante agosto, segundo dados com ajustes sazonais publicados pelo Departamento do Trabalho. Na comparação anual, o CPI avançou 3,7% em setembro.Analistas consultados pelo Projeções Broadcast esperavam…"
+    }
+   ]
+  },
+  {
+   "id": "tema_7",
+   "titulo": "Mercado de Opções da B3 cresce 79% e movimenta valor recorde de R$ 2,9 bilhões em um dia em 2026",
+   "editoria": "BRASIL · BOLSA",
+   "resumo": "Avanço ocorre em diferentes produtos, com destaque para os contratos com vencimentos semanais. Petrobras e Itaú são as mais valiosas. O destaque do ano ficou com as opções de vencimento semanal, que ganharam espaço entre os investidores.",
+   "resumoDe": [
+    "m_5",
+    "m_75",
+    "m_120"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Avanço ocorre em diferentes produtos, com destaque para os contratos com vencimentos semanais.",
+     "de": "m_5"
+    },
+    {
+     "texto": "Petrobras e Itaú são as mais valiosas.",
+     "de": "m_75"
+    },
+    {
+     "texto": "O destaque do ano ficou com as opções de vencimento semanal, que ganharam espaço entre os investidores.",
+     "de": "m_120"
+    }
+   ],
+   "relevancia": 3,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_5",
+     "canalId": "canal_b3",
+     "veiculo": "B3",
+     "dominio": "b3.com.br",
+     "grupo": "oficial",
+     "prioridade": 4,
+     "titulo": "Mercado de Opções da B3 cresce 79% e movimenta valor recorde de R$ 2,9 bilhões em um dia em 2026",
+     "url": "https://www.b3.com.br/pt_br/noticias/mercado-de-opcoes-da-b3-cresce-79-e-movimenta-valor-recorde-de-r-2-9-bilhoes-em-um-dia-em-2026.htm",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · BOLSA",
+     "trecho": "Avanço ocorre em diferentes produtos, com destaque para os contratos com vencimentos semanais"
+    },
+    {
+     "id": "m_75",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "B3 passa a ter 12 empresas com valor de mercado acima de R$ 100 bilhões; veja ranking",
+     "url": "https://www.infomoney.com.br/mercados/b3-passa-a-ter-12-empresas-com-valor-de-mercado-acima-de-r-100-bilhoes-veja-ranking/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · BOLSA",
+     "trecho": "Petrobras e Itaú são as mais valiosas"
+    },
+    {
+     "id": "m_120",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Mercado de opções da B3 bate recordes em 2026 e volume diário cresce 79%",
+     "url": "https://www.infomoney.com.br/mercados/mercado-de-opcoes-da-b3-bate-recordes-em-2026-e-volume-diario-cresce-79/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · BOLSA",
+     "trecho": "O destaque do ano ficou com as opções de vencimento semanal, que ganharam espaço entre os investidores"
+    }
+   ]
+  },
+  {
+   "id": "tema_8",
+   "titulo": "Oil touches $110 a barrel for first time since May on Middle East, Russia supply fears",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "",
+   "resumoDe": [],
+   "resumoFrases": [],
+   "relevancia": 2,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_12",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Oil touches $110 a barrel for first time since May on Middle East, Russia supply fears",
+     "url": "https://www.reuters.com/business/autos-transportation/oil-edges-down-investors-weigh-possible-us-sanctions-shadow-fleet-2026-10-16/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_15",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "US solicits exchange of up to 17 million barrels of oil from strategic reserve",
+     "url": "https://www.reuters.com/business/energy/us-solicits-exchange-up-17-million-barrels-oil-strategic-reserve-2026-10-16/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_221",
+     "canalId": "canal_yahoo",
+     "veiculo": "Yahoo Finance",
+     "dominio": "finance.yahoo.com",
+     "grupo": "intl",
+     "prioridade": 10,
+     "titulo": "Oil prices are still poised for a 'super spike': Energy analyst explains",
+     "url": "https://finance.yahoo.com/video/oil-prices-still-poised-super-120000571.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    }
+   ]
+  },
+  {
+   "id": "tema_9",
+   "titulo": "Dólar sobe 0,7%, a R$ 5,02, na volta do feriado e com pesquisas eleitorais em foco",
+   "editoria": "BRASIL · CÂMBIO",
+   "resumo": "No ano, a divisa passou a acumular baixa de 8,50%. Índices nos EUA terminam em queda, em dia de balanços de bancos. Na esteira do dólar, os juros futuros médios e longos sobem na manhã desta terça-feira, 13, com os mercados locais mostrando mais cautela que os internacionais em meio à cena eleitoral.",
+   "resumoDe": [
+    "m_47",
+    "m_48",
+    "m_184"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "No ano, a divisa passou a acumular baixa de 8,50%.",
+     "de": "m_47"
+    },
+    {
+     "texto": "Índices nos EUA terminam em queda, em dia de balanços de bancos.",
+     "de": "m_48"
+    },
+    {
+     "texto": "Na esteira do dólar, os juros futuros médios e longos sobem na manhã desta terça-feira, 13, com os mercados locais mostrando mais cautela que os internacionais em meio à cena eleitoral.",
+     "de": "m_184"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_47",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Dólar sobe 0,7%, a R$ 5,02, na volta do feriado e com pesquisas eleitorais em foco",
+     "url": "https://www.infomoney.com.br/mercados/dolar-hoje-abertura-fechamento-comercial-turismo-13102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "BRASIL · CÂMBIO",
+     "trecho": "No ano, a divisa passou a acumular baixa de 8,50%"
+    },
+    {
+     "id": "m_48",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Ibovespa recua mais de 1%, com eleição em foco; dólar sobe a R$ 5,02",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-13102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "BRASIL · CÂMBIO",
+     "trecho": "Índices nos EUA terminam em queda, em dia de balanços de bancos"
+    },
+    {
+     "id": "m_184",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Juros sobem com dólar com pesquisas eleitorais no radar",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/13/juros-sobem-com-dolar-com-pesquisas-eleitorais-no-radar.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "BRASIL · CÂMBIO",
+     "trecho": "Na esteira do dólar, os juros futuros médios e longos sobem na manhã desta terça-feira, 13, com os mercados locais mostrando mais cautela que os internacionais em meio à cena eleitoral. Pesquisa PoderData/AYA mostra o senador Flávio Bolsonaro (PL-RJ) com 51% das intenções de votos válidos no…"
+    }
+   ]
+  },
+  {
+   "id": "tema_10",
+   "titulo": "Livro e futuro no Fórum Econômico Mundial colocam Lagarde sob pressão no BCE",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "resumo": "Representantes dos funcionários questionam potenciais conflitos de interesse e o uso de plataformas institucionais para promover atividades privadas. O dirigente do Banco Central Europeu (BCE) e presidente do Banco da França, Emmanuel Moulin, afirmou nesta quarta-feira que as decisões de política monetária estão sendo tomadas a cada reunião, com forte dependência dos dados que chegam e também da leitura das condições de mercado.",
+   "resumoDe": [
+    "m_52",
+    "m_191"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Representantes dos funcionários questionam potenciais conflitos de interesse e o uso de plataformas institucionais para promover atividades privadas.",
+     "de": "m_52"
+    },
+    {
+     "texto": "O dirigente do Banco Central Europeu (BCE) e presidente do Banco da França, Emmanuel Moulin, afirmou nesta quarta-feira que as decisões de política monetária estão sendo tomadas a cada reunião, com forte dependência dos dados que chegam e também da leitura das condições de mercado.",
+     "de": "m_191"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_52",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Livro e futuro no Fórum Econômico Mundial colocam Lagarde sob pressão no BCE",
+     "url": "https://www.infomoney.com.br/economia/livro-e-futuro-no-forum-economico-mundial-colocam-lagarde-sob-pressao-no-bce/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+     "trecho": "Representantes dos funcionários questionam potenciais conflitos de interesse e o uso de plataformas institucionais para promover atividades privadas"
+    },
+    {
+     "id": "m_191",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Dirigente do BCE diz que alta de rendimentos soberanos funcionará como freio à economia",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/14/dirigente-do-bce-diz-que-alta-de-rendimentos-soberanos-funcionara-como-freio-a-economia.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+     "trecho": "O dirigente do Banco Central Europeu (BCE) e presidente do Banco da França, Emmanuel Moulin, afirmou nesta quarta-feira que as decisões de política monetária estão sendo tomadas a cada reunião, com forte dependência dos dados que chegam e também da leitura das condições de mercado. Moulin observou…"
+    },
+    {
+     "id": "m_200",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "BCE: autoridade pode não precisar agir tanto caso os mercados promovam um aperto",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/15/bce-autoridade-pode-nao-precisar-agir-tanto-caso-os-mercados-promovam-um-aperto.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+     "trecho": "O integrante do conselho do Banco Central Europeu (BCE) Primoz Dolenc afirmou nesta quinta-feira, 15, que um aperto nas condições financeiras pode limitar a necessidade de medidas de política monetária por parte da autoridade. Em entrevista à Bloomberg, o também presidente do Banco da Eslovênia…"
+    }
+   ]
+  },
+  {
+   "id": "tema_11",
+   "titulo": "Marinho propõe emenda à PEC da Segurança para reduzir maioridade penal para 16 anos",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Emenda é defendida pelo candidato à Presidência, Flávio Bolsonaro (PL). O trecho em questão reduziria a maioridade penal para 16 anos apenas em caso de crimes hediondos, como homicídio, tortura e estupro. Decisão foi tomada durante a sessão plenária nesta quinta-feira (15).",
+   "resumoDe": [
+    "m_78",
+    "m_119",
+    "m_135"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Emenda é defendida pelo candidato à Presidência, Flávio Bolsonaro (PL).",
+     "de": "m_78"
+    },
+    {
+     "texto": "O trecho em questão reduziria a maioridade penal para 16 anos apenas em caso de crimes hediondos, como homicídio, tortura e estupro.",
+     "de": "m_119"
+    },
+    {
+     "texto": "Decisão foi tomada durante a sessão plenária nesta quinta-feira (15).",
+     "de": "m_135"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_78",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Marinho propõe emenda à PEC da Segurança para reduzir maioridade penal para 16 anos",
+     "url": "https://www.infomoney.com.br/politica/marinho-propoe-emenda-a-pec-da-seguranca-para-reduzir-maioridade-penal-para-16-anos/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Emenda é defendida pelo candidato à Presidência, Flávio Bolsonaro (PL)"
+    },
+    {
+     "id": "m_119",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Líder do PT quer redução da maioridade penal para crime grave na PEC da Segurança",
+     "url": "https://www.infomoney.com.br/politica/lider-do-pt-quer-reducao-da-maioridade-penal-para-crime-grave-na-pec-da-seguranca/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "O trecho em questão reduziria a maioridade penal para 16 anos apenas em caso de crimes hediondos, como homicídio, tortura e estupro"
+    },
+    {
+     "id": "m_135",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Alcolumbre adia PEC da Segurança após disputa sobre maioridade penal dividir o PT",
+     "url": "https://www.infomoney.com.br/politica/alcolumbre-adia-pec-da-seguranca-apos-disputa-sobre-maioridade-penal-dividir-o-pt/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Decisão foi tomada durante a sessão plenária nesta quinta-feira (15)"
+    }
+   ]
+  },
+  {
+   "id": "tema_12",
+   "titulo": "Taxas fecham em alta após dados de inflação nos EUA e antes de pesquisa eleitoral",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Investidores também aguardam nova pesquisa Quaest sobre disputa presidencial, programada para o início da noite. O movimento, amparado ainda pela aprovação no Senado da Proposta de Emenda à Constituição (PEC) do fim da escala de trabalho 6 x 1, contrasta com o exterior, onde os rendimentos dos Treasuries despencavam nesta manhã. Aprovação do fim da escala de trabalho 6x1 no Senado, na noite de quarta-feira, também deu suporte à curva.",
+   "resumoDe": [
+    "m_82",
+    "m_108",
+    "m_128"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Investidores também aguardam nova pesquisa Quaest sobre disputa presidencial, programada para o início da noite.",
+     "de": "m_82"
+    },
+    {
+     "texto": "O movimento, amparado ainda pela aprovação no Senado da Proposta de Emenda à Constituição (PEC) do fim da escala de trabalho 6 x 1, contrasta com o exterior, onde os rendimentos dos Treasuries despencavam nesta manhã.",
+     "de": "m_108"
+    },
+    {
+     "texto": "Aprovação do fim da escala de trabalho 6x1 no Senado, na noite de quarta-feira, também deu suporte à curva.",
+     "de": "m_128"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_82",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Taxas fecham em alta após dados de inflação nos EUA e antes de pesquisa eleitoral",
+     "url": "https://www.infomoney.com.br/mercados/taxas-fecham-em-alta-apos-dados-de-inflacao-nos-eua-e-antes-de-pesquisa-eleitoral/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Investidores também aguardam nova pesquisa Quaest sobre disputa presidencial, programada para o início da noite"
+    },
+    {
+     "id": "m_108",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Taxas dos DIs sobem após pesquisa eleitoral e aprovação do fim da escala 6×1",
+     "url": "https://www.infomoney.com.br/mercados/taxas-dos-dis-sobem-apos-pesquisa-eleitoral-e-aprovacao-do-fim-da-escala-6x1/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "O movimento, amparado ainda pela aprovação no Senado da Proposta de Emenda à Constituição (PEC) do fim da escala de trabalho 6 x 1, contrasta com o exterior, onde os rendimentos dos Treasuries despencavam nesta manhã"
+    },
+    {
+     "id": "m_128",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Taxas dos DIs aceleram altas antes de pesquisa Datafolha sobre disputa presidencial",
+     "url": "https://www.infomoney.com.br/mercados/taxas-dos-dis-aceleram-altas-antes-de-pesquisa-datafolha-sobre-disputa-presidencial/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Aprovação do fim da escala de trabalho 6x1 no Senado, na noite de quarta-feira, também deu suporte à curva"
+    }
+   ]
+  },
+  {
+   "id": "tema_13",
+   "titulo": "Lula diz que vai mandar PEC de tarifa zero aos fins de semana, custeado por emendas",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "O presidente anunciou, ainda, que pretende usar dinheiro das emendas parlamentares para financiar o passe livre. A dez dias do segundo turno, presidente tem enviado propostas ao Congresso sobre transporte público e mudanças para MEIs. A ideia, explicou Santana, é utilizar parte da verba destinada a emendas parlamentares para custear ​as tarifas zero de transporte.",
+   "resumoDe": [
+    "m_137",
+    "m_166",
+    "m_171"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "O presidente anunciou, ainda, que pretende usar dinheiro das emendas parlamentares para financiar o passe livre.",
+     "de": "m_137"
+    },
+    {
+     "texto": "A dez dias do segundo turno, presidente tem enviado propostas ao Congresso sobre transporte público e mudanças para MEIs.",
+     "de": "m_166"
+    },
+    {
+     "texto": "A ideia, explicou Santana, é utilizar parte da verba destinada a emendas parlamentares para custear ​as tarifas zero de transporte.",
+     "de": "m_171"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_137",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Lula diz que vai mandar PEC de tarifa zero aos fins de semana, custeado por emendas",
+     "url": "https://www.infomoney.com.br/politica/lula-diz-que-vai-mandar-pec-de-tarifa-zero-aos-fins-de-semana-custeado-por-emendas/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "O presidente anunciou, ainda, que pretende usar dinheiro das emendas parlamentares para financiar o passe livre"
+    },
+    {
+     "id": "m_166",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Tarcísio, sobre tarifa zero de Lula: Estelionato eleitoral",
+     "url": "https://www.infomoney.com.br/politica/tarcisio-sobre-tarifa-zero-de-lula-estelionato-eleitoral/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "A dez dias do segundo turno, presidente tem enviado propostas ao Congresso sobre transporte público e mudanças para MEIs"
+    },
+    {
+     "id": "m_171",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Lula vai enviar na próxima semana PEC que zera tarifa do transporte coletivo",
+     "url": "https://www.infomoney.com.br/politica/lula-vai-enviar-na-proxima-semana-pec-que-zera-tarifa-do-transporte-coletivo/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "A ideia, explicou Santana, é utilizar parte da verba destinada a emendas parlamentares para custear ​as tarifas zero de transporte"
+    }
+   ]
+  },
+  {
+   "id": "tema_14",
+   "titulo": "Previsão de crescimento do PIB de 2026 segue em 1,85% na pesquisa Focus do BC",
+   "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+   "resumo": "A mediana das previsões do mercado financeiro no relatório Focus do Banco Central para o crescimento do Produto Interno Bruto (PIB) brasileiro em 2026 seguiu em 1,85%. A mediana das estimativas do mercado financeiro no relatório Focus do Banco Central para a taxa Selic no fim de 2026 diminuiu de 13,50% para 13,25%, depois de duas leituras consecutivas de estabilidade. A mediana das expectativas do mercado financeiro no relatório Focus do Banco Central para a cotação do dólar no fim de 2026 caiu de R$ 5,20 para R$ 5,15, depois de 16 semanas de estabilidade.",
+   "resumoDe": [
+    "m_180",
+    "m_181",
+    "m_182"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "A mediana das previsões do mercado financeiro no relatório Focus do Banco Central para o crescimento do Produto Interno Bruto (PIB) brasileiro em 2026 seguiu em 1,85%.",
+     "de": "m_180"
+    },
+    {
+     "texto": "A mediana das estimativas do mercado financeiro no relatório Focus do Banco Central para a taxa Selic no fim de 2026 diminuiu de 13,50% para 13,25%, depois de duas leituras consecutivas de estabilidade.",
+     "de": "m_181"
+    },
+    {
+     "texto": "A mediana das expectativas do mercado financeiro no relatório Focus do Banco Central para a cotação do dólar no fim de 2026 caiu de R$ 5,20 para R$ 5,15, depois de 16 semanas de estabilidade.",
+     "de": "m_182"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_180",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Previsão de crescimento do PIB de 2026 segue em 1,85% na pesquisa Focus do BC",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/13/previsao-de-crescimento-do-pib-de-2026-segue-em-185-na-pesquisa-focus-do-bc.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+     "trecho": "A mediana das previsões do mercado financeiro no relatório Focus do Banco Central para o crescimento do Produto Interno Bruto (PIB) brasileiro em 2026 seguiu em 1,85%. Um mês antes, era de 1,89%. Considerando apenas as 35 projeções atualizadas nos últimos cinco dias úteis, mais sensíveis a…"
+    },
+    {
+     "id": "m_181",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Estimativa para a Selic no fim de 2026 passa de 13,50% para 13,25% no Focus do BC",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/13/estimativa-para-a-selic-no-fim-de-2026-passa-de-1350-para-1325-no-focus-do-bc.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+     "trecho": "A mediana das estimativas do mercado financeiro no relatório Focus do Banco Central para a taxa Selic no fim de 2026 diminuiu de 13,50% para 13,25%, depois de duas leituras consecutivas de estabilidade. Considerando só as 48 estimativas atualizadas nos últimos cinco dias úteis, mais sensíveis a…"
+    },
+    {
+     "id": "m_182",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Expectativa para o dólar no fim de 2026 cai de R$ 5,20 para R$ 5,15 no Focus do BC",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/13/expectativa-para-o-dolar-no-fim-de-2026-cai-de-rs-520-para-rs-515-no-focus-do-bc.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+     "trecho": "A mediana das expectativas do mercado financeiro no relatório Focus do Banco Central para a cotação do dólar no fim de 2026 caiu de R$ 5,20 para R$ 5,15, depois de 16 semanas de estabilidade. Considerando apenas as 40 estimativas atualizadas nos últimos cinco dias úteis, mais sensíveis a novidades…"
+    }
+   ]
+  },
+  {
+   "id": "tema_15",
+   "titulo": "Bolsonaro's lead over Lula narrows ahead of Brazil runoff, Datafolha poll shows",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Nos votos válidos, que excluem brancos e nulos, Flávio lidera com 51%, ante 49% do atual presidente.",
+   "resumoDe": [
+    "m_136"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Nos votos válidos, que excluem brancos e nulos, Flávio lidera com 51%, ante 49% do atual presidente.",
+     "de": "m_136"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_6",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Bolsonaro's lead over Lula narrows ahead of Brazil runoff, Datafolha poll shows",
+     "url": "https://www.reuters.com/world/americas/flavio-bolsonaros-lead-over-lula-narrows-ahead-brazil-runoff-datafolha-poll-2026-10-15/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": ""
+    },
+    {
+     "id": "m_136",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Datafolha: Flávio Bolsonaro tem 47% e Lula, 45%, no 2º turno",
+     "url": "https://www.infomoney.com.br/politica/datafolha-flavio-bolsonaro-tem-47-e-lula-45-no-2o-turno/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Nos votos válidos, que excluem brancos e nulos, Flávio lidera com 51%, ante 49% do atual presidente"
+    }
+   ]
+  },
+  {
+   "id": "tema_16",
+   "titulo": "Indian mutual funds stop bulk subscriptions to gold ETFs ahead of festive season",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "",
+   "resumoDe": [],
+   "resumoFrases": [],
+   "relevancia": 2,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_7",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Indian mutual funds stop bulk subscriptions to gold ETFs ahead of festive season",
+     "url": "https://www.reuters.com/world/india/indian-mutual-funds-stop-bulk-subscriptions-gold-etfs-ahead-festive-season-2026-10-15/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_215",
+     "canalId": "canal_yahoo",
+     "veiculo": "Yahoo Finance",
+     "dominio": "finance.yahoo.com",
+     "grupo": "intl",
+     "prioridade": 10,
+     "titulo": "Bank of America Sets a New Target For Gold Price By the End of 2026",
+     "url": "https://finance.yahoo.com/markets/commodities/articles/bank-america-sets-target-gold-211948764.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    }
+   ]
+  },
+  {
+   "id": "tema_17",
+   "titulo": "Flávio Bolsonaro anuncia voto a favor do fim da escala 6×1; Senado vota PEC amanhã",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Candidato à Presidência confirma apoio à proposta após visita a Jair Bolsonaro. Candidato do PL esteve ausente das cinco sessões de discussão no Senado e declarou apoio à proposta após meses de críticas à redução da jornada.",
+   "resumoDe": [
+    "m_38",
+    "m_101"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Candidato à Presidência confirma apoio à proposta após visita a Jair Bolsonaro.",
+     "de": "m_38"
+    },
+    {
+     "texto": "Candidato do PL esteve ausente das cinco sessões de discussão no Senado e declarou apoio à proposta após meses de críticas à redução da jornada.",
+     "de": "m_101"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_38",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Flávio Bolsonaro anuncia voto a favor do fim da escala 6×1; Senado vota PEC amanhã",
+     "url": "https://www.infomoney.com.br/politica/flavio-bolsonaro-anuncia-voto-a-favor-do-fim-da-escala-6x1-senado-vota-pec-amanha/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Candidato à Presidência confirma apoio à proposta após visita a Jair Bolsonaro"
+    },
+    {
+     "id": "m_101",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Flávio vota pelo fim da escala 6×1, mas não participa de debates sobre a PEC",
+     "url": "https://www.infomoney.com.br/politica/flavio-vota-pelo-fim-da-escala-6x1-mas-nao-participa-de-debates-sobre-a-pec/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Candidato do PL esteve ausente das cinco sessões de discussão no Senado e declarou apoio à proposta após meses de críticas à redução da jornada"
+    }
+   ]
+  },
+  {
+   "id": "tema_18",
+   "titulo": "Minério de ferro cai em Dalian, conforme manutenção de fornos na China afeta demanda",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "O contrato de minério de ferro para janeiro mais negociado na Bolsa de Mercadorias de Dalian (DCE) na China encerrou o pregão diurno com queda de ⁠0,81%. Perspectivas de aumento da oferta do insumo para a produção de aço pressionam preços.",
+   "resumoDe": [
+    "m_59",
+    "m_107"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "O contrato de minério de ferro para janeiro mais negociado na Bolsa de Mercadorias de Dalian (DCE) na China encerrou o pregão diurno com queda de ⁠0,81%.",
+     "de": "m_59"
+    },
+    {
+     "texto": "Perspectivas de aumento da oferta do insumo para a produção de aço pressionam preços.",
+     "de": "m_107"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_59",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Minério de ferro cai em Dalian, conforme manutenção de fornos na China afeta demanda",
+     "url": "https://www.infomoney.com.br/mercados/minerio-de-ferro-cai-em-dalian-conforme-manutencao-de-fornos-na-china-afeta-demanda/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "O contrato de minério de ferro para janeiro mais negociado na Bolsa de Mercadorias de Dalian (DCE) na China encerrou o pregão diurno com queda de ⁠0,81%"
+    },
+    {
+     "id": "m_107",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Minério de ferro atinge menor cotação em 2 anos com preocupações sobre demanda fraca",
+     "url": "https://www.infomoney.com.br/economia/minerio-de-ferro-atinge-menor-cotacao-em-2-anos-com-preocupacoes-sobre-demanda-fraca/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Perspectivas de aumento da oferta do insumo para a produção de aço pressionam preços"
+    }
+   ]
+  },
+  {
+   "id": "tema_19",
+   "titulo": "Tesouro IPCA+ de longo prazo volta a subir, com novas pesquisas eleitorais no radar",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "resumo": "Prefixados variam até 3 pontos-base depois da forte alta de terça, e mercado aguarda pesquisas Quaest, nesta quarta, e Datafolha, na quinta. Prefixado 2032 sobe 3 pontos-base às 13h, depois de abrir em alta de 15, em dia de queda forte dos Treasuries e de expectativa pelo Datafolha.",
+   "resumoDe": [
+    "m_60",
+    "m_123"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Prefixados variam até 3 pontos-base depois da forte alta de terça, e mercado aguarda pesquisas Quaest, nesta quarta, e Datafolha, na quinta.",
+     "de": "m_60"
+    },
+    {
+     "texto": "Prefixado 2032 sobe 3 pontos-base às 13h, depois de abrir em alta de 15, em dia de queda forte dos Treasuries e de expectativa pelo Datafolha.",
+     "de": "m_123"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_60",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Tesouro IPCA+ de longo prazo volta a subir, com novas pesquisas eleitorais no radar",
+     "url": "https://www.infomoney.com.br/onde-investir/tesouro-direto-abertura-fechamento-14102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · INFLAÇÃO",
+     "trecho": "Prefixados variam até 3 pontos-base depois da forte alta de terça, e mercado aguarda pesquisas Quaest, nesta quarta, e Datafolha, na quinta"
+    },
+    {
+     "id": "m_123",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Taxas do Tesouro amenizam queda, mas IPCA+ longo segue no maior nível desde 1º turno",
+     "url": "https://www.infomoney.com.br/onde-investir/tesouro-direto-abertura-fechamento-15102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · INFLAÇÃO",
+     "trecho": "Prefixado 2032 sobe 3 pontos-base às 13h, depois de abrir em alta de 15, em dia de queda forte dos Treasuries e de expectativa pelo Datafolha"
+    }
+   ]
+  },
+  {
+   "id": "tema_20",
+   "titulo": "Queda de serviços em agosto reforça leituras de PIB estagnado no 3º trimestre",
+   "editoria": "BRASIL · ATIVIDADE",
+   "resumo": "Economistas passaram a rever para baixo tanto a estimativa para o IBC-Br como para o PIB do 3º trimestre e do ano; consumo das famílias ainda mostra resiliência. Dados de vendas varejistas em agosto mostraram novamente o efeito dos juros nas atividades ligadas ao crédito, mas comércio mais voltado à renda também teve ritmo de expansão moderado.",
+   "resumoDe": [
+    "m_66",
+    "m_112"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Economistas passaram a rever para baixo tanto a estimativa para o IBC-Br como para o PIB do 3º trimestre e do ano; consumo das famílias ainda mostra resiliência.",
+     "de": "m_66"
+    },
+    {
+     "texto": "Dados de vendas varejistas em agosto mostraram novamente o efeito dos juros nas atividades ligadas ao crédito, mas comércio mais voltado à renda também teve ritmo de expansão moderado.",
+     "de": "m_112"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_66",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Queda de serviços em agosto reforça leituras de PIB estagnado no 3º trimestre",
+     "url": "https://www.infomoney.com.br/economia/queda-de-servicos-em-agosto-reforca-leituras-de-pib-estagnado-no-3o-trimestre/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · ATIVIDADE",
+     "trecho": "Economistas passaram a rever para baixo tanto a estimativa para o IBC-Br como para o PIB do 3º trimestre e do ano; consumo das famílias ainda mostra resiliência"
+    },
+    {
+     "id": "m_112",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Varejo, serviços e indústria fracos podem gerar variação negativa no PIB do 3º tri",
+     "url": "https://www.infomoney.com.br/economia/varejo-servicos-e-industria-fracos-podem-gerar-variacao-negativa-no-pib-do-3o-tri/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · ATIVIDADE",
+     "trecho": "Dados de vendas varejistas em agosto mostraram novamente o efeito dos juros nas atividades ligadas ao crédito, mas comércio mais voltado à renda também teve ritmo de expansão moderado"
+    }
+   ]
+  },
+  {
+   "id": "tema_21",
+   "titulo": "Fim da escala 6×1: Senado deve votar o texto hoje, após última sessão de debates",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Texto que substitui a jornada de seis de dias de trabalho e um de folga por semana é o único item da pauta. Aliados de Flávio Bolsonaro querem incluir redução da maioridade penal na PEC da Segurança.",
+   "resumoDe": [
+    "m_69",
+    "m_102"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Texto que substitui a jornada de seis de dias de trabalho e um de folga por semana é o único item da pauta.",
+     "de": "m_69"
+    },
+    {
+     "texto": "Aliados de Flávio Bolsonaro querem incluir redução da maioridade penal na PEC da Segurança.",
+     "de": "m_102"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_69",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Fim da escala 6×1: Senado deve votar o texto hoje, após última sessão de debates",
+     "url": "https://www.infomoney.com.br/politica/fim-da-escala-6x1-senado-deve-votar-o-texto-hoje-apos-ultima-sessao-de-debates/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Texto que substitui a jornada de seis de dias de trabalho e um de folga por semana é o único item da pauta. PT aposta em 'fôlego' na campanha e desgaste de Flávio"
+    },
+    {
+     "id": "m_102",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Após derrota na escala 6×1, oposição tenta impor redução da maioridade no Senado",
+     "url": "https://www.infomoney.com.br/politica/apos-derrota-na-escala-6x1-oposicao-tenta-impor-reducao-da-maioridade-no-senado/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Aliados de Flávio Bolsonaro querem incluir redução da maioridade penal na PEC da Segurança"
+    }
+   ]
+  },
+  {
+   "id": "tema_22",
+   "titulo": "RealTime Big Data: Celina tem 53% e Grass, 36% no segundo turno do DF",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Considerando apenas os votos válidos, Celina registra 60%, enquanto Grass aparece com 40%. Oposição tenta incluir emenda à PEC da Segurança na pauta do Senado e explorar um tema de forte apelo popular na campanha.",
+   "resumoDe": [
+    "m_71",
+    "m_121"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Considerando apenas os votos válidos, Celina registra 60%, enquanto Grass aparece com 40%.",
+     "de": "m_71"
+    },
+    {
+     "texto": "Oposição tenta incluir emenda à PEC da Segurança na pauta do Senado e explorar um tema de forte apelo popular na campanha.",
+     "de": "m_121"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_71",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "RealTime Big Data: Celina tem 53% e Grass, 36% no segundo turno do DF",
+     "url": "https://www.infomoney.com.br/politica/realtime-big-data-celina-tem-53-e-grass-36-no-segundo-turno-do-df/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Considerando apenas os votos válidos, Celina registra 60%, enquanto Grass aparece com 40%"
+    },
+    {
+     "id": "m_121",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Maioridade penal vira nova batalha entre Lula e Flávio a 10 dias do segundo turno",
+     "url": "https://www.infomoney.com.br/politica/maioridade-penal-vira-nova-batalha-entre-lula-e-flavio-a-10-dias-do-segundo-turno/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Oposição tenta incluir emenda à PEC da Segurança na pauta do Senado e explorar um tema de forte apelo popular na campanha"
+    }
+   ]
+  },
+  {
+   "id": "tema_23",
+   "titulo": "Dólar hoje sobe a R$ 5,03, após inflação nos EUA e de olho em pesquisa eleitoral",
+   "editoria": "BRASIL · CÂMBIO",
+   "resumo": "O dólar à vista encerrou a sessão de terça-feira com alta de 0,74%, aos R$5,0227. Índices nos EUA terminam com ganhos, em dia de Treasuries em baixa.",
+   "resumoDe": [
+    "m_83",
+    "m_129"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "O dólar à vista encerrou a sessão de terça-feira com alta de 0,74%, aos R$5,0227.",
+     "de": "m_83"
+    },
+    {
+     "texto": "Índices nos EUA terminam com ganhos, em dia de Treasuries em baixa.",
+     "de": "m_129"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_83",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Dólar hoje sobe a R$ 5,03, após inflação nos EUA e de olho em pesquisa eleitoral",
+     "url": "https://www.infomoney.com.br/mercados/dolar-hoje-abertura-fechamento-comercial-turismo-14102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · CÂMBIO",
+     "trecho": "O dólar à vista encerrou a sessão de terça-feira com alta de 0,74%, aos R$5,0227"
+    },
+    {
+     "id": "m_129",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Ibovespa tem terceira queda seguida, após 6×1 e pesquisa; dólar sobe e vai a R$ 5,08",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-15102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · CÂMBIO",
+     "trecho": "Índices nos EUA terminam com ganhos, em dia de Treasuries em baixa"
+    }
+   ]
+  },
+  {
+   "id": "tema_24",
+   "titulo": "Ibovespa fecha negativo, com eleição e dados de inflação; dólar vale R$ 5,02",
+   "editoria": "BRASIL · BOLSA",
+   "resumo": "Índices nos EUA terminam no vermelho com dados de inflação. Índices nos EUA fecham no vermelho, com ações de IA e petróleo em disparada.",
+   "resumoDe": [
+    "m_89",
+    "m_163"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Índices nos EUA terminam no vermelho com dados de inflação.",
+     "de": "m_89"
+    },
+    {
+     "texto": "Índices nos EUA fecham no vermelho, com ações de IA e petróleo em disparada.",
+     "de": "m_163"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_89",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Ibovespa fecha negativo, com eleição e dados de inflação; dólar vale R$ 5,02",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-14102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · BOLSA",
+     "trecho": "Índices nos EUA terminam no vermelho com dados de inflação"
+    },
+    {
+     "id": "m_163",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Ibovespa volta a subir, após três quedas, mas semana termina no negativo; Dólar cai",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-hoje-bolsa-de-valores-ao-vivo-16102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · BOLSA",
+     "trecho": "Índices nos EUA fecham no vermelho, com ações de IA e petróleo em disparada"
+    }
+   ]
+  },
+  {
+   "id": "tema_25",
+   "titulo": "Senado aprova fim da escala de trabalho 6×1; veja o que muda e quando começa a valer",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Proposta reduz jornada semanal de 44 para 40 horas e garante dois dias de descanso sem corte salarial. Esta é a primeira mudança na jornada de trabalho no Brasil desde a promulgação da Constituição Federal em 1988.",
+   "resumoDe": [
+    "m_99",
+    "m_148"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Proposta reduz jornada semanal de 44 para 40 horas e garante dois dias de descanso sem corte salarial.",
+     "de": "m_99"
+    },
+    {
+     "texto": "Esta é a primeira mudança na jornada de trabalho no Brasil desde a promulgação da Constituição Federal em 1988.",
+     "de": "m_148"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_99",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Senado aprova fim da escala de trabalho 6×1; veja o que muda e quando começa a valer",
+     "url": "https://www.infomoney.com.br/politica/senado-aprova-em-1o-turno-pec-que-acaba-com-escala-6x1-veja-o-que-muda/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Proposta reduz jornada semanal de 44 para 40 horas e garante dois dias de descanso sem corte salarial"
+    },
+    {
+     "id": "m_148",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Em sessão com Lula, Congresso promulga fim da escala 6×1; veja quando começa a valer",
+     "url": "https://www.infomoney.com.br/politica/em-sessao-com-lula-congresso-promulga-fim-da-escala-6x1-veja-quando-comeca-a-valer/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Esta é a primeira mudança na jornada de trabalho no Brasil desde a promulgação da Constituição Federal em 1988"
+    }
+   ]
+  },
+  {
+   "id": "tema_26",
+   "titulo": "Vendas no varejo do Brasil avançam 0,1% em agosto, abaixo do esperado",
+   "editoria": "BRASIL · ATIVIDADE",
+   "resumo": "A expectativa em pesquisa da Reuters era de alta de 0,70% na comparação mensal e de avanço de 1,45% sobre um ano antes. Excluídas as vendas de automóveis, o varejo americano avançou 0,9% na comparação mensal.",
+   "resumoDe": [
+    "m_103",
+    "m_109"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "A expectativa em pesquisa da Reuters era de alta de 0,70% na comparação mensal e de avanço de 1,45% sobre um ano antes.",
+     "de": "m_103"
+    },
+    {
+     "texto": "Excluídas as vendas de automóveis, o varejo americano avançou 0,9% na comparação mensal.",
+     "de": "m_109"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_103",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Vendas no varejo do Brasil avançam 0,1% em agosto, abaixo do esperado",
+     "url": "https://www.infomoney.com.br/economia/vendas-no-varejo-do-brasil-avancam-01-em-agosto-abaixo-do-esperado/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · ATIVIDADE",
+     "trecho": "A expectativa em pesquisa da Reuters era de alta de 0,70% na comparação mensal e de avanço de 1,45% sobre um ano antes"
+    },
+    {
+     "id": "m_109",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Vendas no varejo dos EUA sobem acima do esperado a 0,8% em setembro",
+     "url": "https://www.infomoney.com.br/economia/vendas-no-varejo-dos-eua-sobem-acima-do-esperado-a-08-em-setembro/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · ATIVIDADE",
+     "trecho": "Excluídas as vendas de automóveis, o varejo americano avançou 0,9% na comparação mensal"
+    }
+   ]
+  },
+  {
+   "id": "tema_27",
+   "titulo": "Ibovespa Futuro cai com foco em pesquisas eleitorais e aprovação do fim da 6×1",
+   "editoria": "BRASIL · BOLSA",
+   "resumo": "O dia começou com uma forte venda de ações de tecnologia na Ásia. O vencimento de opções sobre ações na B3 também segue no radar e pode ampliar a volatilidade ao longo do pregão.",
+   "resumoDe": [
+    "m_104",
+    "m_146"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "O dia começou com uma forte venda de ações de tecnologia na Ásia.",
+     "de": "m_104"
+    },
+    {
+     "texto": "O vencimento de opções sobre ações na B3 também segue no radar e pode ampliar a volatilidade ao longo do pregão.",
+     "de": "m_146"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_104",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Ibovespa Futuro cai com foco em pesquisas eleitorais e aprovação do fim da 6×1",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-futuro-cai-com-foco-em-pesquisas-eleitorais-e-aprovacao-do-fim-da-6x1/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · BOLSA",
+     "trecho": "O dia começou com uma forte venda de ações de tecnologia na Ásia"
+    },
+    {
+     "id": "m_146",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Ibovespa Futuro tem leve alta com IBC-Br e eleições em foco",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-futuro-tem-leve-alta-com-ibc-br-e-eleicoes-em-foco/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · BOLSA",
+     "trecho": "O vencimento de opções sobre ações na B3 também segue no radar e pode ampliar a volatilidade ao longo do pregão"
+    }
+   ]
+  },
+  {
+   "id": "tema_28",
+   "titulo": "A dez dias do 2º turno, CNT/MDA mede votos de Lula e Flávio e parcialmente fim da 6×1",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Com 2.002 entrevistas realizadas entre os dias 13 e 15, pesquisa captará parcialmente impacto da PEC aprovada no senado nesta quarta-feira (14). Considerando apenas os votos válidos, Flávio lidera a disputa com 50,5% dos votos, contra 49,5% do petista.",
+   "resumoDe": [
+    "m_122",
+    "m_150"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Com 2.002 entrevistas realizadas entre os dias 13 e 15, pesquisa captará parcialmente impacto da PEC aprovada no senado nesta quarta-feira (14).",
+     "de": "m_122"
+    },
+    {
+     "texto": "Considerando apenas os votos válidos, Flávio lidera a disputa com 50,5% dos votos, contra 49,5% do petista.",
+     "de": "m_150"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_122",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "A dez dias do 2º turno, CNT/MDA mede votos de Lula e Flávio e parcialmente fim da 6×1",
+     "url": "https://www.infomoney.com.br/politica/a-dez-dias-do-2o-turno-cnt-mda-mede-votos-de-lula-e-flavio-e-parcialmente-fim-da-6x1/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Com 2.002 entrevistas realizadas entre os dias 13 e 15, pesquisa captará parcialmente impacto da PEC aprovada no senado nesta quarta-feira (14)"
+    },
+    {
+     "id": "m_150",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "CNT/MDA: Flávio oscila para 46% e Lula empata tecnicamente com 45% no segundo turno",
+     "url": "https://www.infomoney.com.br/politica/cnt-mda-flavio-oscila-para-46-e-lula-empata-tecnicamente-com-45-no-segundo-turno/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Considerando apenas os votos válidos, Flávio lidera a disputa com 50,5% dos votos, contra 49,5% do petista"
+    }
+   ]
+  },
+  {
+   "id": "tema_29",
+   "titulo": "Datafolha: Desaprovação de Lula chega a 50%; aprovação é de 48%",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "O resultado indica uma alta de 1 ponto percentual na desaprovação em relação à pesquisa anterior, variação que permanece dentro da margem de erro. Em seguida, economia foi citada por 15% dos entrevistados.",
+   "resumoDe": [
+    "m_138",
+    "m_141"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "O resultado indica uma alta de 1 ponto percentual na desaprovação em relação à pesquisa anterior, variação que permanece dentro da margem de erro.",
+     "de": "m_138"
+    },
+    {
+     "texto": "Em seguida, economia foi citada por 15% dos entrevistados.",
+     "de": "m_141"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_138",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Datafolha: Desaprovação de Lula chega a 50%; aprovação é de 48%",
+     "url": "https://www.infomoney.com.br/politica/datafolha-50-desaprovam-lula-enquanto-48-aprovam/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "O resultado indica uma alta de 1 ponto percentual na desaprovação em relação à pesquisa anterior, variação que permanece dentro da margem de erro"
+    },
+    {
+     "id": "m_141",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Datafolha: 20% apontam violência como principal problema do País; 18% escolhem Saúde",
+     "url": "https://www.infomoney.com.br/politica/datafolha-20-apontam-violencia-como-principal-problema-do-pais-18-escolhem-saude/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Em seguida, economia foi citada por 15% dos entrevistados"
+    }
+   ]
+  },
+  {
+   "id": "tema_30",
+   "titulo": "Senado aprova aumento do teto do MEI para R$ 140 mil e perdão de dívidas",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Medidas ampliam limite de faturamento, permitem mais contratações e concedem anistia a inadimplentes. Mudanças valerão a partir de 2027, mas foram votadas em meio ao período eleitoral.",
+   "resumoDe": [
+    "m_139",
+    "m_143"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Medidas ampliam limite de faturamento, permitem mais contratações e concedem anistia a inadimplentes.",
+     "de": "m_139"
+    },
+    {
+     "texto": "Mudanças valerão a partir de 2027, mas foram votadas em meio ao período eleitoral.",
+     "de": "m_143"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_139",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Senado aprova aumento do teto do MEI para R$ 140 mil e perdão de dívidas",
+     "url": "https://www.infomoney.com.br/politica/senado-aprova-aumento-do-teto-do-mei-para-r-140-mil-e-perdao-de-dividas/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Medidas ampliam limite de faturamento, permitem mais contratações e concedem anistia a inadimplentes"
+    },
+    {
+     "id": "m_143",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "MEI: novo teto e perdão de dívidas; entenda projetos aprovados pelo Congresso",
+     "url": "https://www.infomoney.com.br/brasil/mei-novo-teto-e-perdao-de-dividas-entenda-projetos-aprovados-pelo-congresso/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Mudanças valerão a partir de 2027, mas foram votadas em meio ao período eleitoral"
+    }
+   ]
+  },
+  {
+   "id": "tema_31",
+   "titulo": "ASSISTA: Lula pode virar sobre Flávio? Mapa de Risco analisa reta final da eleição",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Cientista político Bruno Soller participa do Mapa de Risco para discutir pesquisas, estratégias de campanha e impacto das últimas decisões do Congresso. O segundo turno da eleição presidencial está marcado para 25 de outubro.",
+   "resumoDe": [
+    "m_142",
+    "m_151"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Cientista político Bruno Soller participa do Mapa de Risco para discutir pesquisas, estratégias de campanha e impacto das últimas decisões do Congresso.",
+     "de": "m_142"
+    },
+    {
+     "texto": "O segundo turno da eleição presidencial está marcado para 25 de outubro.",
+     "de": "m_151"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_142",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "ASSISTA: Lula pode virar sobre Flávio? Mapa de Risco analisa reta final da eleição",
+     "url": "https://www.infomoney.com.br/politica/assista-lula-pode-virar-sobre-flavio-mapa-de-risco-analisa-reta-final-da-eleicao/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Cientista político Bruno Soller participa do Mapa de Risco para discutir pesquisas, estratégias de campanha e impacto das últimas decisões do Congresso"
+    },
+    {
+     "id": "m_151",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Jornais estrangeiros destacam empate técnico entre Flávio e Lula no final da campanha",
+     "url": "https://www.infomoney.com.br/politica/jornais-estrangeiros-destacam-empate-entre-flavio-e-lula-na-reta-final-do-2o-turno/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "O segundo turno da eleição presidencial está marcado para 25 de outubro"
+    }
+   ]
+  },
+  {
+   "id": "tema_32",
+   "titulo": "Inside the Consumer Price Index: September 2026",
+   "editoria": "EXTERIOR · INFLAÇÃO",
+   "resumo": "Inflation affects everything from grocery bills to rent, making the Consumer Price Index (CPI) one of the most closely watched economic indicators. The Producer Price Index (PPI) was up 1.3% in September, better than expectations.",
+   "resumoDe": [
+    "m_172",
+    "m_175"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Inflation affects everything from grocery bills to rent, making the Consumer Price Index (CPI) one of the most closely watched economic indicators.",
+     "de": "m_172"
+    },
+    {
+     "texto": "The Producer Price Index (PPI) was up 1.3% in September, better than expectations.",
+     "de": "m_175"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_172",
+     "canalId": "canal_advisorperspectives",
+     "veiculo": "Advisor Perspectives",
+     "dominio": "advisorperspectives.com",
+     "grupo": "intl",
+     "prioridade": 7,
+     "titulo": "Inside the Consumer Price Index: September 2026",
+     "url": "https://www.advisorperspectives.com/dshort/updates/2026/10/14/inside-the-consumer-price-index-september-2026?utm_source=dshort_feed&utm_medium=rss&utm_campaign=item_link",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-14",
+     "editoria": "EXTERIOR · INFLAÇÃO",
+     "trecho": "Inflation affects everything from grocery bills to rent, making the Consumer Price Index (CPI) one of the most closely watched economic indicators. The Bureau of Labor Statistics (BLS) tracks this by categorizing spending into eight categories, each weighted by its relative importance."
+    },
+    {
+     "id": "m_175",
+     "canalId": "canal_advisorperspectives",
+     "veiculo": "Advisor Perspectives",
+     "dominio": "advisorperspectives.com",
+     "grupo": "intl",
+     "prioridade": 7,
+     "titulo": "Producer Price Index: Up 1.3% in September, Better Than Expected",
+     "url": "https://www.advisorperspectives.com/dshort/updates/2026/10/15/producer-price-index-up-in-september?utm_source=dshort_feed&utm_medium=rss&utm_campaign=item_link",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · INFLAÇÃO",
+     "trecho": "The Producer Price Index (PPI) was up 1.3% in September, better than expectations."
+    }
+   ]
+  },
+  {
+   "id": "tema_33",
+   "titulo": "Ueda, do BoJ, defende estabilizar inflação em 2% e monitora escalada global de juros soberanos",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "resumo": "A presidente do Federal Reserve (Fed) de Boston, Susan Collins, disse nesta terça-feira, 13, que considera oportuno aumentar um pouco mais as taxas de juros antes do final do ano, a fim de garantir um retorno duradouro da inflação à meta de 2% estabelecida pelo banco central.",
+   "resumoDe": [
+    "m_185"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "A presidente do Federal Reserve (Fed) de Boston, Susan Collins, disse nesta terça-feira, 13, que considera oportuno aumentar um pouco mais as taxas de juros antes do final do ano, a fim de garantir um retorno duradouro da inflação à meta de 2% estabelecida pelo banco central.",
+     "de": "m_185"
+    }
+   ],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_179",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Ueda, do BoJ, defende estabilizar inflação em 2% e monitora escalada global de juros soberanos",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/13/ueda-do-boj-defende-estabilizar-inflacao-em-2-e-monitora-escalada-global-de-juros-soberanos.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+     "trecho": "O presidente do Banco do Japão (BoJ, na sigla em inglês), Kazuo Ueda, afirmou nesta terça-feira, 13, que a inflação subjacente do país está próxima de 2% e que é importante estabilizar os preços nesse nível, ao participar de sessão na Câmara dos Representantes.Segundo a Reuters, várias fontes…"
+    },
+    {
+     "id": "m_185",
+     "canalId": "canal_opovo",
+     "veiculo": "O Povo",
+     "dominio": "opovo.com.br",
+     "grupo": "br",
+     "prioridade": 8,
+     "titulo": "Fed: Collins defende mais alta de juros este ano para garantir retorno da inflação para meta",
+     "url": "https://www.opovo.com.br/noticias/economia/2026/10/13/fed-collins-defende-mais-alta-de-juros-este-ano-para-garantir-retorno-da-inflacao-para-meta.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-13",
+     "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+     "trecho": "A presidente do Federal Reserve (Fed) de Boston, Susan Collins, disse nesta terça-feira, 13, que considera oportuno aumentar um pouco mais as taxas de juros antes do final do ano, a fim de garantir um retorno duradouro da inflação à meta de 2% estabelecida pelo banco central. Na 25ª Conferência…"
+    }
+   ]
+  },
+  {
+   "id": "tema_34",
+   "titulo": "Os Futuros de Ouro subiram durante a sessão europeia",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "",
+   "resumoDe": [],
+   "resumoFrases": [],
+   "relevancia": 2,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_210",
+     "canalId": "canal_investing",
+     "veiculo": "Investing.com",
+     "dominio": "investing.com",
+     "grupo": "intl",
+     "prioridade": 9,
+     "titulo": "Os Futuros de Ouro subiram durante a sessão europeia",
+     "url": "https://br.investing.com/news/commodities-news/os-futuros-de-ouro-subiram-durante-a-sessao-europeia-2092686",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-15",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_213",
+     "canalId": "canal_investing",
+     "veiculo": "Investing.com",
+     "dominio": "investing.com",
+     "grupo": "intl",
+     "prioridade": 9,
+     "titulo": "Os Futuros do Gás Natural caíram durante a sessão europeia",
+     "url": "https://br.investing.com/news/commodities-news/os-futuros-do-gas-natural-cairam-durante-a-sessao-europeia-2093619",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-16",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    }
+   ]
+  }
+ ],
+ "avulsas": [
+  {
+   "id": "m_1",
+   "canalId": "canal_bcb",
+   "veiculo": "Banco Central do Brasil",
+   "dominio": "bcb.gov.br",
+   "grupo": "oficial",
+   "prioridade": 1,
+   "titulo": "BC retomará em 19 de outubro de 2026 os leilões de swap cambial tradicional para rolagem dos contratos com vencimento em 3 de novembro de 2026",
+   "url": "https://www.bcb.gov.br/detalhenoticia/21284/nota",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+   "trecho": "<div class=\"ExternalClass199C51B452DE432FBC9D84D8EF88C406\"><p>​O Banco Central do Brasil retomará, a partir de 19 de outubro de 2026, os leilões de swap cambial tradicional destinados à rolagem dos contratos com vencimento em 3 de novembro de 2026. </p><p>O BC poderá alterar o lote ofertado a cada…"
+  },
+  {
+   "id": "m_2",
+   "canalId": "canal_bcb",
+   "veiculo": "Banco Central do Brasil",
+   "dominio": "bcb.gov.br",
+   "grupo": "oficial",
+   "prioridade": 1,
+   "titulo": "Banco Central decreta liquidação extrajudicial da Cooperativa de Crédito Mútuo dos Empregados do Centro Universitário Newton Paiva Ltda. – Credipaiva",
+   "url": "https://www.bcb.gov.br/detalhenoticia/21286/nota",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+   "trecho": "<div class=\"ExternalClassFB67184914D74108AAC84F2C5575D355\"><div>​O Banco Central do Brasil decretou hoje, 16 de outubro de 2026, a liquidação extrajudicial da Cooperativa de Crédito Mútuo dos Empregados do Centro Universitário Newton Paiva Ltda. – Credipaiva.<br></div><div><br></div><div>Trata-se…"
+  },
+  {
+   "id": "m_4",
+   "canalId": "canal_b3",
+   "veiculo": "B3",
+   "dominio": "b3.com.br",
+   "grupo": "oficial",
+   "prioridade": 4,
+   "titulo": "B3 amplia acesso aos juros americanos com quatro novos contratos futuros de Treasuries",
+   "url": "https://www.b3.com.br/pt_br/noticias/b3-amplia-acesso-aos-juros-americanos-com-quatro-novos-contratos-futuros-de-treasuries.htm",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "trecho": "Novos derivativos estreiam nesta terça-feira (13/10), com diferentes vencimentos, e permitem negociar movimentos dos títulos públicos dos EUA diretamente pela bolsa do Brasil, sem enviar recursos ao exterior"
+  },
+  {
+   "id": "m_8",
+   "canalId": "canal_reuters",
+   "veiculo": "Reuters",
+   "dominio": "reuters.com",
+   "grupo": "intl",
+   "prioridade": 5,
+   "titulo": "Meta employees said Lula's accounts were hindered during Brazil election, Folha reports",
+   "url": "https://www.reuters.com/world/americas/meta-employees-said-lulas-accounts-were-hindered-during-brazil-election-folha-2026-10-16/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": ""
+  },
+  {
+   "id": "m_9",
+   "canalId": "canal_reuters",
+   "veiculo": "Reuters",
+   "dominio": "reuters.com",
+   "grupo": "intl",
+   "prioridade": 5,
+   "titulo": "Wall Street tumbles as worries about AI trade and high oil prices weigh",
+   "url": "https://www.reuters.com/business/wall-st-futures-mixed-tech-wobbles-again-tesla-gains-2026-10-16/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_10",
+   "canalId": "canal_reuters",
+   "veiculo": "Reuters",
+   "dominio": "reuters.com",
+   "grupo": "intl",
+   "prioridade": 5,
+   "titulo": "ExxonMobil signals $4.5 billion refining earnings boost as margins soar",
+   "url": "https://www.reuters.com/business/energy/exxonmobil-signals-lower-third-quarter-earnings-2026-10-16/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_11",
+   "canalId": "canal_reuters",
+   "veiculo": "Reuters",
+   "dominio": "reuters.com",
+   "grupo": "intl",
+   "prioridade": 5,
+   "titulo": "Indonesian stocks sink most since 1998 on MSCI downgrade warning",
+   "url": "https://www.reuters.com/world/asia-pacific/jakarta-stocks-plunge-11-msci-set-drop-indonesia-indexes-2026-10-16/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_14",
+   "canalId": "canal_reuters",
+   "veiculo": "Reuters",
+   "dominio": "reuters.com",
+   "grupo": "intl",
+   "prioridade": 5,
+   "titulo": "Stocks slip as dollar heads for weekly loss",
+   "url": "https://www.reuters.com/world/china/global-markets-global-markets-2026-10-16/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_16",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Apostar no rali pós-2º turno? Os riscos de investir agora para a eleição",
+   "url": "https://www.infomoney.com.br/onde-investir/apostar-no-rali-pos-2o-turno-os-riscos-de-investir-agora-para-a-eleicao/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Apesar da euforia após o primeiro turno, especialistas alertam para o preço de entrada, o tamanho da aposta, impostos e liquidez para sair a tempo, entre outros elementos que requerem cautela"
+  },
+  {
+   "id": "m_17",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Os obstáculos para Flávio anistiar Jair e Eduardo Bolsonaro se for eleito",
+   "url": "https://www.infomoney.com.br/politica/os-obstaculos-para-flavio-anistiar-jair-e-eduardo-bolsonaro-se-for-eleito/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Anistia depende do Congresso, indulto presidencial pode ser contestado no STF"
+  },
+  {
+   "id": "m_18",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Leite e máquina de lavar têm mais regras que IA, diz presidente da Microsoft",
+   "url": "https://www.infomoney.com.br/business/leite-e-maquina-de-lavar-tem-mais-regras-que-ia-diz-presidente-da-microsoft/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "Em entrevista à BBC, o executivo argumentou que o avanço acelerado da IA exige mecanismos de supervisão mais rígidos"
+  },
+  {
+   "id": "m_19",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Itália: Meloni promete incentivos para investimentos em software no Orçamento",
+   "url": "https://www.infomoney.com.br/mundo/italia-meloni-promete-incentivos-para-investimentos-em-software-no-orcamento/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · FISCAL",
+   "trecho": "A declaração foi feita nesta segunda-feira durante discurso no encontro da Assolombarda, associação empresarial da região da Lombardia"
+  },
+  {
+   "id": "m_22",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Microsoft lança o Maia 300, novo chip de inteligência artificial",
+   "url": "https://www.infomoney.com.br/business/microsoft-lanca-o-maia-300-novo-chip-de-inteligencia-artificial/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "A Microsoft informou ainda que o Maia será \"o principal sistema de inferência de IA para os produtos e serviços da Microsoft\""
+  },
+  {
+   "id": "m_24",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Musk gastou US$366 mi para ajudar republicanos a manter controle do Congresso dos EUA",
+   "url": "https://www.infomoney.com.br/mundo/musk-gastou-us366-mi-para-ajudar-republicanos-a-manter-controle-do-congresso-dos-eua/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Generosidade de Musk, noticiada anteriormente pelo NYT, torna a pessoa mais rica do mundo provavelmente o maior doador político individual nas eleições deste ano"
+  },
+  {
+   "id": "m_25",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Metais: ouro fecha em queda, em correção de ganhos, antes de inflação dos EUA",
+   "url": "https://www.infomoney.com.br/mercados/metais-ouro-fecha-em-queda-em-correcao-de-ganhos-antes-de-inflacao-dos-eua/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "Na Comex, divisão de metais da Bolsa de Nova York (Nymex), o ouro para dezembro encerrou em queda de 0,61%, a US$ 4.190,60 por onça-troy"
+  },
+  {
+   "id": "m_27",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Tereza Cristina: Gostaria de ser 1º mulher a presidir o Senado",
+   "url": "https://www.infomoney.com.br/politica/tereza-cristina-gostaria-de-ser-1o-mulher-a-presidir-o-senado/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Tereza Cristina afirmou que já manifestou a Alcolumbre o desejo de sucedê-lo, mas ressaltou que ainda é cedo para definir os rumos da disputa"
+  },
+  {
+   "id": "m_29",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Duas pesquisas de voto da disputa presidencial no 2° turno saem nos próximos dias",
+   "url": "https://www.infomoney.com.br/politica/duas-pesquisas-de-voto-da-disputa-presidencial-no-2-turno-saem-nos-proximos-dias/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "De acordo com o TSE, a primeira pesquisa de segundo turno feita pela Quaest deve ser divulgada na quarta, 14"
+  },
+  {
+   "id": "m_30",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Dólar mantém maior cotação em 18 meses diante de tensões no Golfo e inflação nos EUA",
+   "url": "https://www.infomoney.com.br/mercados/dolar-mantem-maior-cotacao-em-18-meses-diante-de-tensoes-no-golfo-e-inflacao-nos-eua/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · CÂMBIO",
+   "trecho": "O índice do dólar, que acompanha a moeda norte-americana em relação a seis outras divisas, subiu 0,37%, para 102,58, o maior nível ‌desde abril de 2025"
+  },
+  {
+   "id": "m_31",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Índice de ADRs brasileiros fecha estável, com leve alta de Petrobras; veja destaques",
+   "url": "https://www.infomoney.com.br/mercados/indice-de-adrs-brasileiros-feriado-nossa-senhora-aparecida-12102026/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Índice brasileiro acompanhou Nova York, enquanto investidores aguardam balanços de grandes bancos dos EUA e o índice de preços ao consumidor"
+  },
+  {
+   "id": "m_32",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Bolsas de NY fecham sem direção em dia de liquidez reduzida e geopolítica no radar",
+   "url": "https://www.infomoney.com.br/mercados/bolsas-de-ny-fecham-sem-direcao-em-dia-de-liquidez-reduzida-e-geopolitica-no-radar/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "O Dow Jones subiu 0,38%, em 51.850,31 pontos; o S&P 500 perdeu 0,06%, em 7.807,20 pontos; e o Nasdaq teve baixa de 0,44%, encerrando em 27.245,90 pontos"
+  },
+  {
+   "id": "m_33",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "MGLU3: \"estrelas se alinham\" para o Magazine Luiza e Itaú BBA eleva ações para compra",
+   "url": "https://www.infomoney.com.br/mercados/mglu3-magazine-luiza-estrelas-se-alinham-itau-bba-eleva-compra-desempenho-acoes/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Com os juros em trajetória de baixa e maior confiança de que esse movimento será duradouro, o banco revisou suas projeções para um cenário de normalização, considerando juros reais próximos de 6%"
+  },
+  {
+   "id": "m_34",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Ibovespa Futuro abre em queda acompanhando exterior e petróleo",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-futuro-abre-em-queda-acompanhando-exterior-e-petroleo/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Na cena local, pesquisa BTG/Nexus mostrou o senador Flávio Bolsonaro (PL) com 48% das intenções de voto contra 45% do presidente Luiz Inácio Lula da Silva (PT) no primeiro levantamento do instituto após o primeiro turno da eleição, realizado em 4 de outubro"
+  },
+  {
+   "id": "m_35",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Musk já doou US$ 276 milhões a grupos pró-republicanos nas eleições dos EUA",
+   "url": "https://www.infomoney.com.br/mundo/musk-ja-doou-us-276-milhoes-a-grupos-pro-republicanos-nas-eleicoes-dos-eua/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Bilionário se tornou o maior doador individual das eleições legislativas de 2026 e já gastou US$ 366 milhões no ciclo eleitoral"
+  },
+  {
+   "id": "m_36",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Ibovespa na máxima e small caps com alta de 20%: o que os analistas veem agora",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-na-maxima-e-small-caps-com-alta-de-20-o-que-os-analistas-veem-agora/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Stormer identifica tendência de alta estabelecida, enquanto André Moraes destaca empresas sensíveis aos juros; ações chegam a mais de 90% acima da média de 200 períodos."
+  },
+  {
+   "id": "m_37",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Juro do Tesouro vai na contramão do exterior e sobe até 9 pontos-base",
+   "url": "https://www.infomoney.com.br/onde-investir/tesouro-direto-abertura-fechamento-13102026/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "Prefixado 2032 e títulos IPCA+ variam até 2 pontos-base, enquanto petróleo e rendimentos dos Treasuries recuam e Focus mostra projeção maior para a inflação"
+  },
+  {
+   "id": "m_39",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Apple entra de vez na casa conectada com tela inteligente e nova linha de produtos",
+   "url": "https://www.infomoney.com.br/business/apple-entra-de-vez-na-casa-conectada-com-tela-inteligente-e-nova-linha-de-produtos/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "Empresa lança o HomeView, sua primeira tela inteligente com Siri AI e reconhecimento facial, além de renovar a Apple TV 4K e o HomePod mini"
+  },
+  {
+   "id": "m_40",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "B3 lança quatro contratos futuros de Treasuries para negociação em reais",
+   "url": "https://www.infomoney.com.br/mercados/b3-lanca-quatro-contratos-futuros-de-treasuries-para-negociacao-em-reais/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Novos derivativos estreiam nesta terça-feira (13), com diferentes vencimentos"
+  },
+  {
+   "id": "m_41",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Carros mais leves e seguros: como o nióbio está transformando a indústria automotiva",
+   "url": "https://www.infomoney.com.br/mercados/carros-mais-leves-e-seguros-como-o-niobio-esta-transformando-a-industria-automotiva/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · ATIVIDADE",
+   "trecho": "Utilização do metal em componentes estruturais dos veículos permite reduzir peso, aumentar a resistência e contribuir para a redução do consumo de combustível"
+  },
+  {
+   "id": "m_42",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Goldman Sachs corta estimativas para o dólar e projeta real a R$ 4,70 em três meses",
+   "url": "https://www.infomoney.com.br/mercados/goldman-sachs-corta-estimativas-para-o-dolar-e-projeta-real-a-r-470-em-tres-meses/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · CÂMBIO",
+   "trecho": "Banco passa a projetar dólar em R$ 4,70 em três meses e afirma que combinação de expectativa de ajuste fiscal, governabilidade mais favorável e queda do prêmio de risco abre espaço para valorização adicional da moeda brasileira"
+  },
+  {
+   "id": "m_43",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Ray Dalio: disparada dos Treasuries ainda tem \"longo caminho pela frente\"",
+   "url": "https://www.infomoney.com.br/onde-investir/ray-dalio-disparada-dos-treasuries-ainda-tem-longo-caminho-pela-frente/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "trecho": "Fundador da Bridgewater afirma que o aumento da oferta de títulos do governo e de empresas, somado à menor demanda de compradores como China e Japão, deve manter a pressão sobre os rendimentos"
+  },
+  {
+   "id": "m_44",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Dirigente do Fed não vê motivo, por enquanto, para altas de juros em 2027 nos EUA",
+   "url": "https://www.infomoney.com.br/economia/dirigente-do-fed-nao-ve-motivo-por-enquanto-para-altas-de-juros-em-2027-nos-eua/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "trecho": "John Williams mantém projeção de um último aumento em 2026 e afirma que indicadores apontam para desaceleração da inflação"
+  },
+  {
+   "id": "m_49",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Bolsas de NY fecham em queda antes da divulgação de dados de inflação nos EUA",
+   "url": "https://www.infomoney.com.br/mercados/bolsas-de-ny-fecham-em-queda-antes-da-divulgacao-de-dados-de-inflacao-nos-eua/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "EXTERIOR · INFLAÇÃO",
+   "trecho": "As ações da Johnson & Johnson caíram quase 6% depois que a empresa divulgou resultados abaixo do esperado de sua divisão de dispositivos médicos"
+  },
+  {
+   "id": "m_50",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Vamos (VAMO3) desaba 11% e mais 8 ações do Ibovespa caem mais de 5%; entenda",
+   "url": "https://www.infomoney.com.br/mercados/vamos-vamo3-desaba-11-e-mais-8-acoes-do-ibovespa-caem-mais-de-5-entenda/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Taxas dos DIs sobem após pesquisas indicarem empate técnico entre Flávio e Lula e levam à forte queda do setor de varejo e consumo"
+  },
+  {
+   "id": "m_51",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "De realização de lucros à cautela eleitoral: o que fez Ibovespa cair 1% após recordes",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-so-realizacao-de-lucros-ou-cautela-eleitoral-o-que-faz-indice-cair-apos-recordes/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "O recuo é atribuído por analistas à cautela no mercado doméstico e no exterior. No Brasil, o foco é a disputa acirrada para a Presidência da República e, lá fora, a tensão geopolítica dos EUA com o Irã segue no radar"
+  },
+  {
+   "id": "m_54",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Argentina registra segundo mês consecutivo com inflação abaixo de 2%",
+   "url": "https://www.infomoney.com.br/mundo/argentina-registra-segundo-mes-consecutivo-com-inflacao-abaixo-de-2/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "Tarifas de serviços públicos e os preços da educação lideraram as altas no mês passado"
+  },
+  {
+   "id": "m_55",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Petrobras diz que já recebeu R$ 16 bi de subvenção a preços de combustíveis",
+   "url": "https://www.infomoney.com.br/business/petrobras-diz-que-ja-recebeu-r-16-bi-de-subvencao-a-precos-de-combustiveis/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Valor inclui ‌parcelas recebidas nesta ⁠terça-feira relativas à comercialização entre 1 e 15 de julho"
+  },
+  {
+   "id": "m_56",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "China retoma compras de cargas de soja dos EUA após a cúpula Trump-Xi, dizem fontes",
+   "url": "https://www.infomoney.com.br/economia/china-retoma-compras-de-cargas-de-soja-dos-eua-apos-a-cupula-trump-xi-dizem-fontes/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "trecho": "Compradores estatais chineses ⁠adquiriram entre 8 e 10 cargas Panamax de ‌soja dos EUA nesta semana; na cúpula de setembro foi anunciada uma série de reduções de tarifas"
+  },
+  {
+   "id": "m_57",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "CPI: Inflação ao consumidor dos EUA sobe 0,6% em setembro, em linha com o esperado",
+   "url": "https://www.infomoney.com.br/economia/inflacao-ao-consumidor-cpi-dos-eua-setembro-2026/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "Pesquisa da Reuters apontava expectativa de alta de 0,6% dos preços ao consumidor no mês passado. Na comparação anual, a projeção era de alta de 3,6%"
+  },
+  {
+   "id": "m_58",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Ibovespa Futuro recua com inflação nos EUA e pesquisa eleitoral no radar",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-futuro-quase-estavel-com-inflacao-nos-eua-e-pesquisa-eleitoral-no-radar/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "A cautela ainda persistia, em meio à alta nos preços internacionais do petróleo depois de ataques a dois navios no Estreito de Ormuz"
+  },
+  {
+   "id": "m_61",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Itaú BBA vê 3º tri desafiador para BB e Santander, mas olhos se voltarão para 2027",
+   "url": "https://www.infomoney.com.br/mercados/itau-bba-ve-3o-tri-desafiador-para-bb-e-santander-mas-olhos-se-voltarao-para-2027/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Na visão dos analistas, as empresas ligadas ao mercado de capitais continuam sendo as melhores posicionadas para um cenário de juros menores e recuperação gradual da atividade financeira"
+  },
+  {
+   "id": "m_62",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "CCJ do Senado conclui votação da PEC da Segurança; texto segue ao plenário",
+   "url": "https://www.infomoney.com.br/politica/ccj-do-senado-conclui-votacao-da-pec-da-seguranca-texto-segue-ao-plenario/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Proposta que amplia atuação federal no combate ao crime organizado segue para o plenário; governo busca aprovação antes do segundo turno"
+  },
+  {
+   "id": "m_63",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Estrangeiros trouxeram R$ 13 bi para Bolsa em uma semana, após 1º turno das eleições",
+   "url": "https://www.infomoney.com.br/mercados/estrangeiros-trouxeram-r-13-bi-para-bolsa-em-uma-semana-apos-1o-turno-das-eleicoes/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "A entrada foi marcada pela entrada de R$ 10 bilhões só na segunda-feira (5) e se manteve durante o resto da semana"
+  },
+  {
+   "id": "m_64",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "B3 (B3SA3): setembro foi razoável, mas o melhor está guardado para o fim do ano",
+   "url": "https://www.infomoney.com.br/mercados/b3-b3sa3-setembro-foi-razoavel-mas-o-melhor-esta-guardado-para-o-fim-do-ano/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "A recuperação de setembro não foi suficiente para compensar o desempenho mais fraco de julho e agosto"
+  },
+  {
+   "id": "m_65",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "SUS da Segurança, fim da “saidinha” e confisco de bens: o que prevê a nova PEC",
+   "url": "https://www.infomoney.com.br/politica/sus-da-seguranca-fim-da-saidinha-e-confisco-de-bens-o-que-preve-a-nova-pec/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Texto aprovado pela CCJ do Senado estabelece regras mais duras contra organizações criminosas, permite polícias municipais e amplia integração das forças de segurança"
+  },
+  {
+   "id": "m_67",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Ações com alta acima de 50% em 2026 crescem 140% após 1º turno, diz Elos Ayta",
+   "url": "https://www.infomoney.com.br/mercados/acoes-com-alta-acima-de-50-em-2026-crescem-140-apos-1o-turno-diz-elos-ayta/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Levantamento considerou as ações que integram as carteiras do Ibovespa, IDIV e Small Caps"
+  },
+  {
+   "id": "m_68",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Fim da escala 6×1: o que acontece se o Senado aprovar a proposta?",
+   "url": "https://www.infomoney.com.br/politica/fim-da-escala-6x1-entenda-o-que-acontece-se-o-senado-aprovar-a-proposta/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Texto precisa de ao menos 49 votos em dois turnos; se for mantido como veio da Câmara, vai à promulgação, e a escala 5x2 passa a valer dois meses depois"
+  },
+  {
+   "id": "m_70",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Petrobras: produção de petróleo bate novo recorde e reforça tese de alta, diz BBI",
+   "url": "https://www.infomoney.com.br/mercados/petrobras-petr3-petr4-producao-de-petroleo-bate-novo-recorde-e-reforca-tese-de-alta-diz-bbi/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "A produção de Búzios superou 1 milhão de barris por dia pelo segundo mês consecutivo, refletindo a continuidade do aumento de produção das plataformas"
+  },
+  {
+   "id": "m_72",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Preocupação com inflação dos EUA vai além da energia e Fed está sob pressão",
+   "url": "https://www.infomoney.com.br/economia/preocupacao-com-inflacao-dos-eua-vai-alem-da-energia-e-fed-esta-sob-pressao/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "Preços de outras categorias como serviços, administração e transportes estão resilientes e vão manter o Fed vigilante até o final do ano; nova alta de juros é provável"
+  },
+  {
+   "id": "m_73",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Farmácia Popular é a medida mais aprovada do governo Lula, aponta AtlasIntel",
+   "url": "https://www.infomoney.com.br/politica/farmacia-popular-e-a-medida-mais-aprovada-do-governo-lula-aponta-atlasintel/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Gratuidade de medicamentos tem aprovação de 89% dos brasileiros; isenção do IR para renda de até R$ 5 mil aparece em segundo lugar"
+  },
+  {
+   "id": "m_74",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "NY completou 4 anos de bull market nesta semana: o que pode estragar a festa?",
+   "url": "https://www.infomoney.com.br/mercados/ny-completou-4-anos-de-bull-market-nesta-semana-o-que-pode-estragar-a-festa/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "trecho": "O avanço dos rendimentos dos Treasuries, a postura mais dura do Federal Reserve e a dependência das ações ligadas à inteligência artificial aparecem entre as principais ameaças para o ciclo de alta"
+  },
+  {
+   "id": "m_76",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "\"Todo mundo tem um plano até levar um soco na cara\", diz analista sobre o Fed",
+   "url": "https://www.infomoney.com.br/economia/todo-mundo-tem-um-plano-ate-levar-um-soco-na-cara-diz-analista-sobre-o-fed/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "trecho": "Analista da Janus Henderson, cita frase famosa de Mike Tyson para ilustrar o desafio do presidente do Fed, Kevin Warsh, diante do CPI mais quente e da forte liquidação no trecho curto das taxas de juros dos EUA"
+  },
+  {
+   "id": "m_77",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "STF quer pressa em apuração interna sobre caso Master para evitar impeachments",
+   "url": "https://www.infomoney.com.br/politica/stf-quer-pressa-em-apuracao-interna-sobre-caso-master-para-evitar-impeachments/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Tendência é que a PF entregue o relatório para a Corte somente após o segundo turno"
+  },
+  {
+   "id": "m_79",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Ciro pede cassação da chapa de Elmano e novas eleições no Ceará",
+   "url": "https://www.infomoney.com.br/politica/ciro-pede-cassacao-da-chapa-de-elmano-e-novas-eleicoes-no-ceara/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "O argumento é de abuso de poder e uso indevido dos meios de comunicação social"
+  },
+  {
+   "id": "m_81",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Diretor do Fed chama inflação de setembro de \"desencorajadora\" e faz alerta sobre IA",
+   "url": "https://www.infomoney.com.br/economia/diretor-do-fed-chama-inflacao-de-setembro-de-desencorajadora-e-faz-alerta-sobre-ia/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "Austan Goolsbee disse que leituras recorrentes de inflação acima de 4% seriam \"totalmente inaceitáveis\" e destacou riscos de superaquecimento ligados à inteligência artificial"
+  },
+  {
+   "id": "m_84",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Petrobras e PRIO são destaques do Ibovespa: petróleo e recomendações guiam altas",
+   "url": "https://www.infomoney.com.br/mercados/petrobras-petr3-petr4-e-prio-prio3-sao-destaques-do-ibovespa-petroleo-e-recomendacoes-guiam-altas/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "A alta acontece por duas razões: os contratos futuros do petróleo fecharam em alta em meio a tensões persistentes no Oriente Médio e temores de interrupção do fornecimento da commodity e por recomendações do Bank of America"
+  },
+  {
+   "id": "m_85",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Magalu tem nova sessão de forte queda; fora do Ibovespa, Casas Bahia desaba 24%",
+   "url": "https://www.infomoney.com.br/mercados/magalu-mglu3-tem-nova-sessao-de-forte-queda-fora-do-ibovespa-casas-bahia-bhia3-desaba-24/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "O movimento aconteceu em meio a uma nova alta dos juros futuros, o que afeta ações de varejo e consumo, principalmente as de empresas mais alavancadas"
+  },
+  {
+   "id": "m_86",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Alcolumbre: Minha opinião é que vamos concluir votação em 2º turno na tarde de hoje",
+   "url": "https://www.infomoney.com.br/politica/alcolumbre-minha-opiniao-e-que-vamos-concluir-votacao-em-2o-turno-na-tarde-de-hoje/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Senado analisa PEC desde às 14h desta quarta-feira (14)"
+  },
+  {
+   "id": "m_87",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Bolsas de NY fecham em queda com preocupações inflacionárias e investimentos em IA",
+   "url": "https://www.infomoney.com.br/mercados/bolsas-de-ny-fecham-em-queda-com-preocupacoes-inflacionarias-e-investimentos-em-ia/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "O Dow Jones caiu 0,09%, em 51.621,78 pontos; o S&P 500 perdeu 1,1%, nos 7.719,54 pontos; e o Nasdaq teve baixa de 1,88%, encerrando em 26.692,87 pontos"
+  },
+  {
+   "id": "m_88",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Quem é Rick Azevedo, criador do movimento que levou debate sobre a 6×1 ao Congresso",
+   "url": "https://www.infomoney.com.br/politica/quem-e-rick-azevedo-o-balconista-que-levou-o-debate-sobre-a-escala-6x1-ao-congresso/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Ex-balconista de farmácia e eleito deputado federal em 2026, Rick Azevedo ganhou projeção nacional ao liderar a mobilização pelo fim da escala 6x1"
+  },
+  {
+   "id": "m_90",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Ibovespa sai de queda de mais de 1% e fecha \"só\" em leve baixa; veja o que aconteceu",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-tem-nova-queda-de-mais-de-1-com-inflacao-nos-eua-e-pesquisa-no-radar/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Movimento se explica pela combinação de fatores externos e domésticos que pesaram em sentidos opostos durante o pregão"
+  },
+  {
+   "id": "m_92",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Após aval de Pequim, Apple se prepara para lançar IA em seu mercado-chave",
+   "url": "https://www.infomoney.com.br/business/apos-aval-de-pequim-apple-se-prepara-para-lancar-ia-em-seu-mercado-chave/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "Companhia planeja liberar o Apple Intelligence na China ainda neste ano, mas recursos mais avançados continuarão indisponíveis"
+  },
+  {
+   "id": "m_93",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "A longa disputa pelo fim da escala 6×1, agora apoiada por Lula e Flávio",
+   "url": "https://www.infomoney.com.br/politica/a-longa-disputa-pelo-fim-da-escala-6x1-agora-apoiada-por-lula-e-flavio/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Proposta ganhou força com mobilização nas redes sociais, enfrentou resistência durante a tramitação no Congresso e chega ao Senado com o apoio de Flávio Bolsonaro, que antes criticava a medida"
+  },
+  {
+   "id": "m_98",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Apple atinge valor de mercado inédito de US$ 5 tri e segue como segunda mais valiosa",
+   "url": "https://www.infomoney.com.br/mercados/apple-atinge-valor-de-mercado-inedito-de-us-5-tri-e-segue-como-segunda-mais-valiosa/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "Fabricante do iPhone havia atingido um valor de mercado de US$ 5 trilhões seis vezes durante o horário normal de negociação"
+  },
+  {
+   "id": "m_100",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Quem é o único senador que votou contra o fim da escala 6×1 no Senado",
+   "url": "https://www.infomoney.com.br/politica/quem-e-o-unico-senador-que-votou-contra-o-fim-da-escala-6x1-no-senado/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Ex-vice-presidente Hamilton Mourão foi o único a rejeitar a PEC, aprovada por 75 votos favoráveis nesta quarta-feira (14)"
+  },
+  {
+   "id": "m_105",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Imprensa internacional vê fim da escala 6×1 como vitória de Lula antes do 2º turno",
+   "url": "https://www.infomoney.com.br/mundo/imprensa-internacional-ve-fim-da-escala-6x1-como-vitoria-de-lula-antes-do-2o-turno/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Senado aprovou PEC que promove maior alteração na legislação trabalhista desde a Constituição de 1988"
+  },
+  {
+   "id": "m_106",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Vale projeta 700 mil t de cobre até 2035; VBM pode gerar mais de 40% do EBITDA",
+   "url": "https://www.infomoney.com.br/mercados/vale-projeta-700-mil-t-de-cobre-ate-2035-vbm-pode-gerar-mais-de-40-do-ebitda/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "trecho": "Em Londres, CEO Gustavo Pimenta destacou o crescimento dos metais básicos, disse que IPO da unidade “não é iminente” e avaliou que mercado de minério de ferro seguirá equilibrado mesmo com Simandou"
+  },
+  {
+   "id": "m_110",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Rali dos Treasuries ganha força com correção em ações de tecnologia",
+   "url": "https://www.infomoney.com.br/mercados/rali-dos-treasuries-ganha-forca-com-correcao-em-acoes-de-tecnologia/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "trecho": "Títulos americanos lideram alta global da renda fixa à medida que investidores deixam ativos de risco e aumentam a procura por proteção"
+  },
+  {
+   "id": "m_111",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Eduardo Bolsonaro fala em “expurgar” Moraes do STF caso Flávio seja eleito",
+   "url": "https://www.infomoney.com.br/politica/eduardo-bolsonaro-fala-em-expurgar-moraes-do-stf-caso-flavio-seja-eleito/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Ex-deputado federal e filho de Jair Bolsonaro disse não ver o ministro convivendo com um eventual governo do candidato do PL"
+  },
+  {
+   "id": "m_113",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Após fim da escala 6×1, setores preparam pressão por regulamentação no Congresso",
+   "url": "https://www.infomoney.com.br/economia/fim-escala-6x1-regulamentacao-congresso/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Entidades dos setores da indústria, comércio e construção civil afirmam que não houve amplo diálogo para aprovar a PEC, que deve impactar contratações e custos"
+  },
+  {
+   "id": "m_115",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "PSD aciona STF e tenta reverter decisão que eliminou 2º turno no Rio",
+   "url": "https://www.infomoney.com.br/politica/psd-de-eduardo-paes-recorre-ao-stf-para-restabelecer-segundo-turno-ao-governo-do-rio/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Partido de Eduardo Paes questiona no Supremo a anulação dos votos de Anthony Garotinho e sustenta que a Constituição exige segundo turno quando nenhum candidato obtém maioria absoluta dos votos válidos"
+  },
+  {
+   "id": "m_116",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Dezenas de FIIs pagam dividendos hoje; veja valores de MXRF11, TRXF11 e XPLG11",
+   "url": "https://www.infomoney.com.br/onde-investir/dezenas-de-fiis-pagam-dividendos-hoje-veja-valores-de-mxrf11-trxf11-e-xplg11/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Dezenas de fundos imobiliários (FIIs) realizam o pagamento de dividendos nesta quinta-feira (15)"
+  },
+  {
+   "id": "m_117",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Estrangeiros movimentam R$ 376 mi em compras líquidas de FIIs na semana pós-eleições",
+   "url": "https://www.infomoney.com.br/onde-investir/estrangeiros-movimentam-r-376-mi-em-compras-liquidas-de-fiis-na-semana-pos-eleicoes/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Os investidores estrangeiros responderam por 37,7% do volume negociado no mercado de fundos imobiliários entre os dias 5 e 9 de outubro"
+  },
+  {
+   "id": "m_125",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "TRE-RJ homologa nova contagem e confirma eleição de Douglas Ruas no Rio",
+   "url": "https://www.infomoney.com.br/politica/tre-rj-homologa-nova-contagem-e-confirma-eleicao-de-douglas-ruas-no-rio/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Exclusão dos votos de Anthony Garotinho elevou percentual do candidato do PL para 50,88%, eliminando a necessidade de segundo turno"
+  },
+  {
+   "id": "m_126",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Rali eleitoral pode continuar e levar Ibovespa a 225 mil pontos, diz Goldman Sachs",
+   "url": "https://www.infomoney.com.br/mercados/rali-eleitoral-pode-continuar-e-levar-ibovespa-a-225-mil-pontos-diz-goldman-sachs/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Após alta de 8% do Ibovespa desde o primeiro turno, Goldman Sachs avalia que a Bolsa pode avançar ainda mais caso o próximo governo entregue disciplina fiscal e medidas pró-mercado"
+  },
+  {
+   "id": "m_127",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "B3 sobe 50% desde agosto, mas UBS BB ainda vê espaço para alta e eleva preço-alvo",
+   "url": "https://www.infomoney.com.br/mercados/b3-sobe-50-desde-agosto-mas-ubs-bb-ainda-ve-espaco-para-alta-e-eleva-preco-alvo/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Operadora da bolsa está entre as principais beneficiárias potenciais de um eventual ajuste fiscal"
+  },
+  {
+   "id": "m_130",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Pesquisas e fim da 6X1 em foco: o que fez Ibovespa cair mais de 1% nesta quinta",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-pesquisas-eleitorais-eua-fim-da-6x1-em-foco-o-que-faz-indice-ter-nova-queda-nesta-5a/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Investidores aguardando a publicação de nova pesquisa Datafolha sobre o segundo turno das eleições presidenciais"
+  },
+  {
+   "id": "m_132",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Bolsas de NY fecham em alta mesmo com inflação nos EUA e incerteza com IA",
+   "url": "https://www.infomoney.com.br/mercados/bolsas-de-ny-fecham-em-alta-mesmo-com-inflacao-nos-eua-e-incerteza-com-ia/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "O Dow Jones subiu 1,08%, em 52.177,81 pontos; o S&P 500 ganhou 0,33%, nos 7.744,09 pontos; e o Nasdaq avançou 0,08%, encerrando em 26.713,03 pontos"
+  },
+  {
+   "id": "m_133",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "S&P 500 fecha em alta, com operadores migrando da IA para setor de saúde",
+   "url": "https://www.infomoney.com.br/mercados/sp-500-fecha-em-alta-com-operadores-migrando-da-ia-para-setor-de-saude/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "Várias ações do setor de tecnologia caíram, à medida que os investidores analisavam minuciosamente as empresas relacionadas à IA"
+  },
+  {
+   "id": "m_134",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Meta diz ao TSE que trabalha no aperfeiçoamento de ferramenta de IA nas eleições",
+   "url": "https://www.infomoney.com.br/politica/meta-diz-ao-tse-que-trabalha-no-aperfeicoamento-de-ferramenta-de-ia-nas-eleicoes/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "TSE disse, em comunicado, que a preocupação é promover uma “paridade de ‌armas” entre os candidatos para que ​o eleitor possa escolher livremente"
+  },
+  {
+   "id": "m_140",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Congresso aprova obrigatoriedade de aprovação no Enamed para exercer medicina",
+   "url": "https://www.infomoney.com.br/politica/congresso-aprova-obrigatoriedade-de-aprovacao-no-enamed-para-exercer-medicina/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "A votação do texto também encerra um impasse entre governo e o Conselho Federal de Medicina sobre quem seria responsável pelo exame"
+  },
+  {
+   "id": "m_144",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Petrobras (PETR3;PETR4) volta ao radar do investidor local com petróleo e eleições",
+   "url": "https://www.infomoney.com.br/mercados/petrobras-petr3petr4-volta-ao-radar-do-investidor-local-com-petroleo-e-eleicoes/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "De acordo com o JPMorgan, a convicção dos investidores no setor de óleo e gás está atualmente concentrada na estatal"
+  },
+  {
+   "id": "m_147",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Prefixados do Tesouro apagam queda posterior ao primeiro pregão pós-eleição",
+   "url": "https://www.infomoney.com.br/onde-investir/tesouro-direto-abertura-fechamento-16102026/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "No Tesouro IPCA+ de longo prazo, taxa já recupera metade das perdas na esteira do resultado do primeiro turno, após pesquisas mostrarem quadro mais disputado"
+  },
+  {
+   "id": "m_149",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Produção industrial dos EUA sobe 0,7% em setembro e supera expectativas",
+   "url": "https://www.infomoney.com.br/economia/producao-industrial-dos-eua-sobe-07-em-setembro-e-supera-expectativas/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · ATIVIDADE",
+   "trecho": "Analistas ouvidos pela FactSet projetavam avanço de 0,4% no período"
+  },
+  {
+   "id": "m_153",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "‘Vamos trabalhar para aprovar PEC da Segurança na 3ª feira', diz Randolfe Rodrigues",
+   "url": "https://www.infomoney.com.br/politica/vamos-trabalhar-para-aprovar-pec-da-seguranca-na-3a-feira-diz-randolfe-rodrigues/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Matéria chegou a ser discutida no plenário no Senado, mas foi retirada da pauta pelo presidente Davi Alcolumbre na quinta-feira (15)"
+  },
+  {
+   "id": "m_154",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "EUA orientam autoridades sobre golpes com IA antes das eleições de meio de mandato",
+   "url": "https://www.infomoney.com.br/politica/eua-orientam-autoridades-sobre-golpes-com-ia-antes-das-eleicoes-de-meio-de-mandato/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Alerta afirmou que hackers ​podem tentar atrapalhar as eleições usando mensagens de texto e emails falsos"
+  },
+  {
+   "id": "m_155",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Cresce a dependência da indústria com bancos tradicionais para contratar crédito",
+   "url": "https://www.infomoney.com.br/economia/cresce-a-dependencia-da-industria-com-bancos-tradicionais-para-contratar-credito/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · ATIVIDADE",
+   "trecho": "Sondagem da CNI mostra que praticamente dois terços (65,3%) das empresas do setor que buscaram crédito de curto e médio prazos entre fevereiro e julho recorreram aos “bancões”"
+  },
+  {
+   "id": "m_156",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Euforia do mercado com eleição desvia olhar do problema da dívida do Brasil",
+   "url": "https://www.infomoney.com.br/mercados/euforia-do-mercado-com-eleicao-desvia-olhar-para-problema-da-divida-do-brasil/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Desempenho de Flávio Bolsonaro acima do esperado do candidato no primeiro turno da eleição impulsionou os ativos, mas economia brasileira é impactada pela inadimplência elevada de famílias, empresas e produtores rurais"
+  },
+  {
+   "id": "m_157",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Fim da 6×1: sem aliados de Flávio, sessão expõe sintonia de Lula, Alcolumbre e Motta",
+   "url": "https://www.infomoney.com.br/politica/fim-da-6x1-sem-aliados-de-flavio-sessao-expoe-sintonia-de-lula-alcolumbre-e-motta/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Clima amistoso tem como pano de fundo eleições presidenciais e busca dos parlamentares pela reeleição no comando do Congresso"
+  },
+  {
+   "id": "m_158",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Tesouro IPCA+ devolve parte do rali eleitoral: hora de vender ou esperar o 2º turno?",
+   "url": "https://www.infomoney.com.br/onde-investir/tesouro-ipca-devolve-parte-do-rali-eleitoral-hora-de-vender-ou-esperar-o-2o-turno/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "Taxa do IPCA+ longo já devolve mais da metade da queda pós-1º turno, e especialistas apontam caminhos que vão de embolsar parte do ganho a migrar para crédito isento ou esperar as urnas"
+  },
+  {
+   "id": "m_159",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Congresso promulga aposentadoria especial para agentes de saúde",
+   "url": "https://www.infomoney.com.br/politica/congresso-promulga-aposentadoria-especial-para-agentes-de-saude/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Texto entrará em vigor após três meses de espera depois de ter sido aprovado pelo Senado; Fazenda vê impacto de R$ 3 bi por ano"
+  },
+  {
+   "id": "m_162",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Dólar hoje tem leve baixa, mas fecha semana com alta de 1,75% com eleição no foco",
+   "url": "https://www.infomoney.com.br/mercados/dolar-hoje-abertura-fechamento-comercial-turismo-16102026/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · CÂMBIO",
+   "trecho": "No ano, o recuo do dólar ainda é de 7,58%"
+  },
+  {
+   "id": "m_164",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Bolsas de NY fecham em baixa com temores por IA e Nasdaq recua mais de 2%",
+   "url": "https://www.infomoney.com.br/mercados/bolsas-de-ny-fecham-em-baixa-com-temores-por-ia-e-nasdaq-recua-mais-de-2/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "As ações da Strategy tombaram 9,56% afetando o setor de criptomoedas"
+  },
+  {
+   "id": "m_165",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Ibovespa sobe puxado por Petrobras e com atenção a pesquisas, mas cai 1,74% na semana",
+   "url": "https://www.infomoney.com.br/mercados/ibovespa-sobe-apos-recentes-quedas-atento-a-pesquisas-eleitorais-mas-cautela-segue/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Mercado segue atento à disputa acirrada para a Presidência da República"
+  },
+  {
+   "id": "m_167",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "PRIO lidera ganhos e Vamos tomba em semana de correção do Ibovespa; veja destaques",
+   "url": "https://www.infomoney.com.br/mercados/prio-lidera-ganhos-e-vamos-tomba-em-semana-de-correcao-do-ibovespa-veja-destaques/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "Entre os papéis monitorados, apenas 13 registraram ganhos nos últimos quatro pregões"
+  },
+  {
+   "id": "m_168",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "Startups: Empresa de chinelos à base de soja retoma operação e aposta em nicho verde",
+   "url": "https://www.infomoney.com.br/business/startups-empresa-de-chinelos-a-base-de-soja-retoma-operacao-e-aposta-em-nicho-verde/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "trecho": "Após reduzir operação na pandemia, Green Flip Flops volta a ganhar fôlego e já fatura R$ 350 mil com site lançado em junho"
+  },
+  {
+   "id": "m_169",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "XP anuncia saída de Martín Escobari do Conselho e traz executivo da Microsoft",
+   "url": "https://www.infomoney.com.br/mercados/xp-anuncia-saida-de-martin-escobari-do-conselho-e-traz-executivo-da-microsoft/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "Segundo a companhia, a saída de Escobari faz parte de um processo de transição planejado"
+  },
+  {
+   "id": "m_170",
+   "canalId": "canal_infomoney",
+   "veiculo": "InfoMoney",
+   "dominio": "infomoney.com.br",
+   "grupo": "br",
+   "prioridade": 6,
+   "titulo": "STF aposta em estratégia dupla para distensionar relação com novo Senado",
+   "url": "https://www.infomoney.com.br/politica/stf-aposta-em-estrategia-dupla-para-distensionar-relacao-com-novo-senado/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Movimentos articulados por Edson Fachin buscam mostrar capacidade de autorregulação da Corte diante da pressão do próximo Congresso"
+  },
+  {
+   "id": "m_173",
+   "canalId": "canal_advisorperspectives",
+   "veiculo": "Advisor Perspectives",
+   "dominio": "advisorperspectives.com",
+   "grupo": "intl",
+   "prioridade": 7,
+   "titulo": "September Retail Sales Better Than Expectations",
+   "url": "https://www.advisorperspectives.com/dshort/updates/2026/10/15/september-retail-sales-better-than-expectations?utm_source=dshort_feed&utm_medium=rss&utm_campaign=item_link",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "EXTERIOR · ATIVIDADE",
+   "trecho": "U.S. headline retail sales grew 0.8% in September to $745.0 billion, while core retail sales increased by 0.9% to $605.2 billion."
+  },
+  {
+   "id": "m_174",
+   "canalId": "canal_advisorperspectives",
+   "veiculo": "Advisor Perspectives",
+   "dominio": "advisorperspectives.com",
+   "grupo": "intl",
+   "prioridade": 7,
+   "titulo": "The Big Four Recession Indicators: Real Retail Sales",
+   "url": "https://www.advisorperspectives.com/dshort/updates/2026/10/15/recession-indicators-real-retail-sales-september-2026?utm_source=dshort_feed&utm_medium=rss&utm_campaign=item_link",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "EXTERIOR · ATIVIDADE",
+   "trecho": "Nominal retail sales were up 0.8% month-over-month and up 6.3% year-over-year in September. After adjusting for inflation, real retail sales were up 0.1% month-over-month and up 2.5% year-over-year."
+  },
+  {
+   "id": "m_176",
+   "canalId": "canal_advisorperspectives",
+   "veiculo": "Advisor Perspectives",
+   "dominio": "advisorperspectives.com",
+   "grupo": "intl",
+   "prioridade": 7,
+   "titulo": "S&P 500 Snapshot: Stocks Slide Nearly 2% for the Week",
+   "url": "https://www.advisorperspectives.com/dshort/updates/2026/10/16/s-p-500-snapshot-stocks-slide-nearly-2-for-the-week?utm_source=dshort_feed&utm_medium=rss&utm_campaign=item_link",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": "The S&P 500 slid 1.95%, capping off its worst weekly showing since late June."
+  },
+  {
+   "id": "m_177",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Banco da Coreia do Sul espera que orçamento de 2027 tenha impacto marginal na inflação",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/12/banco-da-coreia-do-sul-espera-que-orcamento-de-2027-tenha-impacto-marginal-na-inflacao.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-12",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "trecho": "O presidente do Banco da Coreia (BOK), Shin Hyun-song, espera que o aumento do Orçamento planejado pelo governo para o próximo ano tenha apenas um impacto marginal sobre a inflação. Em discurso nesta segunda-feira, 12, ele disse que a proposta de Orçamento nacional para 2027 deve acrescentar apenas…"
+  },
+  {
+   "id": "m_186",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Alcolumbre diz que Senado vota 6x1, nos dois turnos, nesta quarta",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/13/alcolumbre-diz-que-senado-vota-6x1-nos-dois-turnos-nesta-quarta.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Por protocolo, seriam necessárias pelo menos três sessões entre o primeiro e segundo turno. Contudo, a bancada governista quer apressar os procedimentos, de olho na eleição do dia 25"
+  },
+  {
+   "id": "m_192",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Governo aguarda designação do relator do Orçamento para enviar ajustes na proposta ao Congresso",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/14/governo-aguarda-designacao-do-relator-do-orcamento-para-enviar-ajustes-na-proposta-ao-congresso.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "O ministro do Planejamento e Orçamento, Bruno Moretti, em entrevista ao Metrópoles, afirmou que o governo aguarda a designação do relator do Orçamento de 2027 para enviar mensagem modificativa da proposta para o Congresso Nacional.O plano do governo é remanejar recursos dentro do próprio Orçamento…"
+  },
+  {
+   "id": "m_193",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Distritos dos EUA observaram novas altas de preços e emprego estável, mostra Livro Bege do Fed",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/14/distritos-dos-eua-observaram-novas-altas-de-precos-e-emprego-estavel-mostra-livro-bege-do-fed.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "trecho": "O Livro Bege do Federal Reserve (Fed, o banco central norte-americano), divulgado nesta quarta-feira, 14, mostrou que os distritos observaram alta dos preços. Três deles caracterizaram crescimento geral dos preços como robusto, enquanto oito notaram que o crescimento foi moderado - e três desses…"
+  },
+  {
+   "id": "m_194",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Guimarães, sobre PEC 6X1: Placar vai ser elástico, de sobra",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/14/guimaraes-sobre-pec-6x1-placar-vai-ser-elastico-de-sobra.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "O ministro das Relações Institucionais (SRI), José Guimarães, estimou que o placar de votação da Proposta de Emenda à Constituição do fim da escala de trabalho 6x1 (PEC 221/2019) será elástico. Vai ser bem elástico, vamos esperar, vai ser de sobra, disse ele a jornalistas.Para ser aprovada, uma PEC…"
+  },
+  {
+   "id": "m_195",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Taxas de juros abrem em alta, com eleições e fim da escala 6x1 no radar",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/15/taxas-de-juros-abrem-em-alta-com-eleicoes-e-fim-da-escala-6x1-no-radar.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · POLÍTICA",
+   "trecho": "Os juros futuros avançam em toda a curva na manhã desta quinta-feira, 15, com mais força nos longos (cerca de 16 pontos-base), refletindo as incertezas com o cenário eleitoral, além de repercutir a aprovação da PEC do fim da escala 6x1. O juro curto tem viés de alta mesmo após as vendas no varejo…"
+  },
+  {
+   "id": "m_196",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Nos EUA, PPI sobe 1,3% em setembro ante agosto e avança 6,3% na comparação anual",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/15/nos-eua-ppi-sobe-13-em-setembro-ante-agosto-e-avanca-63-na-comparacao-anual.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "EXTERIOR · INFLAÇÃO",
+   "trecho": "O índice de preços ao produtor (PPI, na sigla em inglês) dos Estados Unidos subiu 1,3% em setembro ante agosto, segundo pesquisa divulgada nesta quinta-feira pelo Departamento do Trabalho do país. Na comparação anual, o PPI avançou 6,3% em setembro.Analistas consultados pela FactSet previam avanço…"
+  },
+  {
+   "id": "m_197",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Previsão de déficit primário em 2026 passa de R$ 52,271 bi para R$ 53,048 bi no Prisma Fiscal",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/15/previsao-de-deficit-primario-em-2026-passa-de-rs-52271-bi-para-rs-53048-bi-no-prisma-fiscal.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "BRASIL · FISCAL",
+   "trecho": "A mediana do Prisma Fiscal para o déficit primário do Governo Central em 2026 subiu de R$ 52,271 bilhões em setembro para R$ 53,048 bilhões em outubro. A estimativa intermediária para 2027, que estava em R$ 45,350 bilhões em setembro, foi para R$ 44,000 bilhões. Os números foram divulgados pela…"
+  },
+  {
+   "id": "m_201",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Warsh diz que Fed reavaliará cenário em outubro e dezembro e evita indicar próximos passos",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/16/warsh-diz-que-fed-reavaliara-cenario-em-outubro-e-dezembro-e-evita-indicar-proximos-passos.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · POLÍTICA MONETÁRIA",
+   "trecho": "O presidente do Federal Reserve (Fed, o banco central norte-americano), Kevin Warsh, afirmou que o banco irá reavaliar o cenário econômico em outubro e dezembro antes de tomar as próximas decisões e evitou sinalizar a possível trajetória dos juros nos Estados Unidos. Ele participou nesta…"
+  },
+  {
+   "id": "m_202",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Balança comercial da zona do euro passa a déficit ajustado de 6,8 bilhões de euros em agosto",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/16/balanca-comercial-da-zona-do-euro-passa-a-deficit-ajustado-de-68-bilhoes-de-euros-em-agosto.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · FISCAL",
+   "trecho": "A zona do euro apresentou déficit comercial de 6,8 bilhões de euros em agosto, segundo dados com ajuste sazonal publicados nesta sexta-feira pela Eurostat, a agência de estatísticas da União Europeia. O resultado representa piora significativa em relação ao superávit de 1,4 bilhão de euros…"
+  },
+  {
+   "id": "m_203",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "CPI anual acelera para 3,8% em setembro e confirma prévia",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/16/cpi-anual-acelera-para-38-em-setembro-e-confirma-previa.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · INFLAÇÃO",
+   "trecho": "A taxa anual de inflação ao consumidor (CPI, pela sigla em inglês) da zona do euro acelerou de 3,2% em agosto para 3,8% em setembro, segundo a leitura final divulgada nesta sexta-feira pela agência de estatísticas da União Europeia, a Eurostat.O resultado confirmou a estimativa preliminar e veio em…"
+  },
+  {
+   "id": "m_204",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Dólar devolve parte de ganhos recentes frente real com ajuste à queda no exterior",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/16/dolar-devolve-parte-de-ganhos-recentes-frente-real-com-ajuste-a-queda-no-exterior.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · CÂMBIO",
+   "trecho": "O dólar à vista recua na abertura desta sexta-feira, 16, acompanhando o enfraquecimento da moeda americana no exterior e devolvendo parte da alta acumulada de 2,04% nas últimas três sessões. Perto da abertura, às 9h13, o dólar à vista tinha mínima a R$ 5,0791, com queda de 0,15%.Ontem, a divisa…"
+  },
+  {
+   "id": "m_206",
+   "canalId": "canal_opovo",
+   "veiculo": "O Povo",
+   "dominio": "opovo.com.br",
+   "grupo": "br",
+   "prioridade": 8,
+   "titulo": "Bradesco diz que app foi normalizado, após múltiplas reclamações de falhas pela manhã",
+   "url": "https://www.opovo.com.br/noticias/economia/2026/10/16/bradesco-diz-que-app-foi-normalizado-apos-multiplas-reclamacoes-de-falhas-pela-manha.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · BOLSA",
+   "trecho": "O aplicativo do Bradesco voltou a funcionar normalmente no fim do período da manhã desta sexta-feira, 16, após ter enfrentando instabilidade mais cedo, informou o banco. A natureza do problema não foi revelada. Ao longo da manhã, clientes relataram dificuldades para acessar as plataformas voltadas…"
+  },
+  {
+   "id": "m_207",
+   "canalId": "canal_investing",
+   "veiculo": "Investing.com",
+   "dominio": "investing.com",
+   "grupo": "intl",
+   "prioridade": 9,
+   "titulo": "Os Futuros de Ouro subiram durante a sessão asiática",
+   "url": "https://br.investing.com/news/commodities-news/os-futuros-de-ouro-subiram-durante-a-sessao-asiatica-2089684",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-13",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "trecho": ""
+  },
+  {
+   "id": "m_211",
+   "canalId": "canal_investing",
+   "veiculo": "Investing.com",
+   "dominio": "investing.com",
+   "grupo": "intl",
+   "prioridade": 9,
+   "titulo": "Ibovespa e dólar hoje: salto do petróleo a US$ 100, tombo de NY e eleições",
+   "url": "https://br.investing.com/news/stock-market-news/ibovespa-e-dolar-hoje-salto-do-petroleo-a-us-100-tombo-de-ny-e-eleicoes-2094330",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "BRASIL · CÂMBIO",
+   "trecho": ""
+  },
+  {
+   "id": "m_216",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "SOXX Heads For 7th Straight Losing Session As Inflation, AI Spending Fears Deepen — Chip Stocks Face $1 Trillion Wipeout",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/soxx-heads-7th-straight-losing-174325012.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · INFLAÇÃO",
+   "trecho": ""
+  },
+  {
+   "id": "m_217",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "Stock Market Today, Oct. 14: Bank of America Shares Fall 5% on Earnings Miss and Compliance Penalty",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-oct-14-220245754.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-14",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_218",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "Suddenly, Wall Street is worried that the U.S. economy is more ‘vulnerable’ than it looks",
+   "url": "https://finance.yahoo.com/economy/articles/suddenly-wall-street-worried-u-101921285.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-15",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_220",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "3 Dividend Stocks With Yields Over 3%",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/3-dividend-stocks-yields-over-031555197.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_222",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "Markets News, Oct. 16, 2026: Nasdaq, S&P 500 End Lower, Post Weekly Losses; AI Stocks Fall; Dow Logs Weekly Gain",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/markets-news-oct-16-2026-103800633.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_223",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "Memory stocks slide into another bear market as chip losses near $2.5 trillion: Chart of the Day",
+   "url": "https://finance.yahoo.com/markets/article/memory-stocks-slide-into-another-bear-market-as-chip-losses-near-25-trillion-chart-of-the-day-100000060.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_225",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "SK hynix Sinks as AI Stocks Pullback Amid Rising Interest Rates. How to Play SKHY Here.",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/sk-hynix-sinks-ai-stocks-173800193.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_226",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "Tesla’s Flying Roadster Fuels SpaceX Merger Speculation, But Analysts Question Earnings Impact",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/tesla-flying-roadster-fuels-spacex-125446274.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_227",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "Moderna stock sinks as Wall Street turns cautious following blistering rally",
+   "url": "https://finance.yahoo.com/markets/article/moderna-stock-sinks-as-wall-street-turns-cautious-following-blistering-rally-152233829.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_228",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "Why The Next Great AI Investment is Natural Gas Stocks Like KMI, EPD, and ENB",
+   "url": "https://finance.yahoo.com/video/why-next-great-ai-investment-190522532.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_229",
+   "canalId": "canal_yahoo",
+   "veiculo": "Yahoo Finance",
+   "dominio": "finance.yahoo.com",
+   "grupo": "intl",
+   "prioridade": 10,
+   "titulo": "Nasdaq Buckles on Fear This Boom Is an AI Bubble: Stock Market Today",
+   "url": "https://finance.yahoo.com/markets/stocks/articles/nasdaq-buckles-fear-boom-ai-201411736.html",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-16",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  }
+ ]
+}
