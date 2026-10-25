@@ -39,7 +39,7 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.3.0-beta";
+  var APP_VERSION = "1.4.0-beta";
   // Logo oficial do parceiro (Laboratório de CSA UNISO), em cores originais —
   // arquivo enviado pelo usuário, salvo como asset do projeto em vez de
   // embutido em base64 aqui (mantém o app.js enxuto).
@@ -432,6 +432,19 @@
       if (!Array.isArray(store.canais)) store.canais = defaultCanais();
       store.migrations.canais = true;
     }
+    // Pauta: os canais padrão ganham prioridade e método de coleta (sem mexer
+    // no que o usuário já editou nem em canais que ele criou).
+    if (!store.migrations.canaisColeta) {
+      var mudou = false;
+      (Array.isArray(store.canais) ? store.canais : []).forEach(function (c) {
+        var p = COLETA_PADRAO[c.id];
+        if (!p) return;
+        if (c.prioridade == null) { c.prioridade = p.prioridade; mudou = true; }
+        if (!c.coleta) { c.coleta = JSON.parse(JSON.stringify(p.coleta)); mudou = true; }
+      });
+      if (mudou) store.canaisAt = Date.now();
+      store.migrations.canaisColeta = true;
+    }
   }
 
   function loadStore() {
@@ -455,7 +468,7 @@
       currentId: id,
       // referenceTemplate() já nasce com logo do parceiro e divisórias —
       // marca como já migrado para não reinserir o que o usuário apagar depois.
-      migrations: { publisherLogo: true, headerDividers: true, independentMastheadText: true, headerDividerBandXFix: true, modeloLogoMatch: true, inlineNewsLinks: true, phase2Vars: true, phase5: true, canais: true },
+      migrations: { publisherLogo: true, headerDividers: true, independentMastheadText: true, headerDividerBandXFix: true, modeloLogoMatch: true, inlineNewsLinks: true, phase2Vars: true, phase5: true, canais: true, canaisColeta: true },
       canais: defaultCanais()
     };
     store.editions[id] = { id: id, name: "Edição 05/2026 (modelo)", updatedAt: Date.now(), data: referenceTemplate() };
@@ -1864,6 +1877,7 @@
     d.sources = [];
     d.meta.status = "rascunho";
     d.meta.ignoredChecks = [];
+    delete d.pauta; // a pauta é da semana: a próxima edição escolhe a sua
     // Calculadora: o fechamento desta semana vira a abertura da próxima;
     // o fechamento novo e a abertura do dia ficam para preencher. Na virada
     // do ano a base anual também precisa ser trocada (fica vazia).
@@ -2629,6 +2643,7 @@
     renderSourcesTab();
     renderNotas();
     lockForReview();
+    if (modoAtual === "pauta") renderPauta();
     updateBlockToolbar();
     scheduleOverflowCheck();
   }
@@ -3776,6 +3791,8 @@
     document.getElementById("acervoClose").addEventListener("click", function () { dlg.hidden = true; });
     document.getElementById("acervoCsv").addEventListener("click", exportarAcervoCsv);
     document.getElementById("btnAcervo").addEventListener("click", openAcervo);
+    var btnExpCanais = document.getElementById("btnExportCanais");
+    if (btnExpCanais) btnExpCanais.addEventListener("click", exportarCanaisColeta);
     dlg.addEventListener("keydown", function (e) { if (e.key === "Escape") dlg.hidden = true; });
     document.getElementById("acervoLista").addEventListener("click", function (e) {
       var b = e.target.closest("[data-acervo-act]");
@@ -3796,6 +3813,546 @@
         el.classList.add("check-flash");
         setTimeout(function () { el.classList.remove("check-flash"); }, 1700);
       }, 60);
+    });
+  }
+
+  /* ---------------------------------------------------------------------
+     Pauta — matérias da semana, coletadas e agrupadas por tema
+     O coletor (coleta/coletar.mjs) roda no GitHub Actions todo sábado às 08h
+     ou pelo botão "Buscar agora" e grava pautas/<inicio>.json no repositório.
+     Esta aba lê o arquivo (API do GitHub com a chave deste aparelho,
+     raw.githubusercontent.com ou o próprio site), permite confirmar ou
+     descartar temas e transforma tema em notícia (columns[]) e matéria em
+     fonte numerada (sources[]). Nada aqui inventa texto ou link.
+     Estado por edição: s.pauta = { arquivo, estado: { <arquivo>: { temas: { id: "confirmado"|"descartado" }, criadas: { id: true } } } }
+     Formato do arquivo: CONTEXTO.md, seção 5.3 ("boletimMaker.pauta").
+     --------------------------------------------------------------------- */
+  var GH_KEY = "boletimMaker.github";
+  var PAUTA_CACHE_KEY = "boletimMaker.pautaCache";
+  var PAUTA_GRUPOS = [["", "Todos"], ["oficial", "Oficiais"], ["br", "Imprensa BR"], ["intl", "Internacional"]];
+  var GRUPO_NOME = { oficial: "Oficial", br: "Imprensa BR", intl: "Internacional" };
+  var modoAtual = "pagina";
+  var pauta = { indice: null, atual: null, arquivo: null, sel: null, detGrupo: "", ocultas: 0, msg: "", erro: "", buscando: null,
+    filtros: { q: "", editoria: "", grupo: "", veiculo: "" } };
+
+  // ---- GitHub (chave só neste aparelho, nunca no servidor) ----
+  function ghRepo() { return (FB && FB.repo) || "Vt-Iak/Boletimmaker-lmfu"; }
+  function ghToken() { try { var o = JSON.parse(localStorage.getItem(GH_KEY) || "null"); return (o && o.token) || ""; } catch (e) { return ""; } }
+  function ghSetToken(t) { try { if (t) localStorage.setItem(GH_KEY, JSON.stringify({ token: t })); else localStorage.removeItem(GH_KEY); } catch (e) { /* ok */ } }
+  async function ghApi(method, caminho, corpo, accept) {
+    var r = await fetch("https://api.github.com" + caminho, {
+      method: method, cache: "no-store",
+      headers: { Authorization: "Bearer " + ghToken(), Accept: accept || "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
+      body: corpo ? JSON.stringify(corpo) : undefined
+    });
+    if (!r.ok) {
+      var err = new Error("GitHub respondeu " + r.status);
+      err.status = r.status;
+      try { err.detalhe = (await r.json()).message; } catch (e) { /* sem corpo */ }
+      throw err;
+    }
+    if (r.status === 204) return null;
+    return accept && /raw/.test(accept) ? r.text() : r.json();
+  }
+  async function ghPutFile(caminho, texto, mensagem) {
+    var atual = null;
+    try { atual = await ghApi("GET", "/repos/" + ghRepo() + "/contents/" + caminho + "?ref=main"); } catch (e) { if (e.status !== 404) throw e; }
+    return ghApi("PUT", "/repos/" + ghRepo() + "/contents/" + caminho, {
+      message: mensagem, branch: "main", content: btoa(unescape(encodeURIComponent(texto))), sha: atual ? atual.sha : undefined
+    });
+  }
+  // Lê um arquivo do repositório: pela API (com chave, sempre atualizado),
+  // pelo raw do GitHub (público) ou pelo próprio site publicado.
+  async function lerArquivoRepo(caminho) {
+    var tentativas = [];
+    if (ghToken()) tentativas.push(function () { return ghApi("GET", "/repos/" + ghRepo() + "/contents/" + caminho + "?ref=main", null, "application/vnd.github.raw+json").then(JSON.parse); });
+    tentativas.push(function () {
+      return fetch("https://raw.githubusercontent.com/" + ghRepo() + "/main/" + caminho + "?t=" + Date.now(), { cache: "no-store" })
+        .then(function (r) { if (!r.ok) throw new Error("raw " + r.status); return r.json(); });
+    });
+    if (location.protocol === "https:" && !IN_ARTIFACT) tentativas.push(function () {
+      return fetch(caminho + "?t=" + Date.now(), { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error("site " + r.status); return r.json(); });
+    });
+    var ultimo = null;
+    for (var i = 0; i < tentativas.length; i++) {
+      try { return await tentativas[i](); } catch (e) { ultimo = e; }
+    }
+    throw ultimo || new Error("sem acesso");
+  }
+
+  // ---- Dados ----
+  function dataCurta(isoTxt) { var d = parseIsoDate(isoTxt); return d ? ddmm(d) : ""; }
+  function rotuloPauta(p) {
+    var ger = p.geradoEm ? new Date(p.geradoEm) : null;
+    return (p.tipo === "busca" ? "Busca \"" + (p.termo || "") + "\"" : "Semana " + dataCurta(p.inicio) + " a " + dataCurta(p.fim)) +
+      (ger && !isNaN(ger) ? " · " + ddmm(ger) + " " + pad2(ger.getHours()) + ":" + pad2(ger.getMinutes()) : "");
+  }
+  function pautaEstado() {
+    var s = state();
+    var e = pauta.arquivo && s.pauta && s.pauta.estado && s.pauta.estado[pauta.arquivo];
+    return { temas: (e && e.temas) || {}, criadas: (e && e.criadas) || {} };
+  }
+  // Grava o estado da pauta na edição (sincroniza como o resto da edição).
+  function salvarPautaEstado(mudar) {
+    if (REVIEWER || !pauta.arquivo) return;
+    var s = state();
+    s.pauta = s.pauta || {};
+    s.pauta.arquivo = pauta.arquivo;
+    s.pauta.estado = s.pauta.estado || {};
+    var e = s.pauta.estado[pauta.arquivo] = s.pauta.estado[pauta.arquivo] || { temas: {}, criadas: {} };
+    e.temas = e.temas || {};
+    e.criadas = e.criadas || {};
+    mudar(e);
+    scheduleSave();
+  }
+  function todasMaterias() {
+    if (!pauta.atual) return [];
+    var out = [];
+    (pauta.atual.temas || []).forEach(function (t) { out = out.concat(t.materias || []); });
+    return out.concat(pauta.atual.avulsas || []);
+  }
+  function materiaPorId(id) { return todasMaterias().filter(function (m) { return m.id === id; })[0] || null; }
+  function fonteDaMateria(m) {
+    var s = state();
+    var list = s.sources || [];
+    for (var i = 0; i < list.length; i++) if (list[i].url && list[i].url === m.url) return i + 1;
+    return 0;
+  }
+  // O app reaplica o filtro de canais: matéria de domínio que saiu da lista some.
+  function aplicarPauta(json, arquivo) {
+    if (!json || json.formato !== "boletimMaker.pauta" || !Array.isArray(json.temas)) throw new Error("não é um arquivo de pauta do Boletim Maker");
+    var doms = canais().map(function (c) { return c.dominio; }).filter(Boolean);
+    var vale = function (m) {
+      if (!m || !/^https?:\/\//.test(m.url || "")) return false;
+      if (!doms.length) return true;
+      var d = String(m.dominio || "").replace(/^www\d*\./, "");
+      return doms.some(function (x) { return d === x || d.slice(-(x.length + 1)) === "." + x; });
+    };
+    var ocultas = 0;
+    var copia = JSON.parse(JSON.stringify(json));
+    copia.temas = copia.temas.map(function (t) {
+      var antes = (t.materias || []).length;
+      t.materias = (t.materias || []).filter(vale);
+      ocultas += antes - t.materias.length;
+      return t;
+    }).filter(function (t) { return t.materias.length; });
+    var antesAv = (copia.avulsas || []).length;
+    copia.avulsas = (copia.avulsas || []).filter(vale);
+    ocultas += antesAv - copia.avulsas.length;
+    pauta.atual = copia;
+    pauta.arquivo = arquivo;
+    pauta.ocultas = ocultas;
+    pauta.erro = "";
+    if (!pauta.sel || (pauta.sel !== "avulsas" && !copia.temas.some(function (t) { return t.id === pauta.sel; }))) pauta.sel = copia.temas.length ? copia.temas[0].id : "avulsas";
+    try { localStorage.setItem(PAUTA_CACHE_KEY, JSON.stringify({ arquivo: arquivo, json: json })); } catch (e) { /* cache é só conveniência */ }
+    var s = state();
+    if (!REVIEWER && (!s.pauta || s.pauta.arquivo !== arquivo)) salvarPautaEstado(function () {});
+  }
+  async function carregarPauta(arquivo) {
+    pauta.msg = "Carregando " + arquivo + "…";
+    renderPauta();
+    try {
+      aplicarPauta(await lerArquivoRepo("pautas/" + arquivo), arquivo);
+      pauta.msg = "";
+    } catch (e) {
+      pauta.erro = "Não foi possível abrir a pauta (" + (e.message || "erro") + ").";
+    }
+    renderPauta();
+  }
+  async function carregarIndicePauta() {
+    pauta.msg = "Procurando pautas…";
+    pauta.erro = "";
+    renderPauta();
+    try {
+      pauta.indice = await lerArquivoRepo("pautas/index.json");
+    } catch (e) {
+      pauta.indice = null;
+      // Sem acesso (offline, Windows, claude.ai): usa a última pauta aberta neste aparelho.
+      var cache = null;
+      try { cache = JSON.parse(localStorage.getItem(PAUTA_CACHE_KEY) || "null"); } catch (er) { cache = null; }
+      if (cache && cache.json) {
+        try { aplicarPauta(cache.json, cache.arquivo); pauta.msg = "Sem acesso às pautas agora: mostrando a última aberta neste aparelho."; renderPauta(); return; } catch (er) { /* segue */ }
+      }
+      pauta.msg = "";
+      pauta.erro = "Não foi possível ler as pautas do GitHub agora. Use \"Importar\" com um arquivo de pauta (.json).";
+      renderPauta();
+      return;
+    }
+    var lista = (pauta.indice && pauta.indice.pautas) || [];
+    var s = state(), v = s.meta.vars || {};
+    var escolhido = (s.pauta && lista.filter(function (p) { return p.arquivo === s.pauta.arquivo; })[0]) ||
+      lista.filter(function (p) { return p.tipo === "semana" && p.inicio === v.coberturaInicio; })[0] ||
+      lista.filter(function (p) { return p.tipo === "semana"; })[0] || lista[0];
+    pauta.msg = "";
+    if (escolhido) await carregarPauta(escolhido.arquivo);
+    else { pauta.erro = "Ainda não há pautas. A coleta roda todo sábado às 08h; use \"Buscar agora\" para gerar uma."; renderPauta(); }
+  }
+
+  // ---- Filtros ----
+  function passaMateria(m, f) {
+    if (f.grupo && m.grupo !== f.grupo) return false;
+    if (f.veiculo && m.veiculo !== f.veiculo) return false;
+    if (f.editoria && m.editoria && m.editoria !== f.editoria) return false;
+    if (f.q) {
+      var txt = semAcento((m.titulo || "") + " " + (m.trecho || "") + " " + (m.veiculo || ""));
+      if (!semAcento(f.q).split(/\s+/).filter(Boolean).every(function (t) { return txt.indexOf(t) !== -1; })) return false;
+    }
+    return true;
+  }
+  // Tema passa se: é da editoria escolhida; tem matéria do grupo/veículo
+  // escolhido; e a palavra aparece no tema ou em alguma das suas matérias.
+  function passaTema(t, f) {
+    if (f.editoria && t.editoria !== f.editoria) return false;
+    var mats = t.materias || [];
+    if ((f.grupo || f.veiculo) && !mats.some(function (m) { return (!f.grupo || m.grupo === f.grupo) && (!f.veiculo || m.veiculo === f.veiculo); })) return false;
+    if (!f.q) return true;
+    var txt = semAcento([t.titulo, t.resumo].concat(mats.map(function (m) { return (m.titulo || "") + " " + (m.trecho || "") + " " + (m.veiculo || ""); })).join(" "));
+    return semAcento(f.q).split(/\s+/).filter(Boolean).every(function (x) { return txt.indexOf(x) !== -1; });
+  }
+
+  // ---- Desenho ----
+  function renderPauta() {
+    if (modoAtual !== "pauta") return;
+    renderPautaPesquisa();
+    renderPautaTemas();
+    renderPautaDetalhe();
+  }
+  function renderPautaPesquisa() {
+    var box = document.getElementById("pautaPesquisa");
+    if (!box) return;
+    var s = state(), v = s.meta.vars || {};
+    var lista = (pauta.indice && pauta.indice.pautas) || [];
+    if (pauta.arquivo && !lista.some(function (p) { return p.arquivo === pauta.arquivo; })) lista = [{ arquivo: pauta.arquivo, tipo: "importada" }].concat(lista);
+    var a = pauta.atual;
+    var editorias = {}, veiculos = {};
+    todasMaterias().forEach(function (m) { if (m.editoria) editorias[m.editoria] = 1; if (m.veiculo) veiculos[m.veiculo] = 1; });
+    (a && a.temas || []).forEach(function (t) { if (t.editoria) editorias[t.editoria] = 1; });
+    var f = pauta.filtros;
+    var info = "";
+    if (a) {
+      var desc = a.coleta && a.coleta.descartadas ? Object.keys(a.coleta.descartadas).reduce(function (t, k) { return t + (a.coleta.descartadas[k] || 0); }, 0) : 0;
+      info = todasMaterias().length + " matérias em " + a.temas.length + " temas" + (desc ? " · " + desc + " descartadas pelos filtros da coleta" : "") +
+        (pauta.ocultas ? " · " + pauta.ocultas + " ocultas (canal fora da sua lista)" : "");
+    }
+    var semChave = !ghToken();
+    box.innerHTML =
+      '<div class="pauta-bloco"><div class="pauta-titulo">Pauta</div>' +
+        '<p class="pauta-cob">Edição ' + esc(v.edicao || "") + " · cobertura <strong>" + esc(dataCurta(v.coberturaInicio) || "?") + " a " + esc(dataCurta(v.coberturaFim) || "?") + "</strong></p>" +
+        (lista.length ? '<label class="pauta-campo"><span>Arquivo</span><select data-pauta-campo="arquivo">' + lista.map(function (p) {
+          return '<option value="' + esc(p.arquivo) + '"' + (p.arquivo === pauta.arquivo ? " selected" : "") + ">" + esc(p.tipo === "importada" ? "Importada: " + p.arquivo : rotuloPauta(p)) + "</option>";
+        }).join("") + "</select></label>" : "") +
+        '<div class="pauta-acoes"><button type="button" class="check-btn" data-pauta-act="atualizar">' + icon("reset") + "Atualizar</button>" +
+        '<button type="button" class="check-btn" data-pauta-act="importar">' + icon("upload") + "Importar</button></div>" +
+        (pauta.msg ? '<p class="pauta-msg">' + esc(pauta.msg) + "</p>" : "") +
+        (pauta.erro ? '<p class="pauta-msg is-error">' + esc(pauta.erro) + "</p>" : "") +
+        (info ? '<p class="pauta-msg">' + esc(info) + "</p>" : "") +
+      "</div>" +
+      '<div class="pauta-bloco"><div class="pauta-titulo">Buscar agora</div>' +
+        '<input type="search" data-pauta-campo="termo" placeholder="Palavra-chave (opcional), ex.: Petrobras" aria-label="Palavra-chave da busca">' +
+        '<div class="pauta-periodo"><input type="date" data-pauta-campo="inicio" value="' + esc(v.coberturaInicio || "") + '" aria-label="Início"><span>a</span><input type="date" data-pauta-campo="fim" value="' + esc(v.coberturaFim || "") + '" aria-label="Fim"></div>' +
+        '<button type="button" class="check-btn primary pauta-buscar" data-pauta-act="buscar"' + (pauta.buscando ? " disabled" : "") + ">" + icon("search") + (pauta.buscando ? "Buscando…" : "Buscar agora") + "</button>" +
+        (pauta.buscando ? '<p class="pauta-msg">A busca roda no GitHub e costuma levar de 3 a 7 minutos. Pode continuar trabalhando: a pauta abre sozinha quando ficar pronta.</p>'
+          : '<p class="prop-note">Busca nos seus canais, no período escolhido. Sem palavra-chave, refaz a pauta da semana.' +
+            (semChave ? ' Para buscar daqui, configure a chave do GitHub uma vez neste aparelho: <button type="button" class="check-link" data-pauta-act="config">configurar</button>.' : "") + "</p>") +
+      "</div>" +
+      '<div class="pauta-bloco"><div class="pauta-titulo">Filtrar</div>' +
+        '<input type="search" data-pauta-campo="q" value="' + esc(f.q) + '" placeholder="Palavra no título ou no trecho" aria-label="Filtrar por palavra">' +
+        '<select data-pauta-campo="editoria" aria-label="Editoria"><option value="">Todas as editorias</option>' + Object.keys(editorias).sort().map(function (e) {
+          return '<option value="' + esc(e) + '"' + (f.editoria === e ? " selected" : "") + ">" + esc(e) + "</option>";
+        }).join("") + "</select>" +
+        '<div class="pauta-chips">' + PAUTA_GRUPOS.map(function (g) {
+          return '<button type="button" class="v-chip' + (f.grupo === g[0] ? " is-on" : "") + '" data-pauta-act="grupo" data-valor="' + g[0] + '">' + esc(g[1]) + "</button>";
+        }).join("") + "</div>" +
+        '<select data-pauta-campo="veiculo" aria-label="Veículo"><option value="">Todos os veículos</option>' + Object.keys(veiculos).sort().map(function (n) {
+          return '<option value="' + esc(n) + '"' + (f.veiculo === n ? " selected" : "") + ">" + esc(n) + "</option>";
+        }).join("") + "</select>" +
+      "</div>";
+  }
+  function barras(n) { var h = ""; for (var i = 1; i <= 5; i++) h += "<i" + (i <= n ? ' class="f"' : "") + "></i>"; return '<span class="pt-bar" title="Relevância ' + n + ' de 5">' + h + "</span>"; }
+  function renderPautaTemas() {
+    var box = document.getElementById("pautaTemas");
+    if (!box) return;
+    var a = pauta.atual;
+    var cnt = document.getElementById("pautaTemasCount");
+    var cntTopo = document.getElementById("pautaCount");
+    if (!a) { box.innerHTML = ""; if (cnt) cnt.textContent = ""; return; }
+    var est = pautaEstado(), f = pauta.filtros;
+    var lista = a.temas.filter(function (t) { return passaTema(t, f); });
+    lista.sort(function (x, y) { return (est.temas[x.id] === "descartado") - (est.temas[y.id] === "descartado"); });
+    if (cnt) cnt.textContent = String(lista.length);
+    if (cntTopo) cntTopo.textContent = String(a.temas.length);
+    var avulsas = (a.avulsas || []).filter(function (m) { return passaMateria(m, f); });
+    box.innerHTML = (lista.length ? "" : '<p class="sources-empty">Nenhum tema com esses filtros.</p>') + lista.map(function (t, i) {
+      var st = est.temas[t.id], criada = est.criadas[t.id];
+      return '<div class="pauta-tema' + (pauta.sel === t.id ? " is-sel" : "") + (st === "descartado" ? " is-off" : "") + '" data-pauta-act="sel-tema" data-id="' + esc(t.id) + '" tabindex="0">' +
+        '<div class="pt-th"><span class="pt-rank">' + (i + 1) + '</span><div><div class="pt-tag">' + esc(t.editoria || "") + '</div><div class="pt-tit">' + esc(t.titulo) + "</div></div>" + barras(t.relevancia || 1) + "</div>" +
+        (st !== "descartado" && t.resumo ? '<div class="pt-res">' + esc(t.resumo) + "</div>" : "") +
+        '<div class="pt-foot">' +
+          (criada ? '<span class="chip chip-aprovado">Notícia criada</span>' : st === "confirmado" ? '<span class="chip chip-aprovado">' + icon("check") + "Confirmado</span>"
+            : st === "descartado" ? '<span class="chip">Descartado</span>' + (REVIEWER ? "" : '<button type="button" class="check-link" data-pauta-act="desfazer" data-id="' + esc(t.id) + '">desfazer</button>')
+            : (REVIEWER ? "" : '<button type="button" class="check-btn pt-btn" data-pauta-act="confirmar" data-id="' + esc(t.id) + '">' + icon("check") + 'Confirmar</button><button type="button" class="check-link" data-pauta-act="descartar" data-id="' + esc(t.id) + '">descartar</button>')) +
+          '<span class="pt-n">' + t.materias.length + (t.materias.length === 1 ? " matéria" : " matérias") + " · " + (t.veiculos || 1) + (t.veiculos === 1 ? " veículo" : " veículos") + "</span>" +
+        "</div></div>";
+    }).join("") +
+      (avulsas.length ? '<div class="pauta-tema pauta-avulsas' + (pauta.sel === "avulsas" ? " is-sel" : "") + '" data-pauta-act="sel-tema" data-id="avulsas" tabindex="0">' +
+        '<div class="pt-tit">Matérias avulsas</div><div class="pt-res">' + avulsas.length + " matérias sem outra parecida na semana — úteis para a busca e para notas curtas.</div></div>" : "");
+  }
+  function materiaCard(m, comCriar) {
+    var n = fonteDaMateria(m);
+    var host = hostOf(m.url) || m.dominio || "";
+    return '<div class="pauta-materia' + (n ? " is-used" : "") + '">' +
+      '<div class="pm-main"><div class="pm-meta"><strong>' + esc(m.veiculo || host) + "</strong>" +
+        '<span class="chip">' + esc(GRUPO_NOME[m.grupo] || m.grupo || "") + "</span>" +
+        "<span>" + esc(dataCurta(m.publicadoEm)) + "</span>" +
+        (comCriar && m.editoria ? '<span class="pt-tag">' + esc(m.editoria) + "</span>" : "") +
+        (m.linkConfirmado === false ? '<span class="chip chip-incompleta" title="Veio do Google Notícias sem o endereço original">link a confirmar</span>' : "") + "</div>" +
+        '<div class="pm-tit">' + esc(m.titulo) + "</div>" +
+        (m.trecho ? '<div class="pm-tre">' + esc(m.trecho) + "</div>" : "") +
+        (safeHref(m.url) ? '<a class="pm-url" href="' + esc(safeHref(m.url)) + '" target="_blank" rel="noopener">' + esc(host) + " ↗</a>" : "") +
+      "</div>" +
+      '<div class="pm-acoes">' +
+        (n ? '<span class="chip chip-aprovado">' + icon("check") + "Fonte [" + n + "] da edição</span>"
+          : REVIEWER ? "" : '<button type="button" class="check-btn" data-pauta-act="usar" data-id="' + esc(m.id) + '">' + icon("plus") + "Usar como fonte</button>") +
+        (comCriar && !REVIEWER ? '<button type="button" class="check-btn" data-pauta-act="criar-materia" data-id="' + esc(m.id) + '">' + icon("news") + "Criar notícia</button>" : "") +
+      "</div></div>";
+  }
+  function renderPautaDetalhe() {
+    var box = document.getElementById("pautaDetalhe");
+    if (!box) return;
+    var a = pauta.atual;
+    if (!a) {
+      box.innerHTML = '<div class="pauta-vazia"><h3>Pauta da semana</h3><p>As matérias dos seus canais são coletadas e agrupadas por tema <strong>todo sábado às 08h</strong>, no GitHub, sem precisar abrir nada.</p>' +
+        "<p>Aqui você confirma os temas que entram no boletim, transforma um tema em notícia e usa as matérias como fontes numeradas.</p>" +
+        '<p class="prop-note">Também dá para gerar na hora com "Buscar agora", ou importar um arquivo de pauta.</p></div>';
+      return;
+    }
+    var f = pauta.filtros, est = pautaEstado();
+    var grupoChips = function (lista) {
+      var cont = { "": lista.length };
+      lista.forEach(function (m) { cont[m.grupo] = (cont[m.grupo] || 0) + 1; });
+      return '<div class="pauta-chips">' + PAUTA_GRUPOS.filter(function (g) { return !g[0] || cont[g[0]]; }).map(function (g) {
+        return '<button type="button" class="v-chip' + (pauta.detGrupo === g[0] ? " is-on" : "") + '" data-pauta-act="det-grupo" data-valor="' + g[0] + '">' + esc(g[1]) + " " + (cont[g[0]] || 0) + "</button>";
+      }).join("") + "</div>";
+    };
+    if (pauta.sel === "avulsas") {
+      var av = (a.avulsas || []).filter(function (m) { return passaMateria(m, f); });
+      var avG = av.filter(function (m) { return !pauta.detGrupo || m.grupo === pauta.detGrupo; });
+      box.innerHTML = '<div class="pd-head"><div class="pt-tag">Avulsas</div><h3>Matérias sem tema</h3><p class="pd-res">Matérias que não tiveram outra parecida na semana. Use como fonte ou crie uma notícia a partir de uma delas.</p></div>' +
+        grupoChips(av) + avG.map(function (m) { return materiaCard(m, true); }).join("");
+      return;
+    }
+    var t = a.temas.filter(function (x) { return x.id === pauta.sel; })[0];
+    if (!t) { box.innerHTML = ""; return; }
+    var nomesDe = (t.resumoDe || []).map(function (id) { var m = materiaPorId(id); return m ? m.veiculo : ""; }).filter(Boolean);
+    var st = est.temas[t.id], criada = est.criadas[t.id];
+    var mats = t.materias.filter(function (m) { return !pauta.detGrupo || m.grupo === pauta.detGrupo; });
+    box.innerHTML = '<div class="pd-head"><div class="pt-tag">' + esc(t.editoria || "") + "</div><h3>" + esc(t.titulo) + "</h3>" +
+      (t.resumo ? '<p class="pd-res">' + esc(t.resumo) + "</p>" : "") +
+      (nomesDe.length ? '<p class="prop-note">Resumo com frases de: ' + esc(nomesDe.filter(function (n, i, arr) { return arr.indexOf(n) === i; }).join(", ")) + '. É texto dos veículos: reescreva antes de aprovar.</p>' : "") +
+      (REVIEWER ? "" : '<div class="pd-acoes"><button type="button" class="check-btn primary" data-pauta-act="criar" data-id="' + esc(t.id) + '">' + icon("news") + (criada ? "Criar outra notícia com este tema" : "Criar notícia com este tema") + "</button>" +
+        (st === "confirmado" ? '<span class="chip chip-aprovado">' + icon("check") + "Confirmado</span>" : '<button type="button" class="check-btn" data-pauta-act="confirmar" data-id="' + esc(t.id) + '">Confirmar</button>') +
+        (st === "descartado" ? '<button type="button" class="check-link" data-pauta-act="desfazer" data-id="' + esc(t.id) + '">desfazer descarte</button>' : '<button type="button" class="check-link" data-pauta-act="descartar" data-id="' + esc(t.id) + '">descartar</button>') +
+        "</div>") +
+      "</div>" + grupoChips(t.materias) + mats.map(function (m) { return materiaCard(m, false); }).join("");
+  }
+
+  // ---- Ações ----
+  function hojeIso() { return isoOf(new Date()); }
+  // Matéria → fonte numerada. Link não confirmado: pede o endereço original.
+  async function usarComoFonte(m, silencioso) {
+    var n = fonteDaMateria(m);
+    var s = state();
+    if (n) return s.sources[n - 1];
+    var url = m.url;
+    if (m.linkConfirmado === false) {
+      var colado = await uiPrompt("Este link veio do Google Notícias e não foi confirmado. Abra a matéria (" + (m.veiculo || "") + "), copie o endereço da barra do navegador e cole aqui:", "");
+      if (!colado) return null;
+      var host = hostOf(colado.trim());
+      var dom = String(m.dominio || "");
+      if (!host || !(host === dom || host.slice(-(dom.length + 1)) === "." + dom)) { uiAlert("O endereço precisa ser do próprio " + (m.veiculo || dom) + " (" + dom + ")."); return null; }
+      url = safeHref(colado.trim()) || colado.trim();
+    }
+    pushHistory();
+    var src = { id: newSourceId(), veiculo: m.veiculo || inferVeiculo(hostOf(url)), titulo: m.titulo || "", url: url, publicadoEm: m.publicadoEm || "", acessoEm: hojeIso() };
+    s.sources = s.sources || [];
+    s.sources.push(src);
+    scheduleSave();
+    if (!silencioso) { renderSourcesTab(); renderPauta(); uiToast("Fonte [" + s.sources.length + "] adicionada: " + src.veiculo + "."); }
+    return src;
+  }
+  function linkInline(src) {
+    return '<a class="inline-link" href="' + esc(safeHref(src.url) || "") + '">' + esc(src.veiculo) + "</a>";
+  }
+  // Tema → notícia em rascunho: cada frase do resumo leva o link da matéria
+  // de onde saiu; o selo [n] aponta para a matéria principal.
+  async function criarNoticiaDoTema(t) {
+    var principal = t.materias.filter(function (m) { return m.linkConfirmado !== false; })[0] || t.materias[0];
+    var fontes = {};
+    var srcPrincipal = await usarComoFonte(principal, true);
+    if (!srcPrincipal) return;
+    fontes[principal.id] = srcPrincipal;
+    var partes = [];
+    var frasesRes = (t.resumoFrases && t.resumoFrases.length) ? t.resumoFrases : (t.resumo ? [{ texto: t.resumo, de: principal.id }] : []);
+    for (var i = 0; i < frasesRes.length; i++) {
+      var fr = frasesRes[i], mm = materiaPorId(fr.de);
+      var src = mm ? (fontes[mm.id] || (mm.linkConfirmado === false ? null : await usarComoFonte(mm, true))) : null;
+      if (mm && src) fontes[mm.id] = src;
+      partes.push(esc(fr.texto) + (src ? " (" + linkInline(src) + ")" : ""));
+    }
+    var s = state();
+    pushHistory();
+    s.columns.push({ tag: t.editoria || "", title: t.titulo, body: partes.join(" ") || esc(t.titulo), linkText: "", sourceId: srcPrincipal.id, status: "rascunho", image: null });
+    var idx = s.columns.length - 1;
+    salvarPautaEstado(function (e) { e.temas[t.id] = "confirmado"; e.criadas[t.id] = true; });
+    scheduleSave();
+    setModo("pagina");
+    render();
+    showLeftTab("estrutura");
+    selectAndReveal(layerElement("block", "news-" + idx));
+    uiToast("Notícia " + (idx + 1) + " criada como rascunho, com " + Object.keys(fontes).length + " fonte(s). Reescreva o texto antes de aprovar.");
+  }
+  async function criarNoticiaDaMateria(m) {
+    var src = await usarComoFonte(m, true);
+    if (!src) return;
+    var s = state();
+    pushHistory();
+    s.columns.push({ tag: m.editoria || "", title: m.titulo, body: (m.trecho ? esc(m.trecho) + " (" + linkInline(src) + ")" : ""), linkText: "", sourceId: src.id, status: "rascunho", image: null });
+    var idx = s.columns.length - 1;
+    scheduleSave();
+    setModo("pagina");
+    render();
+    showLeftTab("estrutura");
+    selectAndReveal(layerElement("block", "news-" + idx));
+    uiToast("Notícia " + (idx + 1) + " criada como rascunho a partir de " + (m.veiculo || "uma matéria") + ".");
+  }
+  function actionsUrl() { return "https://github.com/" + ghRepo() + "/actions/workflows/pauta.yml"; }
+  async function buscarAgora() {
+    var campo = function (n) { var el = document.querySelector('#pautaPesquisa [data-pauta-campo="' + n + '"]'); return el ? el.value.trim() : ""; };
+    var termo = campo("termo"), inicio = campo("inicio"), fim = campo("fim");
+    if (inicio && fim && inicio > fim) { uiAlert("O início do período precisa ser antes do fim."); return; }
+    if (!ghToken()) {
+      var yes = await uiConfirm("Para buscar sem sair do Boletim, este aparelho precisa de uma chave do GitHub (configurada uma vez). Configurar agora?\n\nSem a chave, dá para buscar pelo site: GitHub → Actions → Pauta → Run workflow.", "Configurar chave");
+      if (yes) openSettings("integracoes");
+      else window.open(actionsUrl(), "_blank", "noopener");
+      return;
+    }
+    pauta.buscando = { desde: new Date(Date.now() - 120000).toISOString(), termo: termo };
+    renderPautaPesquisa();
+    try {
+      await ghApi("POST", "/repos/" + ghRepo() + "/actions/workflows/pauta.yml/dispatches", { ref: "main", inputs: { inicio: inicio, fim: fim, termo: termo } });
+    } catch (e) {
+      pauta.buscando = null;
+      renderPautaPesquisa();
+      uiAlert("O GitHub recusou o pedido" + (e.detalhe ? " (" + e.detalhe + ")" : " (" + e.message + ")") + ". Confira a chave em Configurações → Integrações: ela precisa da permissão \"Actions: Read and write\".");
+      return;
+    }
+    uiToast("Busca iniciada no GitHub. Costuma levar de 3 a 7 minutos.");
+    esperarBusca(0);
+  }
+  function esperarBusca(tentativa) {
+    if (!pauta.buscando) return;
+    setTimeout(async function () {
+      if (!pauta.buscando) return;
+      try {
+        var idx = await lerArquivoRepo("pautas/index.json");
+        var novo = ((idx && idx.pautas) || []).filter(function (p) { return p.geradoEm > pauta.buscando.desde; })[0];
+        if (novo) {
+          pauta.indice = idx;
+          pauta.buscando = null;
+          await carregarPauta(novo.arquivo);
+          uiToast("Pauta pronta: " + rotuloPauta(novo) + ".");
+          return;
+        }
+      } catch (e) { /* tenta de novo */ }
+      if (tentativa >= 30) {
+        pauta.buscando = null;
+        renderPautaPesquisa();
+        uiAlert("A busca está demorando mais que o normal. Veja o andamento em GitHub → Actions → Pauta.");
+        return;
+      }
+      esperarBusca(tentativa + 1);
+    }, tentativa ? 20000 : 45000);
+  }
+
+  function setModo(modo) {
+    modoAtual = modo === "pauta" ? "pauta" : "pagina";
+    var aberta = modoAtual === "pauta";
+    document.body.classList.toggle("modo-pauta", aberta);
+    var view = document.getElementById("pautaView");
+    if (view) view.hidden = !aberta;
+    document.querySelectorAll("[data-modo]").forEach(function (b) {
+      b.classList.toggle("is-active", b.dataset.modo === modoAtual);
+      b.setAttribute("aria-pressed", b.dataset.modo === modoAtual ? "true" : "false");
+    });
+    if (aberta) {
+      if (!pauta.atual && !pauta.msg) carregarIndicePauta();
+      else renderPauta();
+    } else {
+      updateBlockToolbar();
+    }
+  }
+
+  function initPauta() {
+    var view = document.getElementById("pautaView");
+    if (!view) return;
+    document.querySelectorAll("[data-modo]").forEach(function (b) {
+      b.addEventListener("click", function () { setModo(b.dataset.modo); });
+    });
+    view.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-pauta-act]");
+      if (!b || b.disabled) return;
+      var act = b.dataset.pautaAct, id = b.dataset.id;
+      if (act === "atualizar") { carregarIndicePauta(); return; }
+      if (act === "importar") { document.getElementById("pautaImport").click(); return; }
+      if (act === "buscar") { buscarAgora(); return; }
+      if (act === "config") { openSettings("integracoes"); return; }
+      if (act === "grupo") { pauta.filtros.grupo = b.dataset.valor; renderPauta(); return; }
+      if (act === "det-grupo") { pauta.detGrupo = b.dataset.valor; renderPautaDetalhe(); return; }
+      if (act === "sel-tema") { pauta.sel = id; pauta.detGrupo = ""; renderPautaTemas(); renderPautaDetalhe(); return; }
+      if (act === "confirmar" || act === "descartar" || act === "desfazer") {
+        e.stopPropagation();
+        salvarPautaEstado(function (est) { if (act === "desfazer") delete est.temas[id]; else est.temas[id] = act === "confirmar" ? "confirmado" : "descartado"; });
+        renderPautaTemas();
+        renderPautaDetalhe();
+        return;
+      }
+      var t = pauta.atual && pauta.atual.temas.filter(function (x) { return x.id === id; })[0];
+      if (act === "criar" && t) { criarNoticiaDoTema(t); return; }
+      var m = materiaPorId(id);
+      if (act === "usar" && m) { usarComoFonte(m, false); return; }
+      if (act === "criar-materia" && m) { criarNoticiaDaMateria(m); return; }
+    });
+    view.addEventListener("keydown", function (e) {
+      if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches(".pauta-tema")) { e.preventDefault(); e.target.click(); }
+    });
+    var timer = null;
+    view.addEventListener("input", function (e) {
+      if (e.target.dataset.pautaCampo !== "q") return;
+      pauta.filtros.q = e.target.value;
+      clearTimeout(timer);
+      timer = setTimeout(function () { renderPautaTemas(); renderPautaDetalhe(); }, 150);
+    });
+    view.addEventListener("change", function (e) {
+      var c = e.target.dataset.pautaCampo;
+      if (c === "arquivo") { pauta.sel = null; carregarPauta(e.target.value); return; }
+      if (c === "editoria" || c === "veiculo") { pauta.filtros[c] = e.target.value; renderPauta(); }
+    });
+    document.getElementById("pautaImport").addEventListener("change", function (e) {
+      var file = e.target.files && e.target.files[0];
+      e.target.value = "";
+      if (!file) return;
+      var r = new FileReader();
+      r.onload = function () {
+        try {
+          pauta.sel = null;
+          aplicarPauta(JSON.parse(r.result), file.name);
+          pauta.msg = "Pauta importada de " + file.name + ".";
+          renderPauta();
+        } catch (err) {
+          uiAlert("Este arquivo não é uma pauta do Boletim Maker (" + (err.message || "formato") + ").");
+        }
+      };
+      r.readAsText(file);
     });
   }
 
@@ -4477,7 +5034,56 @@
       ["investing", "Investing.com", "investing.com", "intl"],
       ["yahoo", "Yahoo Finance", "finance.yahoo.com", "intl"],
       ["advisorperspectives", "Advisor Perspectives", "advisorperspectives.com", "intl"]
-    ].map(function (c) { return { id: "canal_" + c[0], nome: c[1], dominio: c[2], grupo: c[3], validado: false }; });
+    ].map(function (c) {
+      var p = COLETA_PADRAO["canal_" + c[0]] || {};
+      return { id: "canal_" + c[0], nome: c[1], dominio: c[2], grupo: c[3], validado: false, prioridade: p.prioridade || 99, coleta: JSON.parse(JSON.stringify(p.coleta || null)) };
+    });
+  }
+
+  // Como o coletor da Pauta busca as matérias de cada canal padrão (testado em
+  // 25/10/2026; igual a coleta/canais.json). prioridade: 1 = mais alta.
+  var COLETA_PADRAO = {
+    canal_bcb: { prioridade: 1, coleta: { metodo: "atom", idioma: "pt", editoria: "BRASIL · POLÍTICA MONETÁRIA", enderecos: ["https://www.bcb.gov.br/api/feed/sitebcb/sitefeeds/notasImprensa", "https://www.bcb.gov.br/api/feed/sitebcb/sitefeeds/noticias"] } },
+    canal_ibge: { prioridade: 2, coleta: { metodo: "api", idioma: "pt", editoria: "BRASIL · ATIVIDADE", endereco: "https://servicodados.ibge.gov.br/api/v3/noticias/?de={MM}-{DD}-{AAAA}&ate={MM2}-{DD2}-{AAAA2}&qtd=100" } },
+    canal_ifi: { prioridade: 3, coleta: { metodo: "busca_site", idioma: "pt", editoria: "BRASIL · FISCAL", busca: "site:senado.leg.br/ifi" } },
+    canal_b3: { prioridade: 4, coleta: { metodo: "busca_site", idioma: "pt", editoria: "BRASIL · BOLSA", busca: "site:b3.com.br/pt_br/noticias" } },
+    canal_reuters: { prioridade: 5, coleta: { metodo: "busca_site", idioma: "en", busca: "site:reuters.com (markets OR business OR world/americas)" } },
+    canal_infomoney: { prioridade: 6, coleta: { metodo: "rss", idioma: "pt", porDia: "https://www.infomoney.com.br/{AAAA}/{MM}/{DD}/feed/", maxPaginas: 12 } },
+    canal_advisorperspectives: { prioridade: 7, coleta: { metodo: "rss", idioma: "en", endereco: "https://www.advisorperspectives.com/dshort.rss" } },
+    canal_opovo: { prioridade: 8, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:opovo.com.br/noticias/economia" } },
+    canal_investing: { prioridade: 9, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:br.investing.com/news" } },
+    canal_yahoo: { prioridade: 10, coleta: { metodo: "busca_site", idioma: "en", busca: "site:finance.yahoo.com" } }
+  };
+  var COLETA_METODOS = [["busca_site", "Busca por site (Google Notícias)"], ["rss", "Feed RSS"], ["atom", "Feed Atom"], ["api", "API do órgão"]];
+
+  // Arquivo para o coletor (coleta/canais.json): só canais validados.
+  async function exportarCanaisColeta() {
+    var validos = canais().filter(function (c) { return c.validado && c.dominio; });
+    if (!validos.length) {
+      uiAlert("Nenhum canal validado ainda. Abra cada canal (Fontes → Canais de referência), confira nome, domínio e grupo e marque \"Conferi\". Só os validados vão para a coleta.");
+      return;
+    }
+    var fora = canais().length - validos.length;
+    if (fora && !(await uiConfirm(fora + (fora === 1 ? " canal ainda não validado fica" : " canais ainda não validados ficam") + " fora da coleta. Exportar os " + validos.length + " validados?", "Exportar"))) return;
+    var arq = {
+      formato: "boletimMaker.canais", versao: 1, exportadoEm: new Date().toISOString(), origem: "app (Exportar canais para a coleta)",
+      canais: validos.slice().sort(function (a, b) { return (a.prioridade || 99) - (b.prioridade || 99); }).map(function (c) {
+        return { id: c.id, nome: plainText(c.nome), dominio: c.dominio, grupo: c.grupo || "br", prioridade: c.prioridade || 99,
+          coleta: c.coleta || { metodo: "busca_site", idioma: "pt", busca: "site:" + c.dominio } };
+      })
+    };
+    var texto = JSON.stringify(arq, null, 2) + "\n";
+    if (ghToken()) {
+      try {
+        await ghPutFile("coleta/canais.json", texto, "Canais da coleta atualizados pelo app (" + validos.length + " canais)");
+        uiToast("Canais enviados para a coleta: a próxima execução já usa esta lista.");
+        return;
+      } catch (e) {
+        uiAlert("Não foi possível enviar ao GitHub (" + (e.detalhe || e.message) + "). O arquivo será baixado para envio manual.");
+      }
+    }
+    await offerFile("canais.json", texto);
+    if (!ghToken()) uiToast("Arquivo baixado. Para a coleta usar, ele precisa ir para coleta/canais.json no GitHub — ou configure a chave em Configurações → Integrações e envie direto.");
   }
 
   function canais() { return Array.isArray(store.canais) ? store.canais : []; }
@@ -4517,11 +5123,13 @@
       return;
     }
     box.innerHTML = CANAL_GRUPOS.map(function (g) {
-      var itens = list.filter(function (c) { return (c.grupo || "br") === g[0]; });
+      var itens = list.filter(function (c) { return (c.grupo || "br") === g[0]; })
+        .sort(function (x, y) { return (x.prioridade || 99) - (y.prioridade || 99); });
       if (!itens.length) return "";
       return '<div class="canal-group">' + esc(g[1]) + "</div>" + itens.map(function (c) {
         var active = selection && selection.kind === "canal" && selection.canalId === c.id;
         return '<button type="button" class="canal-item' + (active ? " is-active" : "") + '" data-action="select-canal" data-canal-id="' + esc(c.id) + '">' +
+          '<span class="canal-prio" title="Prioridade na Pauta">' + (c.prioridade || "–") + "</span>" +
           '<span class="canal-main"><span class="canal-name">' + esc(plainText(c.nome) || "[Nome do canal]") + "</span>" +
           '<span class="canal-host">' + esc(c.dominio || "sem domínio") + "</span></span>" +
           (c.validado ? '<span class="chip chip-aprovado">' + icon("check") + "Validado</span>" : '<span class="chip chip-incompleta">A validar</span>') +
@@ -4550,6 +5158,21 @@
       "</select></div>" +
       '<p class="prop-note">Links deste domínio (e subdomínios) são reconhecidos como "' + esc(plainText(c.nome) || "este canal") + '" ao criar fontes.' +
       (usos ? " Aparece em " + usos + " fonte" + (usos > 1 ? "s" : "") + " das suas edições." : "") + "</p></div>";
+    var co = c.coleta || {};
+    var metodo = co.metodo || "busca_site";
+    html += '<div class="prop-section"><div class="prop-label">Coleta da Pauta</div>' +
+      '<div class="prop-grid"><div class="prop-field"><label>Prioridade</label><input type="number" min="1" max="99" ' + a + ' data-canal-field="prioridade" value="' + esc(String(c.prioridade || 99)) + '" title="1 = mais alta. Ordena as matérias e escolhe o título de cada tema."></div>' +
+      '<div class="prop-field"><label>Idioma</label><select ' + a + ' data-canal-field="coleta.idioma"><option value="pt"' + (co.idioma !== "en" ? " selected" : "") + '>Português</option><option value="en"' + (co.idioma === "en" ? " selected" : "") + ">Inglês</option></select></div></div>" +
+      '<div class="prop-field"><label>Como coletar</label><select ' + a + ' data-canal-field="coleta.metodo">' +
+      COLETA_METODOS.map(function (m) { return '<option value="' + m[0] + '"' + (metodo === m[0] ? " selected" : "") + ">" + esc(m[1]) + "</option>"; }).join("") + "</select></div>" +
+      (metodo === "busca_site"
+        ? '<div class="prop-field"><label>Busca</label><input type="text" ' + a + ' data-canal-field="coleta.busca" value="' + esc(co.busca || "site:" + (c.dominio || "")) + '" placeholder="site:exemplo.com.br/economia"></div>'
+        : metodo === "api"
+          ? '<div class="prop-field"><label>Endereço da API</label><input type="text" ' + a + ' data-canal-field="coleta.endereco" value="' + esc(co.endereco || "") + '"></div>'
+          : '<div class="prop-field"><label>Endereço(s) do feed</label><textarea rows="2" ' + a + ' data-canal-field="coleta.enderecos" placeholder="Um por linha">' + esc((co.enderecos || (co.endereco ? [co.endereco] : [])).join("\n")) + "</textarea></div>" +
+            (co.porDia ? '<p class="prop-note">Este canal usa o feed de cada dia: ' + esc(co.porDia) + "</p>" : "")) +
+      (c.grupo === "oficial" ? '<div class="prop-field"><label>Editoria padrão</label><input type="text" ' + a + ' data-canal-field="coleta.editoria" value="' + esc(co.editoria || "") + '" placeholder="Ex.: BRASIL · FISCAL"></div>' : "") +
+      '<p class="prop-note">Mudou algo aqui? Use "Exportar para a coleta" em Canais de referência para a próxima execução usar.</p></div>';
     html += '<div class="prop-section"><div class="prop-label">Validação</div>' +
       '<label class="prop-check"><input type="checkbox" ' + a + ' data-canal-field="validado"' + (c.validado ? " checked" : "") + '> Conferi nome, domínio e grupo</label>' +
       '<div style="margin-top:10px">' + (c.validado ? '<span class="chip chip-aprovado">Validado</span>' : '<span class="chip chip-incompleta">A validar</span>') + "</div></div>";
@@ -4566,6 +5189,17 @@
     if (f === "validado") c.validado = !!t.checked;
     else if (f === "dominio") c.dominio = normalizeDominio(t.value);
     else if (f === "grupo") c.grupo = CANAL_GRUPOS.some(function (g) { return g[0] === t.value; }) ? t.value : "br";
+    else if (f === "prioridade") c.prioridade = Math.min(99, Math.max(1, parseInt(t.value, 10) || 99));
+    else if (/^coleta\./.test(f)) {
+      var k = f.slice(7), v = t.value.trim();
+      c.coleta = c.coleta || { metodo: "busca_site", idioma: "pt" };
+      if (k === "enderecos") {
+        c.coleta.enderecos = v.split(/\s*\n\s*/).filter(function (x) { return /^https?:\/\//.test(x); });
+        delete c.coleta.endereco;
+      } else if (v) c.coleta[k] = v;
+      else delete c.coleta[k];
+      if (k === "metodo" && v === "busca_site" && !c.coleta.busca) c.coleta.busca = "site:" + (c.dominio || "");
+    }
     else c[f] = t.value.trim();
     // Mudou nome/domínio depois de validado: volta a pedir conferência.
     if (f === "nome" || f === "dominio") c.validado = false;
@@ -6586,6 +7220,7 @@
     { id: "verificar", grupo: "Geral", nome: "Verificar pendências", padrao: "F2", run: function () { clickId("btnCheck"); } },
     { id: "pdf", grupo: "Geral", nome: "Exportar PDF", padrao: "Ctrl+P", run: function () { clickId("btnPrint"); } },
     { id: "acervo", grupo: "Geral", nome: "Acervo de matérias (busca nas edições)", padrao: "F6", run: function () { openAcervo(); } },
+    { id: "pauta", grupo: "Geral", nome: "Abrir ou fechar a Pauta da semana", padrao: "Ctrl+Alt+P", run: function () { setModo(modoAtual === "pauta" ? "pagina" : "pauta"); } },
     { id: "configuracoes", grupo: "Geral", nome: "Configurações", padrao: "Ctrl+,", run: function () { openSettings("interface"); } },
     { id: "calculadora", grupo: "Edição", nome: "Calculadora do termômetro", padrao: "F3", autor: true, run: function () { openThermoCalc(); } },
     { id: "observacao", grupo: "Edição", nome: "Nova observação (trecho selecionado, bloco ou geral)", padrao: "F4", run: notaRapida },
@@ -6769,7 +7404,7 @@
       b.setAttribute("aria-selected", b.dataset.settingsAba === settingsAba ? "true" : "false");
     });
     var reset = document.getElementById("settingsReset");
-    if (reset) reset.hidden = settingsAba === "conta" || settingsAba === "acesso";
+    if (reset) reset.hidden = settingsAba === "conta" || settingsAba === "acesso" || settingsAba === "integracoes";
     var html = "";
     if (settingsAba === "conta") {
       html += '<div class="settings-row"><span>Conectado como</span><strong>' + esc(viewer.email || viewer.nome || "") + "</strong></div>" +
@@ -6788,6 +7423,16 @@
       html += lista("Podem editar e comentar", "editores", "Ex.: o professor. Editam o boletim junto com você, ao mesmo tempo, e deixam observações.") +
         lista("Só comentam", "revisores", "Leem tudo e deixam observações; não alteram o texto.") +
         '<p class="prop-note">Depois de adicionar, envie o endereço <strong>' + esc(location.origin + location.pathname) + "</strong>. A pessoa entra com o mesmo e-mail, pelo link de acesso ou pelo Google — sem senha e sem conta no Claude.</p>";
+    } else if (settingsAba === "integracoes") {
+      var tk = ghToken();
+      html += '<div class="settings-row"><span>Repositório da coleta</span><code class="settings-url">' + esc(ghRepo()) + "</code></div>" +
+        '<div class="settings-row"><span>Chave do GitHub neste aparelho</span><strong>' + (tk ? "Configurada (…" + esc(tk.slice(-4)) + ")" : "Não configurada") + "</strong></div>" +
+        '<div class="integ-form"><input type="password" data-integ="token" autocomplete="off" placeholder="Cole a chave (github_pat_…)" aria-label="Chave do GitHub">' +
+        '<button type="button" class="check-btn primary" data-settings-act="integ-salvar">Salvar e testar</button>' +
+        (tk ? '<button type="button" class="check-btn" data-settings-act="integ-remover">Remover</button>' : "") + "</div>" +
+        '<p class="prop-note">Para que serve: <strong>Buscar agora</strong> na aba Pauta e <strong>Exportar canais para a coleta</strong> direto, sem abrir o GitHub. Sem a chave, tudo funciona, mas essas duas ações abrem o GitHub ou baixam um arquivo.</p>' +
+        '<p class="prop-note">Como criar (uma vez, ~2 min): abra <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Fine-grained token</a>; em <em>Repository access</em> escolha <strong>Only select repositories → ' + esc(ghRepo().split("/")[1] || "") + "</strong>; em <em>Permissions → Repository</em> marque <strong>Actions: Read and write</strong> e <strong>Contents: Read and write</strong>; validade de até 1 ano; gere e cole aqui.</p>" +
+        '<p class="prop-note">A chave fica <strong>só neste navegador</strong>: não vai para o servidor, para o backup nem para outras pessoas. Em computador de outra pessoa, remova ao terminar.</p>';
     } else if (settingsAba === "atalhos") {
       var grupo = null;
       html += '<table class="settings-keys">';
@@ -6842,6 +7487,32 @@
       if (aba) { settingsAba = aba.dataset.settingsAba; capturandoAtalho = null; document.getElementById("settingsMsg").textContent = ""; renderSettings(); return; }
       var b = e.target.closest("[data-settings-act]");
       if (!b) return;
+      if (b.dataset.settingsAct === "integ-salvar") {
+        var campo = dlg.querySelector('[data-integ="token"]');
+        var novo = (campo && campo.value || "").trim();
+        if (!novo) { if (campo) campo.focus(); return; }
+        var anterior = ghToken();
+        ghSetToken(novo);
+        var msgEl = document.getElementById("settingsMsg");
+        msgEl.textContent = "Testando a chave…";
+        ghApi("GET", "/repos/" + ghRepo() + "/actions/workflows/pauta.yml").then(function () {
+          msgEl.textContent = "Chave salva e funcionando: a coleta pode ser acionada daqui.";
+          renderSettings();
+          renderPauta();
+        }).catch(function (err) {
+          ghSetToken(anterior);
+          msgEl.textContent = "A chave não funcionou (" + (err.detalhe || err.message) + "). Confira se escolheu o repositório " + ghRepo() + " e a permissão Actions: Read and write.";
+          renderSettings();
+        });
+        return;
+      }
+      if (b.dataset.settingsAct === "integ-remover") {
+        ghSetToken("");
+        document.getElementById("settingsMsg").textContent = "Chave removida deste navegador.";
+        renderSettings();
+        renderPauta();
+        return;
+      }
       if (b.dataset.settingsAct === "sair") {
         uiConfirm("Sair desta conta? O boletim continua salvo no servidor.", "Sair").then(function (yes) { if (yes) sairDaConta(); });
         return;
@@ -6968,6 +7639,7 @@
     initNotas();
     initSettings();
     initAcervo();
+    initPauta();
     document.getElementById("btnThermoCalc").addEventListener("click", openThermoCalc);
     if (IN_ARTIFACT) {
       var btnPrint = document.getElementById("btnPrint");

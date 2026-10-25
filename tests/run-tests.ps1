@@ -46,6 +46,7 @@ $Suites = @(
   @{ Name = "revisao";               Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "rvout" },
   @{ Name = "atalhos";               Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "atout" },
   @{ Name = "acervo";                Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "acout" },
+  @{ Name = "pauta";                 Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "ptout"; Budget = 200000 },
   @{ Name = "ocultar-blocos";        Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "hd" },
   @{ Name = "excluir-blocos";        Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "rm" },
   @{ Name = "termometro";            Setup = "limpo.js";                       Query = "";            Out = "th" },
@@ -84,6 +85,8 @@ foreach ($s in $Suites) {
   $label = if ($s.Label) { $s.Label } else { $s.Name }
   $setup = Get-Content (Join-Path $PSScriptRoot ("setup\" + $s.Setup)) -Raw -Encoding UTF8
   $steps = Get-Content (Join-Path $PSScriptRoot ("suites\" + $s.Name + ".js")) -Raw -Encoding UTF8
+  # Amostras: /*FIXTURE:arquivo.json*/null na suíte vira o conteúdo de tests\fixtures\arquivo.json
+  $steps = [regex]::Replace($steps, '/\*FIXTURE:([\w.-]+)\*/null', { param($m) Get-Content (Join-Path $PSScriptRoot ("fixtures\" + $m.Groups[1].Value)) -Raw -Encoding UTF8 })
   $html = "<!DOCTYPE html><html lang=""pt-BR""><head><meta charset=""UTF-8""><title>Boletim Maker</title>" +
           "<link rel=""stylesheet"" href=""$RootUrl/css/style.css""><script>`n$setup`n</script></head><body>" +
           $body + "<script>`n$steps`n</script></body></html>"

@@ -3,6 +3,18 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.4.0-beta] — 2026-10-25
+
+- **Pauta da semana:** coleta automática das matérias de mercado financeiro dos canais de referência, agrupadas por tema.
+  - Roda no GitHub Actions todo sábado às 08h e pelo botão **Buscar agora**; não precisa abrir o Claude.
+  - Aba **Pauta** no topo (Ctrl+Alt+P), com filtros por palavra, editoria, grupo e veículo.
+  - Confirmar ou descartar temas; **Usar como fonte** e **Criar notícia** em rascunho, com o link de cada frase.
+  - Primeira pauta: semana de 19 a 23/10/2026 (290 matérias, 49 temas, todos os links confirmados).
+- **Coletor** `coleta/coletar.mjs` (Node 20, sem dependências), canais em `coleta/canais.json`, dicionário de editorias em `coleta/editorias.json`.
+- **Canais:** prioridade e método de coleta editáveis; botão **Coleta** para exportar os validados.
+- **Configurações → Integrações:** chave do GitHub só neste aparelho, para Buscar agora e enviar os canais.
+- Testes: suíte `pauta` (36 verificações).
+
 ## [1.3.0-beta] — 2026-10-24
 
 - **Plataforma própria:** GitHub Pages (<https://vt-iak.github.io/Boletimmaker-lmfu/>)

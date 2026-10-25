@@ -1,0 +1,61 @@
+{
+  "formato": "boletimMaker.canais",
+  "versao": 1,
+  "exportadoEm": "2026-10-25T12:00:00-03:00",
+  "origem": "Lista padrão do app (defaultCanais) com os métodos de coleta testados em 25/10/2026. Atualize pelo app: Fontes → Canais de referência → Exportar canais para a coleta.",
+  "canais": [
+    {
+      "id": "canal_bcb", "nome": "Banco Central do Brasil", "dominio": "bcb.gov.br", "grupo": "oficial", "prioridade": 1,
+      "coleta": { "metodo": "atom", "idioma": "pt", "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+        "enderecos": ["https://www.bcb.gov.br/api/feed/sitebcb/sitefeeds/notasImprensa", "https://www.bcb.gov.br/api/feed/sitebcb/sitefeeds/noticias"],
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "Notas à imprensa (mais frequentes) e notícias, em Atom." } }
+    },
+    {
+      "id": "canal_ibge", "nome": "IBGE", "dominio": "ibge.gov.br", "grupo": "oficial", "prioridade": 2,
+      "coleta": { "metodo": "api", "idioma": "pt", "editoria": "BRASIL · ATIVIDADE",
+        "endereco": "https://servicodados.ibge.gov.br/api/v3/noticias/?de={MM}-{DD}-{AAAA}&ate={MM2}-{DD2}-{AAAA2}&qtd=100",
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "API oficial com filtro de período (de/ate em MM-DD-AAAA). O RSS da Agência IBGE bloqueia robôs." } }
+    },
+    {
+      "id": "canal_ifi", "nome": "IFI/Senado", "dominio": "senado.leg.br", "grupo": "oficial", "prioridade": 3,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:senado.leg.br/ifi", "editoria": "BRASIL · FISCAL",
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "Sem RSS; busca por site no Google Notícias." } }
+    },
+    {
+      "id": "canal_b3", "nome": "B3", "dominio": "b3.com.br", "grupo": "oficial", "prioridade": 4,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:b3.com.br/pt_br/noticias", "editoria": "BRASIL · BOLSA",
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "O RSS da B3 é só da plataforma PUMA; notícias pela busca por site." } }
+    },
+    {
+      "id": "canal_reuters", "nome": "Reuters", "dominio": "reuters.com", "grupo": "intl", "prioridade": 5,
+      "coleta": { "metodo": "busca_site", "idioma": "en", "busca": "site:reuters.com (markets OR business OR world/americas)",
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "Feeds públicos encerrados; busca por site, links originais recuperados." } }
+    },
+    {
+      "id": "canal_infomoney", "nome": "InfoMoney", "dominio": "infomoney.com.br", "grupo": "br", "prioridade": 6,
+      "coleta": { "metodo": "rss", "idioma": "pt",
+        "porDia": "https://www.infomoney.com.br/{AAAA}/{MM}/{DD}/feed/", "maxPaginas": 12,
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "Feed por dia (/AAAA/MM/DD/feed/?paged=N), 10 itens por página." } }
+    },
+    {
+      "id": "canal_advisorperspectives", "nome": "Advisor Perspectives", "dominio": "advisorperspectives.com", "grupo": "intl", "prioridade": 7,
+      "coleta": { "metodo": "rss", "idioma": "en", "endereco": "https://www.advisorperspectives.com/dshort.rss",
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "dshort.rss com 20 itens recentes." } }
+    },
+    {
+      "id": "canal_opovo", "nome": "O Povo", "dominio": "opovo.com.br", "grupo": "br", "prioridade": 8,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:opovo.com.br/noticias/economia",
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "Sem RSS; busca na seção Economia." } }
+    },
+    {
+      "id": "canal_investing", "nome": "Investing.com", "dominio": "investing.com", "grupo": "intl", "prioridade": 9,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:br.investing.com/news",
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "O RSS (br.investing.com/rss/news.rss) só traz as matérias do dia; a busca por site cobre a semana inteira." } }
+    },
+    {
+      "id": "canal_yahoo", "nome": "Yahoo Finance", "dominio": "finance.yahoo.com", "grupo": "intl", "prioridade": 10,
+      "coleta": { "metodo": "busca_site", "idioma": "en", "busca": "site:finance.yahoo.com",
+        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "O RSS antigo (news/rssindex) devolve 404; busca por site." } }
+    }
+  ]
+}

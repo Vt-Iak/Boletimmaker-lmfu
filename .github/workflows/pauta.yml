@@ -1,0 +1,78 @@
+# Boletim Maker — coleta da Pauta.
+# Roda o coletor (coleta/coletar.mjs) e grava pautas/<inicio>.json + pautas/index.json
+# no ramo main; o GitHub Pages publica e a aba Pauta do Boletim lê de lá.
+#
+# Quando roda:
+#   - todo sábado às 08h (Brasília), para a semana de segunda a sexta que terminou;
+#   - à mão: Actions → Pauta → Run workflow (também pelo app do GitHub no celular)
+#     ou pelo botão "Buscar agora" da aba Pauta, com período e/ou palavra-chave.
+# Não usa nenhuma credencial além do GITHUB_TOKEN da própria execução e não acessa o Firebase.
+name: Pauta
+
+on:
+  schedule:
+    - cron: "0 11 * * 6"   # sábado 11h UTC = 08h em Brasília
+  workflow_dispatch:
+    inputs:
+      inicio:
+        description: "Início da cobertura (AAAA-MM-DD). Vazio = última semana seg–sex"
+        required: false
+        default: ""
+      fim:
+        description: "Fim da cobertura (AAAA-MM-DD)"
+        required: false
+        default: ""
+      termo:
+        description: "Palavra-chave para uma busca (opcional, ex.: Petrobras)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: pauta
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Coletar e agrupar as matérias
+        env:
+          INICIO: ${{ inputs.inicio }}
+          FIM: ${{ inputs.fim }}
+          TERMO: ${{ inputs.termo }}
+        run: node coleta/coletar.mjs
+
+      - name: Gravar a pauta no repositório
+        env:
+          TERMO: ${{ inputs.termo }}
+        run: |
+          git config user.name "Coletor da Pauta"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pautas
+          if git diff --cached --quiet; then
+            echo "Nada novo para gravar."
+            exit 0
+          fi
+          git commit -m "Pauta: $(date -u +%Y-%m-%d)${TERMO:+ · busca: $TERMO}"
+          for tentativa in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
+
+      - name: Atualizar o site (GitHub Pages)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" > /dev/null

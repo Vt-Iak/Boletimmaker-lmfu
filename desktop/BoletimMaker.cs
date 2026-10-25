@@ -36,15 +36,15 @@ using Microsoft.Web.WebView2.WinForms;
 [assembly: AssemblyDescription("Editor do Boletim Econômico semanal — versão offline")]
 [assembly: AssemblyCompany("Liga de Mercado Financeiro")]
 [assembly: AssemblyCopyright("João Vitor C. Soares")]
-[assembly: AssemblyVersion("1.3.0.0")]
-[assembly: AssemblyFileVersion("1.3.0.0")]
-[assembly: AssemblyInformationalVersion("1.3.0-beta")]
+[assembly: AssemblyVersion("1.4.0.0")]
+[assembly: AssemblyFileVersion("1.4.0.0")]
+[assembly: AssemblyInformationalVersion("1.4.0-beta")]
 
 namespace BoletimMaker
 {
     static class Program
     {
-        public const string Version = "1.3.0-beta";
+        public const string Version = "1.4.0-beta";
         public const string Host = "boletim.example";
         static readonly Dictionary<string, byte[]> Libs = new Dictionary<string, byte[]>();
 

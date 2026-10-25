@@ -1,0 +1,17 @@
+{
+ "formato": "boletimMaker.pautas",
+ "versao": 1,
+ "pautas": [
+  {
+   "arquivo": "2026-10-19.json",
+   "tipo": "semana",
+   "termo": null,
+   "inicio": "2026-10-19",
+   "fim": "2026-10-23",
+   "geradoEm": "2026-10-25T13:51:55.157Z",
+   "temas": 49,
+   "materias": 290
+  }
+ ],
+ "atualizadoEm": "2026-10-25T13:51:55.157Z"
+}

@@ -60,7 +60,7 @@
       <div class="tb-group">
         <span class="brand-mark" aria-hidden="true">B</span>
         <strong class="brand-mini">Boletim Maker</strong>
-        <span class="version-chip" id="versionChip" title="Versão 1.3.0-beta">Beta</span>
+        <span class="version-chip" id="versionChip" title="Versão 1.4.0-beta">Beta</span>
       </div>
       <div class="tb-group edition-picker">
         <select id="editionSelect" title="Edição atual" aria-label="Edição atual"></select>
@@ -69,6 +69,10 @@
           <option value="revisado">Revisado</option>
           <option value="aprovado">Aprovado</option>
         </select>
+      </div>
+      <div class="tb-group modo-seg" role="group" aria-label="Modo de trabalho">
+        <button type="button" class="modo-btn is-active" data-modo="pagina" aria-pressed="true" title="Editar a página do boletim"><svg class="ic"><use href="#i-file"/></svg>Página</button>
+        <button type="button" class="modo-btn" data-modo="pauta" aria-pressed="false" title="Pauta da semana: matérias coletadas e agrupadas por tema (Ctrl+Alt+P)"><svg class="ic"><use href="#i-news"/></svg>Pauta <span class="tab-count" id="pautaCount"></span></button>
       </div>
       <div class="tb-group menu-wrap">
         <button id="btnMenu" class="icon-btn" title="Mais ações" aria-label="Mais ações" aria-haspopup="true" aria-expanded="false"><svg class="ic"><use href="#i-more"/></svg></button>
@@ -168,9 +172,12 @@
         <div class="panel-section">
           <div class="sources-head">
             <span class="sources-title">Canais de referência <span class="canais-count" id="canaisCount"></span></span>
-            <button type="button" class="prop-btn" data-action="add-canal"><svg class="ic"><use href="#i-plus"/></svg>Canal</button>
+            <span class="canais-acoes">
+              <button type="button" class="prop-btn" data-action="add-canal"><svg class="ic"><use href="#i-plus"/></svg>Canal</button>
+              <button type="button" class="prop-btn" id="btnExportCanais" title="Exportar os canais validados para a coleta da Pauta (coleta/canais.json)"><svg class="ic"><use href="#i-download"/></svg>Coleta</button>
+            </span>
           </div>
-          <p class="prop-note" style="margin:0 0 10px">Veículos que o boletim cita, válidos para todas as edições. Ao colar um link numa fonte, o veículo é preenchido pelo canal do domínio.</p>
+          <p class="prop-note" style="margin:0 0 10px">Veículos que o boletim cita, válidos para todas as edições. Ao colar um link numa fonte, o veículo é preenchido pelo canal do domínio. O número antes do nome é a prioridade na Pauta; "Coleta" envia os canais validados para a busca automática.</p>
           <div id="canaisList" class="canais-list"></div>
         </div>
       </div>
@@ -221,6 +228,17 @@
   </div>
 
   <!-- Zoom flutuante sobre a página -->
+  <!-- Pauta da semana: matérias coletadas pelo GitHub Actions (coleta/coletar.mjs) e agrupadas por tema -->
+  <section id="pautaView" class="pauta-view no-print" hidden aria-label="Pauta da semana">
+    <div class="pauta-col pauta-pesquisa" id="pautaPesquisa"></div>
+    <div class="pauta-col pauta-temas">
+      <div class="pauta-head"><h2>Temas da semana</h2><span class="tab-count" id="pautaTemasCount"></span></div>
+      <div id="pautaTemas" class="pauta-lista"></div>
+    </div>
+    <div class="pauta-col pauta-detalhe" id="pautaDetalhe"></div>
+    <input type="file" id="pautaImport" accept="application/json,.json" hidden>
+  </section>
+
   <div class="zoom-bar no-print" id="zoomBar">
     <button id="btnZoomOut" class="icon-btn" title="Diminuir zoom (ou Ctrl+roda do mouse)" aria-label="Diminuir zoom"><svg class="ic"><use href="#i-minus"/></svg></button>
     <button id="btnZoomReset" class="zoom-level" title="Voltar para 100%"><span id="zoomLevel">100%</span></button>
@@ -307,6 +325,7 @@
           <button type="button" role="tab" data-settings-aba="interface">Interface</button>
           <button type="button" role="tab" data-settings-aba="conta" hidden>Conta</button>
           <button type="button" role="tab" data-settings-aba="acesso" hidden>Acesso</button>
+          <button type="button" role="tab" data-settings-aba="integracoes">Integrações</button>
         </div>
       </div>
       <p id="settingsMsg" class="calc-msg" aria-live="polite"></p>

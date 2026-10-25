@@ -14,6 +14,8 @@ window.BOLETIM_FIREBASE = {
   },
   // Dono do boletim: único que gerencia o acesso e exclui edições.
   owner: "joaovcsoares5@gmail.com",
+  // Repositório do site e da coleta da Pauta (GitHub Actions grava em pautas/).
+  repo: "Vt-Iak/Boletimmaker-lmfu",
   // Endereços onde o app conecta ao Firebase (além de *.github.io).
   hosts: ["boletimmaker-lmfu.web.app", "boletimmaker-lmfu.firebaseapp.com"]
 };

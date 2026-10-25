@@ -1,0 +1,723 @@
+{
+ "formato": "boletimMaker.pauta",
+ "versao": 1,
+ "geradoEm": "2026-10-25T13:51:55.157Z",
+ "cobertura": {
+  "inicio": "2026-10-19",
+  "fim": "2026-10-23"
+ },
+ "canais": [
+  "bcb.gov.br",
+  "ibge.gov.br",
+  "senado.leg.br",
+  "b3.com.br",
+  "reuters.com",
+  "infomoney.com.br",
+  "advisorperspectives.com",
+  "opovo.com.br",
+  "investing.com",
+  "finance.yahoo.com"
+ ],
+ "coleta": {
+  "origem": "teste (amostra de pautas/2026-10-19.json)",
+  "termo": null,
+  "descartadas": {
+   "foraDaLista": 0,
+   "foraDoPeriodo": 34,
+   "semData": 0,
+   "foraDoTema": 731,
+   "duplicadas": 5
+  },
+  "porCanal": {
+   "Banco Central do Brasil": {
+    "brutos": 20,
+    "aceitas": 7
+   },
+   "IBGE": {
+    "brutos": 9,
+    "aceitas": 9
+   },
+   "IFI/Senado": {
+    "brutos": 2,
+    "aceitas": 0
+   },
+   "B3": {
+    "brutos": 9,
+    "aceitas": 8
+   },
+   "Reuters": {
+    "brutos": 100,
+    "aceitas": 22
+   },
+   "InfoMoney": {
+    "brutos": 600,
+    "aceitas": 168
+   },
+   "Advisor Perspectives": {
+    "brutos": 20,
+    "aceitas": 2
+   },
+   "O Povo": {
+    "brutos": 100,
+    "aceitas": 23
+   },
+   "Investing.com": {
+    "brutos": 100,
+    "aceitas": 6
+   },
+   "Yahoo Finance": {
+    "brutos": 100,
+    "aceitas": 45
+   }
+  }
+ },
+ "temas": [
+  {
+   "id": "tema_1",
+   "titulo": "O IPCA-15 é de 0,32% em outubro",
+   "editoria": "BRASIL · INFLAÇÃO",
+   "resumo": "O Índice Nacional de Preços ao Consumidor Amplo 15 (IPCA-15) foi de 0,32% em outubro, ficando 0,38 ponto percentual (p.p.) abaixo da taxa de setembro (0,70%). Taxa do Tesouro Prefixado 2029 sobe para 12,75%, enquanto vencimentos de inflação a partir de 2040 recuam até 8 pontos-base. Pesquisa da Reuters apontava expectativas de altas de 0,43% no mês e de 4,73% na comparação com outubro do ano anterior.",
+   "resumoDe": [
+    "m_16",
+    "m_147",
+    "m_181"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "O Índice Nacional de Preços ao Consumidor Amplo 15 (IPCA-15) foi de 0,32% em outubro, ficando 0,38 ponto percentual (p.p.) abaixo da taxa de setembro (0,70%).",
+     "de": "m_16"
+    },
+    {
+     "texto": "Taxa do Tesouro Prefixado 2029 sobe para 12,75%, enquanto vencimentos de inflação a partir de 2040 recuam até 8 pontos-base.",
+     "de": "m_147"
+    },
+    {
+     "texto": "Pesquisa da Reuters apontava expectativas de altas de 0,43% no mês e de 4,73% na comparação com outubro do ano anterior.",
+     "de": "m_181"
+    }
+   ],
+   "relevancia": 5,
+   "veiculos": 3,
+   "materias": [
+    {
+     "id": "m_16",
+     "canalId": "canal_ibge",
+     "veiculo": "IBGE",
+     "dominio": "ibge.gov.br",
+     "grupo": "oficial",
+     "prioridade": 2,
+     "titulo": "O IPCA-15 é de 0,32% em outubro",
+     "url": "http://agenciadenoticias.ibge.gov.br/agencia-sala-de-imprensa/2013-agencia-de-noticias/releases/48349-o-ipca-15-e-de-0-32-em-outubro.html",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-23",
+     "editoria": "BRASIL · INFLAÇÃO",
+     "trecho": "O Índice Nacional de Preços ao Consumidor Amplo 15 (IPCA-15) foi de 0,32% em outubro, ficando 0,38 ponto percentual (p.p.) abaixo da taxa de setembro (0,70%). No ano, o IPCA-15 acumula alta de 4,15% e, em 12 meses, de 4,62%, acima dos 4,47% observados..."
+    },
+    {
+     "id": "m_147",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Tesouro Direto: taxas pré sobem, mas IPCA+ longo recua antes do Datafolha",
+     "url": "https://www.infomoney.com.br/onde-investir/tesouro-direto-abertura-fechamento-22102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "BRASIL · INFLAÇÃO",
+     "trecho": "Taxa do Tesouro Prefixado 2029 sobe para 12,75%, enquanto vencimentos de inflação a partir de 2040 recuam até 8 pontos-base"
+    },
+    {
+     "id": "m_181",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "IPCA-15: prévia da inflação sobe 0,32% em outubro, abaixo do esperado",
+     "url": "https://www.infomoney.com.br/economia/ipca-15-previa-inflacao-ibge-outubro-2026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-23",
+     "editoria": "BRASIL · INFLAÇÃO",
+     "trecho": "Pesquisa da Reuters apontava expectativas de altas de 0,43% no mês e de 4,73% na comparação com outubro do ano anterior"
+    },
+    {
+     "id": "m_182",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Ibovespa Futuro sobe com disputa eleitoral acirrada e IPCA-15 antes do 2º turno",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-futuro-sobe-com-disputa-eleitoral-acirrada-e-ipca-15-antes-do-2o-turno/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-23",
+     "editoria": "BRASIL · INFLAÇÃO",
+     "trecho": "À noite, os dois postulantes ao Palácio do Planalto estarão frente à frente no debate realizado pela TV Globo"
+    }
+   ]
+  },
+  {
+   "id": "tema_2",
+   "titulo": "Venezuela diz ter maiores reservas de petróleo do mundo, mas especialistas contestam",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "Segundo seis analistas, o total efetivamente recuperável nas condições atuais estaria entre 60 bilhões e 120 bilhões de barris, abaixo do necessário para manter o país à frente da Arábia Saudita. A commodity energética seguiu impulsionada pelos ataques dos Houthis, do Iêmen, à infraestrutura energética da Arábia Saudita. Ministro antecipou medidas do governo, se reeleito, para conter o impacto com o crescente preço dos combustíveis.",
+   "resumoDe": [
+    "m_152",
+    "m_157",
+    "m_197"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Segundo seis analistas, o total efetivamente recuperável nas condições atuais estaria entre 60 bilhões e 120 bilhões de barris, abaixo do necessário para manter o país à frente da Arábia Saudita.",
+     "de": "m_152"
+    },
+    {
+     "texto": "A commodity energética seguiu impulsionada pelos ataques dos Houthis, do Iêmen, à infraestrutura energética da Arábia Saudita.",
+     "de": "m_157"
+    },
+    {
+     "texto": "Ministro antecipou medidas do governo, se reeleito, para conter o impacto com o crescente preço dos combustíveis.",
+     "de": "m_197"
+    }
+   ],
+   "relevancia": 4,
+   "veiculos": 3,
+   "materias": [
+    {
+     "id": "m_152",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Venezuela diz ter maiores reservas de petróleo do mundo, mas especialistas contestam",
+     "url": "https://www.infomoney.com.br/mercados/venezuela-diz-ter-maiores-reservas-de-petroleo-do-mundo-mas-especialistas-contestam/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Segundo seis analistas, o total efetivamente recuperável nas condições atuais estaria entre 60 bilhões e 120 bilhões de barris, abaixo do necessário para manter o país à frente da Arábia Saudita"
+    },
+    {
+     "id": "m_157",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Petróleo brent sobe 4% e atinge maior valor desde maio por tensões no Oriente Médio",
+     "url": "https://www.infomoney.com.br/mercados/petroleo-abertura-fechamento-ira-eua-22102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "A commodity energética seguiu impulsionada pelos ataques dos Houthis, do Iêmen, à infraestrutura energética da Arábia Saudita"
+    },
+    {
+     "id": "m_197",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Governo deve manter subsídios a combustíveis com alta do petróleo, diz Durigan",
+     "url": "https://www.infomoney.com.br/politica/governo-deve-manter-subsidios-a-combustiveis-com-alta-do-petroleo-diz-durigan/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-23",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Ministro antecipou medidas do governo, se reeleito, para conter o impacto com o crescente preço dos combustíveis"
+    },
+    {
+     "id": "m_198",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Bolsas da Europa fecham sem direção única de olho em alta do petróleo e temor com IA",
+     "url": "https://www.infomoney.com.br/mercados/bolsas-da-europa-fecham-sem-direcao-unica-de-olho-em-alta-do-petroleo-e-temor-com-ia/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-23",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Balanços corporativos pressionam bolsas junto a indicadores mistos de atividade"
+    }
+   ]
+  },
+  {
+   "id": "tema_3",
+   "titulo": "Saudi Aramco seeks to partner with countries to expand its oil stockpile, CEO says",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "",
+   "resumoDe": [],
+   "resumoFrases": [],
+   "relevancia": 3,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_26",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Saudi Aramco seeks to partner with countries to expand its oil stockpile, CEO says",
+     "url": "https://www.reuters.com/business/energy/saudi-aramco-seeks-partner-with-countries-expand-its-oil-stockpile-ceo-says-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_27",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "ADNOC's XRG in talks to buy stake in Eni's Libya oil and gas business, sources say",
+     "url": "https://www.reuters.com/business/energy/adnocs-xrg-talks-buy-stake-enis-libya-oil-gas-business-sources-say-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_31",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "US regulator is probing suspicious Iran oil trading, official says",
+     "url": "https://www.reuters.com/business/energy/us-regulator-is-probing-suspicious-iran-oil-trading-official-says-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_33",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Trump invokes Cold War-era Defense Production Act for oil production, refining",
+     "url": "https://www.reuters.com/business/energy/trump-invokes-cold-war-era-defense-production-act-oil-production-refining-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    }
+   ]
+  },
+  {
+   "id": "tema_4",
+   "titulo": "Petróleo cai calibrando guerra no Oriente Médio e alívio de sanções à Rússia",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "Negociado na Intercontinental Exchange de Londres (ICE), o petróleo Brent para dezembro fechou em baixa de 0,28% (US$ 0,31), a US$ 109,55 o barril. Presidente argentino atribuiu a evolução a mudanças regulatórias promovidas por seu governo. Os preços do barril do petróleo no mercado internacional voltaram a subir nesta terça, com o Brent superando a marca de US$ 110 por barril.",
+   "resumoDe": [
+    "m_71",
+    "m_80",
+    "m_82"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Negociado na Intercontinental Exchange de Londres (ICE), o petróleo Brent para dezembro fechou em baixa de 0,28% (US$ 0,31), a US$ 109,55 o barril.",
+     "de": "m_71"
+    },
+    {
+     "texto": "Presidente argentino atribuiu a evolução a mudanças regulatórias promovidas por seu governo.",
+     "de": "m_80"
+    },
+    {
+     "texto": "Os preços do barril do petróleo no mercado internacional voltaram a subir nesta terça, com o Brent superando a marca de US$ 110 por barril.",
+     "de": "m_82"
+    }
+   ],
+   "relevancia": 3,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_71",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Petróleo cai calibrando guerra no Oriente Médio e alívio de sanções à Rússia",
+     "url": "https://www.infomoney.com.br/mercados/petroleo-abertura-fechamento-ira-eua-19102026/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-19",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Negociado na Intercontinental Exchange de Londres (ICE), o petróleo Brent para dezembro fechou em baixa de 0,28% (US$ 0,31), a US$ 109,55 o barril"
+    },
+    {
+     "id": "m_80",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Milei diz que Argentina está próxima de produzir 1 mi de barris de petróleo por dia",
+     "url": "https://www.infomoney.com.br/mundo/milei-diz-que-argentina-esta-proxima-de-produzir-1-mi-de-barris-de-petroleo-por-dia/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-19",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Presidente argentino atribuiu a evolução a mudanças regulatórias promovidas por seu governo"
+    },
+    {
+     "id": "m_82",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Ibovespa Futuro sobe 1% com petróleo em alta e nova pesquisa eleitoral",
+     "url": "https://www.infomoney.com.br/mercados/ibovespa-futuro-sobe-1-com-petroleo-em-alta-e-nova-pesquisa-eleitoral/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-20",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "Os preços do barril do petróleo no mercado internacional voltaram a subir nesta terça, com o Brent superando a marca de US$ 110 por barril"
+    },
+    {
+     "id": "m_84",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Brasil ultrapassa Arábia Saudita como 2º maior fornecedor de petróleo à China",
+     "url": "https://www.infomoney.com.br/mercados/brasil-ultrapassa-arabia-saudita-como-2o-maior-fornecedor-de-petroleo-a-china/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-20",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": "A ‌China importou 44,29 milhões de toneladas de petróleo bruto do Brasil durante o período, em comparação com 43,12 milhões de toneladas da Arábia Saudita"
+    }
+   ]
+  },
+  {
+   "id": "tema_5",
+   "titulo": "Flavio Bolsonaro and Lula about even ahead of Brazil runoff, Datafolha poll shows",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "O cenário é considerado empate técnico, com diferença numérica de 1 ponto. Penúltima pesquisa do instituto será divulgada a três dias da eleição, após Quaest mostrar diferença de apenas um ponto entre os candidatos. A três dias da eleição, pesquisa mostra empate exato entre os candidatos nos votos válidos, de 50%.",
+   "resumoDe": [
+    "m_114",
+    "m_141",
+    "m_171"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "O cenário é considerado empate técnico, com diferença numérica de 1 ponto.",
+     "de": "m_114"
+    },
+    {
+     "texto": "Penúltima pesquisa do instituto será divulgada a três dias da eleição, após Quaest mostrar diferença de apenas um ponto entre os candidatos.",
+     "de": "m_141"
+    },
+    {
+     "texto": "A três dias da eleição, pesquisa mostra empate exato entre os candidatos nos votos válidos, de 50%.",
+     "de": "m_171"
+    }
+   ],
+   "relevancia": 3,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_114",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest: No segundo turno, Flávio Bolsonaro tem 45% e Lula 44%",
+     "url": "https://www.infomoney.com.br/politica/quaest-no-segundo-turno-flavio-bolsonaro-tem-45-e-lula-44/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-21",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "O cenário é considerado empate técnico, com diferença numérica de 1 ponto"
+    },
+    {
+     "id": "m_141",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Flávio mantém vantagem ou Lula encurta distância? Datafolha sai nesta quinta",
+     "url": "https://www.infomoney.com.br/politica/flavio-mantem-vantagem-ou-lula-encurta-distancia-datafolha-sai-nesta-quinta/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Penúltima pesquisa do instituto será divulgada a três dias da eleição, após Quaest mostrar diferença de apenas um ponto entre os candidatos"
+    },
+    {
+     "id": "m_171",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Datafolha: Flávio Bolsonaro tem 47%, e Lula, 46%, a três dias do 2º turno",
+     "url": "https://www.infomoney.com.br/politica/datafolha-flavio-bolsonaro-tem-47-lula-46-a-tres-dias-segundo-turno/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "A três dias da eleição, pesquisa mostra empate exato entre os candidatos nos votos válidos, de 50%"
+    },
+    {
+     "id": "m_32",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Flavio Bolsonaro and Lula about even ahead of Brazil runoff, Datafolha poll shows",
+     "url": "https://www.reuters.com/world/americas/flavio-bolsonaro-lula-about-even-ahead-brazil-runoff-datafolha-poll-shows-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": ""
+    }
+   ]
+  },
+  {
+   "id": "tema_6",
+   "titulo": "Quaest testa se debate e reação digital de Lula mexeram na disputa com Flávio",
+   "editoria": "BRASIL · POLÍTICA",
+   "resumo": "Nova rodada é a primeira do instituto a captar o confronto direto entre os candidatos; pesquisa anterior mostrava Flávio com 46% e Lula com 44%, em empate técnico. Presidente reduz resistência de 53% para 47% em uma semana; senador também melhora, mas segue rejeitado por 52% dos eleitores. Pesquisa mostra nova movimentação de eleitores dos candidatos derrotados para Lula e Flávio neste 2º turno.",
+   "resumoDe": [
+    "m_110",
+    "m_115",
+    "m_117"
+   ],
+   "resumoFrases": [
+    {
+     "texto": "Nova rodada é a primeira do instituto a captar o confronto direto entre os candidatos; pesquisa anterior mostrava Flávio com 46% e Lula com 44%, em empate técnico.",
+     "de": "m_110"
+    },
+    {
+     "texto": "Presidente reduz resistência de 53% para 47% em uma semana; senador também melhora, mas segue rejeitado por 52% dos eleitores.",
+     "de": "m_115"
+    },
+    {
+     "texto": "Pesquisa mostra nova movimentação de eleitores dos candidatos derrotados para Lula e Flávio neste 2º turno.",
+     "de": "m_117"
+    }
+   ],
+   "relevancia": 3,
+   "veiculos": 1,
+   "materias": [
+    {
+     "id": "m_110",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest testa se debate e reação digital de Lula mexeram na disputa com Flávio",
+     "url": "https://www.infomoney.com.br/politica/quaest-testa-se-debate-e-reacao-digital-de-lula-mexeram-na-disputa-com-flavio/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-21",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Nova rodada é a primeira do instituto a captar o confronto direto entre os candidatos; pesquisa anterior mostrava Flávio com 46% e Lula com 44%, em empate técnico"
+    },
+    {
+     "id": "m_115",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest: Flávio passa a ter rejeição 6 pontos maior que Lula na reta final do 2º turno",
+     "url": "https://www.infomoney.com.br/politica/quaest-flavio-passa-a-ter-rejeicao-6-pontos-maior-que-lula-na-reta-final-do-2o-turno/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-21",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Presidente reduz resistência de 53% para 47% em uma semana; senador também melhora, mas segue rejeitado por 52% dos eleitores"
+    },
+    {
+     "id": "m_117",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Quaest: Para onde foram os votos de Caiado, Zema, Renan e Cury?",
+     "url": "https://www.infomoney.com.br/politica/lula-ou-flavio-para-onde-foram-os-votos-de-caiado-zema-renan-e-cury/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-21",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Pesquisa mostra nova movimentação de eleitores dos candidatos derrotados para Lula e Flávio neste 2º turno"
+    },
+    {
+     "id": "m_121",
+     "canalId": "canal_infomoney",
+     "veiculo": "InfoMoney",
+     "dominio": "infomoney.com.br",
+     "grupo": "br",
+     "prioridade": 6,
+     "titulo": "Tesouro Direto: taxas pré recuam, mas IPCA+ sobe após Quaest com empate técnico",
+     "url": "https://www.infomoney.com.br/onde-investir/tesouro-direto-abertura-fechamento-21102026-2/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-21",
+     "editoria": "BRASIL · POLÍTICA",
+     "trecho": "Pesquisa mostra vantagem menor de Flávio sobre Lula; Tesouro IPCA+ sobe até 2 pontos-base, e prefixados seguem abaixo do nível de terça"
+    }
+   ]
+  },
+  {
+   "id": "tema_3",
+   "titulo": "Saudi Aramco seeks to partner with countries to expand its oil stockpile, CEO says",
+   "editoria": "EXTERIOR · COMMODITIES",
+   "resumo": "",
+   "resumoDe": [],
+   "resumoFrases": [],
+   "relevancia": 3,
+   "veiculos": 2,
+   "materias": [
+    {
+     "id": "m_26",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Saudi Aramco seeks to partner with countries to expand its oil stockpile, CEO says",
+     "url": "https://www.reuters.com/business/energy/saudi-aramco-seeks-partner-with-countries-expand-its-oil-stockpile-ceo-says-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_27",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "ADNOC's XRG in talks to buy stake in Eni's Libya oil and gas business, sources say",
+     "url": "https://www.reuters.com/business/energy/adnocs-xrg-talks-buy-stake-enis-libya-oil-gas-business-sources-say-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_31",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "US regulator is probing suspicious Iran oil trading, official says",
+     "url": "https://www.reuters.com/business/energy/us-regulator-is-probing-suspicious-iran-oil-trading-official-says-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    },
+    {
+     "id": "m_33",
+     "canalId": "canal_reuters",
+     "veiculo": "Reuters",
+     "dominio": "reuters.com",
+     "grupo": "intl",
+     "prioridade": 5,
+     "titulo": "Trump invokes Cold War-era Defense Production Act for oil production, refining",
+     "url": "https://www.reuters.com/business/energy/trump-invokes-cold-war-era-defense-production-act-oil-production-refining-2026-10-22/",
+     "linkConfirmado": true,
+     "publicadoEm": "2026-10-22",
+     "editoria": "EXTERIOR · COMMODITIES",
+     "trecho": ""
+    }
+   ]
+  }
+ ],
+ "avulsas": [
+  {
+   "id": "m_1",
+   "canalId": "canal_bcb",
+   "veiculo": "Banco Central do Brasil",
+   "dominio": "bcb.gov.br",
+   "grupo": "oficial",
+   "prioridade": 1,
+   "titulo": "Relatório de Estabilidade Financeira do primeiro semestre de 2026 será divulgado no dia 27 de outubro",
+   "url": "https://www.bcb.gov.br/detalhenoticia/21288/nota",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-20",
+   "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+   "trecho": "<div class=\"ExternalClass158C324D51F6489990C29F26DC7F2125\"><p>O <a href=\"/publicacoes/ref\" target=\"_blank\">Relatório de Estabilidade Financeira (REF)</a> do primeiro semestre de 2026 será divulgado às 8 horas do dia 27 de outubro, uma terça-feira. A apresentação e a entrevista coletiva sobre o…"
+  },
+  {
+   "id": "m_2",
+   "canalId": "canal_bcb",
+   "veiculo": "Banco Central do Brasil",
+   "dominio": "bcb.gov.br",
+   "grupo": "oficial",
+   "prioridade": 1,
+   "titulo": "BC altera data de divulgação das Estatísticas do Setor Externo de setembro",
+   "url": "https://www.bcb.gov.br/detalhenoticia/21289/nota",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-20",
+   "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+   "trecho": "<div class=\"ExternalClass224D01B760C949568DF7DEB0FE57117C\"><div>A data de divulgação das <a href=\"/estatisticas/estatisticassetorexterno\">Estatísticas do Setor Externo​</a> referentes ao mês de setembro foi alterada de 27 para 26 de outubro, uma segunda-feira.<br></div><div><br></div><div>A mudança…"
+  },
+  {
+   "id": "m_3",
+   "canalId": "canal_bcb",
+   "veiculo": "Banco Central do Brasil",
+   "dominio": "bcb.gov.br",
+   "grupo": "oficial",
+   "prioridade": 1,
+   "titulo": "BC divulga Fluxo cambial mensal e IBCR de agosto",
+   "url": "https://www.bcb.gov.br/detalhenoticia/21292/nota",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-21",
+   "editoria": "BRASIL · POLÍTICA MONETÁRIA",
+   "trecho": "<div class=\"ExternalClassDA4626E777AC42289C165D4A4A81EE1A\"><div></div><div><p>Clique para ver o <a href=\"/content/indeco/indicadoresselecionados/ies-13.xlsx\" target=\"_blank\">Movimento de câmbio contratado</a> e a <a href=\"/content/indeco/indicadoresselecionados/ies-15.xlsx\" target=\"_blank\">Posição…"
+  },
+  {
+   "id": "m_28",
+   "canalId": "canal_reuters",
+   "veiculo": "Reuters",
+   "dominio": "reuters.com",
+   "grupo": "intl",
+   "prioridade": 5,
+   "titulo": "US weekly jobless claims near 57-year lows, underscore labor market stability",
+   "url": "https://www.reuters.com/business/us-weekly-jobless-claims-near-57-year-lows-2026-10-22/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-22",
+   "editoria": "EXTERIOR · ATIVIDADE",
+   "trecho": ""
+  },
+  {
+   "id": "m_29",
+   "canalId": "canal_reuters",
+   "veiculo": "Reuters",
+   "dominio": "reuters.com",
+   "grupo": "intl",
+   "prioridade": 5,
+   "titulo": "Nasdaq CEO flags 'modest softening' in IPO market as macro uncertainty hits debuts",
+   "url": "https://www.reuters.com/legal/transactional/nasdaq-ceo-flags-modest-softening-ipo-market-macro-uncertainty-hits-debuts-2026-10-22/",
+   "linkConfirmado": true,
+   "publicadoEm": "2026-10-22",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  },
+  {
+   "id": "m_30",
+   "canalId": "canal_reuters",
+   "veiculo": "Reuters",
+   "dominio": "reuters.com",
+   "grupo": "intl",
+   "prioridade": 5,
+   "titulo": "Stocks drop as Meta fans AI worries, Treasuries gain",
+   "url": "https://news.google.com/rss/articles/CBMiTESTE?oc=5",
+   "linkConfirmado": false,
+   "publicadoEm": "2026-10-22",
+   "editoria": "EXTERIOR · BOLSAS",
+   "trecho": ""
+  }
+ ]
+}

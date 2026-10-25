@@ -4,7 +4,7 @@ Editor do **Boletim Econômico semanal** da Liga de Mercado Financeiro, publicad
 com o Laboratório de CSA da UNISO. Produz duas páginas A4 (frente e verso) e
 exporta em PDF com links clicáveis.
 
-- Versão: **1.3.0-beta** (Beta)
+- Versão: **1.4.0-beta** (Beta)
 - Autor: João Vitor C. Soares
 - Tecnologia: HTML + CSS + JavaScript ES2017. Não usa framework, build nem servidor.
 - **Plataforma principal:** <https://vt-iak.github.io/Boletimmaker-lmfu/> (GitHub Pages + Firebase; login por e-mail ou Google, sem conta Claude)
@@ -77,6 +77,55 @@ Usa o motor do Edge (WebView2), que já vem no Windows 11.
   autoteste: editor carregado, dados gravados e PDF em 2 páginas A4 com
   links. As edições do aplicativo não se perdem ao atualizar.
 
+### Pauta da semana (coleta automática de matérias)
+
+Botão **Pauta** no topo (ou **Ctrl+Alt+P**). Mostra as matérias de mercado
+financeiro da semana, coletadas só dos **canais de referência** e agrupadas
+por tema. Não precisa abrir o Claude nem o GitHub.
+
+- **Quando a coleta roda:** todo **sábado às 08h** (Brasília), no GitHub
+  Actions (`.github/workflows/pauta.yml`). Cobre a semana de segunda a sexta
+  que terminou e grava `pautas/<inicio>.json` e `pautas/index.json` no
+  repositório. É gratuito.
+- **Como a coleta funciona:** `coleta/coletar.mjs` (Node 20, sem dependências) faz quatro coisas.
+  1. Lê cada canal pelo método de `coleta/canais.json`:
+     - feed Atom do BC (notas à imprensa e notícias);
+     - API do IBGE;
+     - feed por dia do InfoMoney;
+     - RSS da Advisor Perspectives;
+     - busca por site no Google Notícias para os demais, com o endereço original da matéria recuperado.
+  2. Filtra: domínio da lista, período, assunto econômico pelo dicionário
+     `coleta/editorias.json` e duplicadas. Fontes oficiais entram sempre.
+  3. Agrupa matérias parecidas em temas. O título e o resumo de cada tema são
+     **frases reais** das matérias, sem IA e sem invenção.
+  4. Valida o arquivo antes de gravar: link do domínio certo, data no
+     período e cada frase com a matéria de origem.
+- **Na aba:**
+  - filtre por palavra, editoria, grupo e veículo;
+  - **confirme** ou **descarte** temas (fica salvo na edição);
+  - **Usar como fonte** transforma a matéria em fonte numerada;
+  - **Criar notícia com este tema** cria a notícia em **rascunho**: cada frase
+    leva o link da matéria de onde saiu e o selo `[n]` aponta para a principal.
+    O texto é dos veículos e precisa ser reescrito antes de aprovar.
+- **Buscar agora:** escolha um período e, se quiser, uma palavra-chave (ex.:
+  "Petrobras"). A coleta roda na hora (3 a 7 minutos) e a pauta abre sozinha
+  quando fica pronta.
+  - Exige uma **chave do GitHub neste aparelho**: Configurações →
+    **Integrações**, token *fine-grained* só deste repositório, com *Actions*
+    e *Contents* em *Read and write*. A chave fica só no navegador.
+  - Sem a chave, o botão abre o GitHub (*Actions → Pauta → Run workflow*).
+- **Canais da coleta:**
+  - Cada canal tem **prioridade** (o número antes do nome) e **método de
+    coleta**, editáveis no painel do canal.
+  - O botão **Coleta** (Fontes → Canais de referência) envia os canais
+    **validados** para `coleta/canais.json`: direto, com a chave, ou baixando
+    o arquivo.
+  - O app também reaplica o filtro ao abrir a pauta: a matéria de um canal que
+    saiu da lista fica oculta.
+- **Offline, no Windows ou no claude.ai:** fica a última pauta aberta no
+  aparelho, ou importe um arquivo `.json` de pauta.
+- **Formato do arquivo:** `boletimMaker.pauta`, descrito em `CONTEXTO.md`, seção 5.3.
+
 ### Atalhos de teclado e configurações
 
 Abra com **F1** (atalhos) ou **Ctrl+,** / ícone de engrenagem (interface).
@@ -108,6 +157,7 @@ Abra com **F1** (atalhos) ou **Ctrl+,** / ícone de engrenagem (interface).
   | Ctrl+\ | Mostrar ou ocultar painéis |
   | Ctrl+Alt+0 / = / - | Zoom |
   | Ctrl+Alt+T | Tema |
+  | Ctrl+Alt+P | Abrir ou fechar a Pauta |
 
 - **Interface:** tema, zoom ao abrir, painéis ao abrir e textos de ajuda.
 - **Pessoais:** as configurações ficam no navegador
@@ -197,6 +247,9 @@ img/                       logo do parceiro (arquivo padrão do modelo)
 tests/                     testes automatizados (ver seção 8)
 desktop/                   aplicativo Windows: BoletimMaker.cs, build.ps1, ícone, DLLs do WebView2
 dist/                      BoletimMaker-Beta.exe gerado pelo build
+coleta/                    coletor da Pauta: coletar.mjs, canais.json, editorias.json
+pautas/                    pautas geradas pela coleta (index.json + uma por semana ou busca)
+.github/workflows/pauta.yml coleta agendada (sábado 08h) e manual no GitHub Actions
 referencia/redesign/       plano de melhorias e telas de referência
 ```
 
@@ -363,6 +416,7 @@ powershell -ExecutionPolicy Bypass -File tests\run-tests.ps1 -Only termometro,co
 | `revisao` | Observações: pelo trecho e pelo bloco, marcador, Verificar, responder, resolver, backup, excluir |
 | `atalhos` | Atalhos: F1, alterar, recusar reservados, conflito, padrão, AltGr ignorado, Ctrl+S, F4, Alt+1, F6, Ctrl+, e preferências de interface |
 | `acervo` | Acervo: busca em várias edições, destaque, filtros, copiar notícia, exportar .csv, abrir a edição |
+| `pauta` | Aba Pauta com GitHub simulado: leitura, filtros, confirmar e descartar, usar como fonte (inclusive link não confirmado), criar notícia com link por frase, filtro de canais, Buscar agora sem e com chave, exportar canais, importar |
 | `ocultar-blocos`, `excluir-blocos`, `termometro` | Visibilidade e exclusão de blocos, tabela do termômetro |
 | `completa` | Percurso completo de uso (87 verificações) |
 | `nuvem` | Sincronização com `window.claude` simulado: banco vazio, edição remota, professor revisando e dono recebendo observações |
