@@ -20,6 +20,14 @@ window.fetch = function (url, opts) {
   var json = function (o, st) { return Promise.resolve(new Response(JSON.stringify(o), { status: st || 200, headers: { "content-type": "application/json" } })); };
   if (/dispatches$/.test(url)) { disparos.push(JSON.parse(opts.body)); return Promise.resolve(new Response(null, { status: 204 })); }
   if (/actions\/workflows\/pauta\.yml$/.test(url)) return json({ id: 1, name: "Pauta" });
+  // API de conteúdo (apagar pautas): GET com sha/base64, DELETE e PUT do índice
+  var accept = (opts && opts.headers && opts.headers.Accept) || "";
+  if (/api\.github\.com\/repos\/.+\/contents\/pautas\//.test(url) && !/raw/.test(accept)) {
+    if (metodo === "DELETE") { window.__apagados = (window.__apagados || []).concat([url.replace(/^.*\/contents\//, "")]); return json({ commit: {} }); }
+    if (metodo === "PUT") { window.__indicePut = JSON.parse(decodeURIComponent(escape(atob(JSON.parse(opts.body).content)))); window.__INDICE = window.__indicePut; return json({ content: {} }); }
+    if (/index\.json/.test(url)) return json({ sha: "idx1", content: btoa(unescape(encodeURIComponent(JSON.stringify(window.__INDICE || INDICE)))) });
+    return json({ sha: "arq1" });
+  }
   if (/pautas\/index\.json/.test(url)) return json(window.__INDICE || INDICE);
   if (/pautas\/busca-/.test(url)) return json(window.__BUSCA);
   if (/pautas\/2026-10-19\.json/.test(url)) return json(PAUTA);
@@ -135,6 +143,14 @@ passo(function () {
   if (/Procurando|Carregando/.test($("#pautaPesquisa").textContent)) return "esperar";
   var texto = $("#pautaView").textContent;
   ok("matérias de canal fora da lista ficam ocultas", /ocultas \(canal fora da sua lista\)/.test(texto) && !/reuters\.com/.test($("#pautaDetalhe").textContent));
+  // Gerenciar pautas sem chave: lista, mas não apaga; explica como fazer
+  act("gerenciar");
+});
+passo(function () {
+  if (!$("#pautasLista .pautas-item")) return "esperar";
+  ok("gerenciar lista as pautas do repositório", !$("#pautasDialog").hidden && $$("#pautasLista .pautas-item").length === 1);
+  ok("sem chave: não apaga e explica como fazer", $("#pautasApagar").disabled && $("#pautasLista input").disabled && /Integrações/.test($("#pautasNota").textContent));
+  $("#pautasFechar").click();
   // Buscar agora sem chave: oferece configurar; recusando, abre o GitHub
   act("buscar");
 });
@@ -171,6 +187,30 @@ passo(function () {
 passo(function () {
   if (!/Busca "Petrobras"/.test(($('#pautaView [data-pauta-campo="arquivo"]') || {}).textContent || "")) return "esperar";
   ok("abre sozinha a pauta da busca quando fica pronta", $('#pautaView [data-pauta-campo="arquivo"]').value === "busca-2026-10-25-petrobras.json" && $$("#pautaTemas .pauta-tema:not(.pauta-avulsas)").length === 1);
+  // Apagar a busca (com chave): marca, apaga, confirma
+  act("gerenciar");
+}, 3000);
+passo(function () {
+  if ($$("#pautasLista .pautas-item").length !== 2) return "esperar";
+  ok("busca marcada como aberta e como busca", /aberta/.test($$("#pautasLista .pautas-item")[0].textContent) && /busca/.test($$("#pautasLista .pautas-item")[0].textContent));
+  var cb = document.querySelector('#pautasLista input[data-pautas-arq="busca-2026-10-25-petrobras.json"]');
+  cb.checked = true; cb.dispatchEvent(new Event("change", { bubbles: true }));
+  ok("botão mostra quantas vão ser apagadas", !$("#pautasApagar").disabled && /Apagar 1 pauta/.test($("#pautasApagar").textContent));
+  $("#pautasApagar").click();
+});
+passo(function () {
+  ok("pede confirmação antes de apagar (por cima da janela)", !$("#appDialog").hidden && /Apagar a pauta busca-2026-10-25-petrobras\.json/.test($("#appDialogMsg").textContent) && /aberta agora/.test($("#appDialogMsg").textContent));
+  $("#appDialogOk").click();
+});
+passo(function () {
+  if (!window.__indicePut) return "esperar";
+  ok("apaga o arquivo no GitHub", (window.__apagados || []).join(",") === "pautas/busca-2026-10-25-petrobras.json", JSON.stringify(window.__apagados));
+  ok("tira a pauta do índice e mantém as outras", window.__indicePut.pautas.length === 1 && window.__indicePut.pautas[0].arquivo === "2026-10-19.json");
+}, 600);
+passo(function () {
+  if ($('#pautaView [data-pauta-campo="arquivo"]').value !== "2026-10-19.json") return "esperar";
+  ok("a pauta aberta apagada dá lugar à da semana", $$("#pautasLista .pautas-item").length === 1);
+  $("#pautasFechar").click();
   // Exportar canais para a coleta: nenhum validado
   $('[data-modo="pagina"]').click();
   $("#btnExportCanais").click();

@@ -39,7 +39,7 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.4.2-beta";
+  var APP_VERSION = "1.4.3-beta";
   // Logo oficial do parceiro (Laboratório de CSA UNISO), em cores originais —
   // arquivo enviado pelo usuário, salvo como asset do projeto em vez de
   // embutido em base64 aqui (mantém o app.js enxuto).
@@ -4133,7 +4133,8 @@
           return '<option value="' + esc(p.arquivo) + '"' + (p.arquivo === pauta.arquivo ? " selected" : "") + ">" + esc(p.tipo === "importada" ? "Importada: " + p.arquivo : rotuloPauta(p)) + "</option>";
         }).join("") + "</select></label>" : "") +
         '<div class="pauta-acoes"><button type="button" class="check-btn" data-pauta-act="atualizar">' + icon("reset") + "Atualizar</button>" +
-        '<button type="button" class="check-btn" data-pauta-act="importar">' + icon("upload") + "Importar</button></div>" +
+        '<button type="button" class="check-btn" data-pauta-act="importar">' + icon("upload") + "Importar</button>" +
+        (REVIEWER ? "" : '<button type="button" class="check-btn" data-pauta-act="gerenciar" title="Ver todas as pautas geradas e apagar as erradas ou antigas">' + icon("trash") + "Gerenciar</button>") + "</div>" +
         (pauta.msg ? '<p class="pauta-msg">' + esc(pauta.msg) + "</p>" : "") +
         (pauta.erro ? '<p class="pauta-msg is-error">' + esc(pauta.erro) + "</p>" : "") +
         (info ? '<p class="pauta-msg">' + esc(info) + "</p>" : "") +
@@ -4317,6 +4318,119 @@
     uiToast("Notícia " + (idx + 1) + " criada como rascunho a partir de " + (m.veiculo || "uma matéria") + ".");
   }
   function actionsUrl() { return "https://github.com/" + ghRepo() + "/actions/workflows/pauta.yml"; }
+
+  // ---- Gerenciar pautas: apagar as erradas ou antigas ----
+  // As pautas são arquivos do repositório (pautas/*.json + index.json):
+  // apagar é um commit pela API do GitHub, com a chave deste aparelho.
+  // O conteúdo continua no histórico do GitHub, se um dia precisar.
+  var pautasSel = {};
+  function idadeDias(p) { var d = parseIsoDate(p.fim || p.inicio); return d ? Math.floor((Date.now() - d.getTime()) / 864e5) : 0; }
+  async function abrirGerenciarPautas() {
+    var dlg = document.getElementById("pautasDialog");
+    pautasSel = {};
+    document.getElementById("pautasLista").innerHTML = '<li class="pautas-vazio">Carregando a lista…</li>';
+    dlg.hidden = false;
+    try { pauta.indice = await lerArquivoRepo("pautas/index.json"); } catch (e) { /* usa a lista que já tinha */ }
+    renderGerenciarPautas();
+  }
+  function renderGerenciarPautas() {
+    var lista = (pauta.indice && pauta.indice.pautas) || [];
+    var tem = !!ghToken();
+    document.getElementById("pautasResumo").textContent = lista.length
+      ? lista.length + (lista.length === 1 ? " pauta no repositório." : " pautas no repositório.") + " Marque as que quer apagar."
+      : "Nenhuma pauta no repositório.";
+    document.getElementById("pautasLista").innerHTML = lista.length ? lista.map(function (p) {
+      var aberta = p.arquivo === pauta.arquivo, antiga = p.tipo === "semana" && idadeDias(p) > 56;
+      return '<li class="pautas-item"><label><input type="checkbox" data-pautas-arq="' + esc(p.arquivo) + '"' + (pautasSel[p.arquivo] ? " checked" : "") + (tem ? "" : " disabled") + ">" +
+        '<span class="pautas-info"><strong>' + esc(rotuloPauta(p)) + "</strong>" +
+        '<span class="pautas-meta">' + esc(p.arquivo) + " · cobertura " + esc(dataCurta(p.inicio)) + " a " + esc(dataCurta(p.fim)) +
+          " · " + (p.temas || 0) + " temas · " + (p.materias || 0) + " matérias</span></span>" +
+        (aberta ? '<span class="chip chip-aprovado">aberta</span>' : "") +
+        (p.tipo === "busca" ? '<span class="chip">busca</span>' : "") +
+        (antiga ? '<span class="chip">antiga</span>' : "") + "</label></li>";
+    }).join("") : "";
+    var n = Object.keys(pautasSel).filter(function (k) { return pautasSel[k]; }).length;
+    var btn = document.getElementById("pautasApagar");
+    btn.disabled = !tem || !n;
+    btn.textContent = n ? "Apagar " + n + (n === 1 ? " pauta" : " pautas") : "Apagar selecionadas";
+    document.getElementById("pautasNota").innerHTML = tem
+      ? "Apagar remove os arquivos do repositório (fica só no histórico do GitHub). As notícias e fontes que você já criou a partir delas continuam na edição."
+      : 'Para apagar daqui, configure a chave do GitHub em <button type="button" class="check-link" data-pautas-act="config">Configurações → Integrações</button>. Sem ela, apague pelo site: <a href="https://github.com/' + esc(ghRepo()) + '/tree/main/pautas" target="_blank" rel="noopener">pasta pautas no GitHub</a> (apague o arquivo e a linha dele em index.json).';
+  }
+  async function ghLerJson(caminho) {
+    var r = await ghApi("GET", "/repos/" + ghRepo() + "/contents/" + caminho + "?ref=main");
+    return { sha: r.sha, json: JSON.parse(decodeURIComponent(escape(atob(String(r.content || "").replace(/\s/g, ""))))) };
+  }
+  async function apagarPautas(arquivos) {
+    if (!arquivos.length || !ghToken()) return;
+    var aberta = arquivos.indexOf(pauta.arquivo) !== -1;
+    var ok = await uiConfirm("Apagar " + (arquivos.length === 1 ? "a pauta " + arquivos[0] : arquivos.length + " pautas") + " do repositório?" +
+      (aberta ? " Inclui a pauta aberta agora." : "") + " As notícias e fontes já criadas a partir delas não mudam.", "Apagar");
+    if (!ok) return;
+    var btn = document.getElementById("pautasApagar");
+    btn.disabled = true;
+    var apagadas = [], falhas = [];
+    for (var i = 0; i < arquivos.length; i++) {
+      var caminho = "pautas/" + arquivos[i];
+      btn.textContent = "Apagando " + (i + 1) + " de " + arquivos.length + "…";
+      try {
+        var atual = await ghApi("GET", "/repos/" + ghRepo() + "/contents/" + caminho + "?ref=main");
+        await ghApi("DELETE", "/repos/" + ghRepo() + "/contents/" + caminho, { message: "Pauta apagada pelo app: " + arquivos[i], sha: atual.sha, branch: "main" });
+        apagadas.push(arquivos[i]);
+      } catch (e) {
+        if (e.status === 404) apagadas.push(arquivos[i]); // já não existia: só tira do índice
+        else falhas.push(arquivos[i] + " (" + (e.detalhe || e.message) + ")");
+      }
+    }
+    // Índice sem as apagadas (tenta de novo se a coleta gravou no meio do caminho)
+    for (var t = 0; t < 2 && apagadas.length; t++) {
+      try {
+        var idx = await ghLerJson("pautas/index.json");
+        idx.json.pautas = (idx.json.pautas || []).filter(function (p) { return apagadas.indexOf(p.arquivo) === -1; });
+        idx.json.atualizadoEm = new Date().toISOString();
+        await ghApi("PUT", "/repos/" + ghRepo() + "/contents/pautas/index.json", {
+          message: "Índice das pautas atualizado pelo app", branch: "main", sha: idx.sha,
+          content: btoa(unescape(encodeURIComponent(JSON.stringify(idx.json, null, 1) + "\n")))
+        });
+        pauta.indice = idx.json;
+        break;
+      } catch (e) {
+        if (t === 1) falhas.push("index.json (" + (e.detalhe || e.message) + ")");
+      }
+    }
+    apagadas.forEach(function (a) { delete pautasSel[a]; });
+    try { var cache = JSON.parse(localStorage.getItem(PAUTA_CACHE_KEY) || "null"); if (cache && apagadas.indexOf(cache.arquivo) !== -1) localStorage.removeItem(PAUTA_CACHE_KEY); } catch (e) { /* ok */ }
+    renderGerenciarPautas();
+    if (falhas.length) uiAlert("Não foi possível apagar: " + falhas.join("; ") + ". Confira se a chave tem a permissão Contents: Read and write.");
+    else uiToast(apagadas.length === 1 ? "Pauta apagada." : apagadas.length + " pautas apagadas.");
+    if (aberta && apagadas.indexOf(pauta.arquivo) !== -1) { pauta.atual = null; pauta.arquivo = null; pauta.sel = null; carregarIndicePauta(); }
+    else renderPauta();
+  }
+  function initGerenciarPautas() {
+    var dlg = document.getElementById("pautasDialog");
+    if (!dlg) return;
+    document.getElementById("pautasFechar").addEventListener("click", function () { dlg.hidden = true; });
+    dlg.addEventListener("keydown", function (e) { if (e.key === "Escape") dlg.hidden = true; });
+    dlg.addEventListener("change", function (e) {
+      var a = e.target.dataset && e.target.dataset.pautasArq;
+      if (!a) return;
+      pautasSel[a] = e.target.checked;
+      renderGerenciarPautas();
+    });
+    dlg.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-pautas-act]");
+      if (!b) return;
+      var lista = (pauta.indice && pauta.indice.pautas) || [];
+      if (b.dataset.pautasAct === "config") { dlg.hidden = true; openSettings("integracoes"); return; }
+      if (b.dataset.pautasAct === "nenhuma") pautasSel = {};
+      if (b.dataset.pautasAct === "antigas") lista.forEach(function (p) { if (p.tipo === "semana" && idadeDias(p) > 56) pautasSel[p.arquivo] = true; });
+      if (b.dataset.pautasAct === "buscas") lista.forEach(function (p) { if (p.tipo === "busca") pautasSel[p.arquivo] = true; });
+      renderGerenciarPautas();
+    });
+    document.getElementById("pautasApagar").addEventListener("click", function () {
+      apagarPautas(Object.keys(pautasSel).filter(function (k) { return pautasSel[k]; }));
+    });
+  }
   async function buscarAgora() {
     var campo = function (n) { var el = document.querySelector('#pautaPesquisa [data-pauta-campo="' + n + '"]'); return el ? el.value.trim() : ""; };
     var termo = campo("termo"), inicio = campo("inicio"), fim = campo("fim");
@@ -4395,6 +4509,7 @@
       var act = b.dataset.pautaAct, id = b.dataset.id;
       if (act === "atualizar") { carregarIndicePauta(); return; }
       if (act === "importar") { document.getElementById("pautaImport").click(); return; }
+      if (act === "gerenciar") { abrirGerenciarPautas(); return; }
       if (act === "buscar") { buscarAgora(); return; }
       if (act === "config") { openSettings("integracoes"); return; }
       if (act === "grupo") { pauta.filtros.grupo = b.dataset.valor; renderPauta(); return; }
@@ -7440,7 +7555,7 @@
       var combo = comboDe(e);
       if (!comboValido(combo)) return;
       // Com outra janela do app aberta, só vale o que é dela (Esc etc.).
-      var aberta = ["appDialog", "checkDialog", "calcDialog", "pdfPreview", "acervoDialog"].some(function (id) { var d = document.getElementById(id); return d && !d.hidden; });
+      var aberta = ["appDialog", "checkDialog", "calcDialog", "pdfPreview", "acervoDialog", "pautasDialog"].some(function (id) { var d = document.getElementById(id); return d && !d.hidden; });
       var cmd = COMANDOS.filter(function (c) { return atalhoDe(c.id) === combo; })[0];
       if (!cmd || (aberta && cmd.id !== "ajuda")) return;
       if (cmd.autor && REVIEWER) return;
@@ -7748,6 +7863,7 @@
     initSettings();
     initAcervo();
     initPauta();
+    initGerenciarPautas();
     document.getElementById("btnThermoCalc").addEventListener("click", openThermoCalc);
     if (IN_ARTIFACT) {
       var btnPrint = document.getElementById("btnPrint");

@@ -60,7 +60,7 @@
       <div class="tb-group">
         <span class="brand-mark" aria-hidden="true">B</span>
         <strong class="brand-mini">Boletim Maker</strong>
-        <span class="version-chip" id="versionChip" title="Versão 1.4.2-beta">Beta</span>
+        <span class="version-chip" id="versionChip" title="Versão 1.4.3-beta">Beta</span>
       </div>
       <div class="tb-group edition-picker">
         <select id="editionSelect" title="Edição atual" aria-label="Edição atual"></select>
@@ -360,6 +360,29 @@
         <div class="check-foot-actions">
           <button type="button" id="acervoCsv" class="check-btn">Exportar planilha (.csv)</button>
           <button type="button" id="acervoClose" class="check-btn primary">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gerenciar as pautas geradas (apagar erradas ou antigas do repositório) -->
+  <div id="pautasDialog" class="app-dialog no-print" hidden>
+    <div class="check-box pautas-box" role="dialog" aria-modal="true" aria-labelledby="pautasTitle">
+      <div class="check-head">
+        <h2 id="pautasTitle" class="check-title">Pautas geradas</h2>
+        <p class="check-summary" id="pautasResumo"></p>
+        <div class="pautas-sel">
+          <button type="button" class="check-link" data-pautas-act="antigas">Selecionar as de mais de 8 semanas</button>
+          <button type="button" class="check-link" data-pautas-act="buscas">Selecionar as buscas</button>
+          <button type="button" class="check-link" data-pautas-act="nenhuma">Limpar seleção</button>
+        </div>
+      </div>
+      <ul id="pautasLista" class="pautas-lista"></ul>
+      <div class="check-foot">
+        <p class="check-note" id="pautasNota"></p>
+        <div class="check-foot-actions">
+          <button type="button" id="pautasFechar" class="check-btn">Fechar</button>
+          <button type="button" id="pautasApagar" class="check-btn danger-btn" disabled>Apagar selecionadas</button>
         </div>
       </div>
     </div>

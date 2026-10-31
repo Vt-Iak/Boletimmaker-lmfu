@@ -3,6 +3,14 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.4.3-beta] — 2026-10-31
+
+- **Gerenciar pautas** (aba Pauta → Gerenciar): lista todas as pautas do repositório.
+  - Marque uma ou várias (atalhos: "mais de 8 semanas", "buscas") e apague.
+  - Apaga o arquivo e a linha dele em `pautas/index.json` por commit da API do GitHub (chave em Integrações), com confirmação.
+  - Se a pauta aberta for apagada, abre a da semana.
+- Testes: suíte `pauta` com 44 verificações.
+
 ## [1.4.2-beta] — 2026-10-31
 
 - E-mail do link de acesso e janela do Google em **português** (`auth.languageCode = "pt-BR"`).
