@@ -157,7 +157,7 @@ if (-not $Only.Count -or $Only -contains "firebase") {
   $page = $tpl.Replace("__ROOT__", $RootUrl).Replace("<!--BODY-->", $body)
   $file = Join-Path $Work "teste-firebase.html"
   [System.IO.File]::WriteAllText($file, $page, (New-Object System.Text.UTF8Encoding $false))
-  foreach ($sc in @("semlogin", "semacesso", "dono", "editor", "revisor")) {
+  foreach ($sc in @("semlogin", "linkoff", "semacesso", "dono", "editor", "revisor")) {
     $raw = Get-Pre (Invoke-Page $file "?cenario=$sc" "f$sc" 12000) "testout"
     $checks = @()
     if ($null -eq $raw) { $checks += "FALHA sem resultado" }
@@ -171,9 +171,16 @@ if (-not $Only.Count -or $Only -contains "firebase") {
           $checks += $(if ($r.loginMsg -like "*Enviamos um link*") { "OK orienta a abrir o e-mail" } else { "FALHA mensagem: $($r.loginMsg)" })
           $checks += $(if (-not ($r.docIds | Where-Object { $_ -like "editions/*" })) { "OK nada gravado sem login" } else { "FALHA gravou sem login" })
         }
+        "linkoff" {
+          $checks += $(if ($r.loginVisivel -and $r.loginMsg -like "*link no e-mail está desligada*" -and $r.loginMsg -like "*Entrar com Google*") { "OK link desligado no Firebase: mensagem clara (sem código)" } else { "FALHA mensagem: $($r.loginMsg)" })
+        }
         "semacesso" {
-          $checks += $(if ($r.loginVisivel -and $r.loginMsg -like "*ainda não tem acesso*") { "OK e-mail fora da lista é barrado" } else { "FALHA acesso indevido: $($r.loginMsg)" })
-          $checks += $(if ($r.editionWrites -eq 0) { "OK nada gravado" } else { "FALHA gravou edição" })
+          $e = $r.extra
+          $checks += $(if ($e.pedidoVisivel) { "OK fora da lista: oferece pedir acesso" } else { "FALHA sem botão de pedir acesso" })
+          $checks += $(if ($e.pedido -and $e.pedido.email -eq "estranho@gmail.com" -and $e.pedido.uid -eq "u_x" -and $e.pedido.mensagem -eq "Sou o professor orientador.") { "OK pedido gravado com e-mail e mensagem" } else { "FALHA pedido: $($e.pedido | ConvertTo-Json -Compress)" })
+          $checks += $(if ($e.msgAposPedido -like "*Pedido de acesso enviado*") { "OK confirma o envio do pedido" } else { "FALHA mensagem: $($e.msgAposPedido)" })
+          $checks += $(if ($e.gravacoesAntes -eq 0) { "OK nada gravado antes da aprovação" } else { "FALHA gravou antes de aprovado" })
+          $checks += $(if (-not $r.loginVisivel -and $r.notOwner -and -not $r.reviewer) { "OK aprovado pelo dono: o boletim abre sozinho" } else { "FALHA não abriu após aprovação" })
         }
         "dono" {
           $checks += $(if (@($r.docIds | Where-Object { $_ -like "editions/*" }).Count -ge 1) { "OK dono envia as edições" } else { "FALHA edições não enviadas" })
@@ -181,6 +188,10 @@ if (-not $Only.Count -or $Only -contains "firebase") {
           $checks += $(if (($r.abas -contains "conta") -and ($r.abas -contains "acesso")) { "OK abas Conta e Acesso para o dono" } else { "FALHA abas: $($r.abas -join ',')" })
           $checks += $(if (-not $r.notOwner -and $r.versao -like "*servidor próprio*") { "OK identificado como dono no servidor próprio" } else { "FALHA identificação: $($r.versao)" })
           $checks += $(if ($semUndef) { "OK nenhum campo undefined enviado" } else { "FALHA undefined no banco" })
+          $e = $r.extra
+          $checks += $(if ($e.badge -eq "1" -and $e.abaAberta -eq "acesso" -and $e.pedidoNaTela) { "OK pedido de acesso avisado na engrenagem e listado em Acesso" } else { "FALHA aviso do pedido: $($e | ConvertTo-Json -Compress)" })
+          $checks += $(if (($r.acesso.revisores -contains "novo@uniso.br") -and $null -eq $r.pedidoDono) { "OK aprovar o pedido libera o acesso e apaga o pedido" } else { "FALHA aprovação: $($r.acesso | ConvertTo-Json -Compress)" })
+          $checks += $(if ($e.sairPorCima) { "OK confirmação de Sair aparece por cima das Configurações" } else { "FALHA confirmação de Sair escondida" })
         }
         "editor" {
           $e = $r.edicao

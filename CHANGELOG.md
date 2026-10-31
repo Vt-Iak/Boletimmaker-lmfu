@@ -3,6 +3,18 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.4.1-beta] — 2026-10-31
+
+- **Pedido de acesso:** quem entra e não está na lista pede acesso ao autor
+  (com mensagem opcional). O dono vê um número na engrenagem e aprova ("edita
+  e comenta" ou "só comenta") ou recusa em Configurações → Acesso. Ao ser
+  aprovado, o boletim abre sozinho. Nova coleção `pedidos/<uid>` nas regras.
+- **Mensagens de login em português**, com o que fazer. Exemplo:
+  `auth/operation-not-allowed` = "a entrada por link no e-mail está desligada".
+- **Correção:** a confirmação de "Sair desta conta" (e as outras confirmações)
+  ficava por trás da janela de Configurações; agora fica sempre por cima.
+- Testes: cenários `linkoff`, pedido de acesso aprovado e confirmação por cima.
+
 ## [1.4.0-beta] — 2026-10-25
 
 - **Pauta da semana:** coleta automática das matérias de mercado financeiro dos canais de referência, agrupadas por tema.

@@ -61,6 +61,20 @@ service cloud.firestore {
       allow read, write: if membro();
     }
 
+    // Pedidos de acesso: quem entrou e não está na lista pede acesso; o
+    // documento é o do próprio usuário (uid), com o e-mail verdadeiro da conta.
+    // Só o dono lê todos e responde (apaga ao aprovar ou recusar).
+    match /pedidos/{uid} {
+      allow read: if dono() || (logado() && request.auth.uid == uid);
+      allow create, update: if logado() && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.email == email()
+        && request.resource.data.keys().hasOnly(['uid', 'email', 'nome', 'mensagem', 'criadoEm', 'status'])
+        && request.resource.data.mensagem is string && request.resource.data.mensagem.size() <= 500
+        && request.resource.data.nome is string && request.resource.data.nome.size() <= 120;
+      allow delete: if dono() || (logado() && request.auth.uid == uid);
+    }
+
     // Configurações pessoais (atalhos, tema): só a própria pessoa.
     match /data/users/{uid}/{doc=**} {
       allow read, write: if logado() && request.auth.uid == uid;

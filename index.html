@@ -60,7 +60,7 @@
       <div class="tb-group">
         <span class="brand-mark" aria-hidden="true">B</span>
         <strong class="brand-mini">Boletim Maker</strong>
-        <span class="version-chip" id="versionChip" title="Versão 1.4.0-beta">Beta</span>
+        <span class="version-chip" id="versionChip" title="Versão 1.4.1-beta">Beta</span>
       </div>
       <div class="tb-group edition-picker">
         <select id="editionSelect" title="Edição atual" aria-label="Edição atual"></select>
@@ -107,7 +107,7 @@
         <span id="reviewBanner" class="review-banner" hidden title="Você pode ler tudo e deixar observações; o texto só o autor altera">Modo revisão</span>
         <span id="saveStatus" class="save-status"></span>
         <button id="btnAcervo" class="icon-btn" title="Acervo de matérias: busca em todas as edições (F6)" aria-label="Acervo de matérias"><svg class="ic"><use href="#i-search"/></svg></button>
-        <button id="btnSettings" class="icon-btn" title="Configurações e atalhos (Ctrl+,)" aria-label="Configurações"><svg class="ic"><use href="#i-gear"/></svg></button>
+        <span class="settings-btn-wrap"><button id="btnSettings" class="icon-btn" title="Configurações e atalhos (Ctrl+,)" aria-label="Configurações"><svg class="ic"><use href="#i-gear"/></svg></button><span class="settings-badge" id="pedidosBadge" hidden></span></span>
         <button id="btnTheme" class="icon-btn" title="Tema do editor" aria-label="Tema do editor"><svg class="ic"><use href="#i-auto"/></svg></button>
       </div>
       <div class="tb-group">
@@ -434,6 +434,10 @@
       </form>
       <div id="loginOr" class="login-or">ou</div>
       <button type="button" id="loginGoogle" class="check-btn login-google">Entrar com Google</button>
+      <div id="loginPedido" class="login-pedido" hidden>
+        <textarea id="loginPedidoMsg" maxlength="500" placeholder="Mensagem para o autor (opcional), ex.: Sou o professor orientador."></textarea>
+        <button type="button" id="loginPedidoBtn" class="check-btn primary">Pedir acesso ao autor</button>
+      </div>
       <button type="button" id="loginSair" class="check-btn" hidden>Usar outro e-mail</button>
     </div>
   </div>

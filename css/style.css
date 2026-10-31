@@ -1125,3 +1125,24 @@ body.modo-pauta .zoom-bar, body.modo-pauta .block-toolbar, body.modo-pauta .text
 }
 .pt-th > div{flex:1; min-width:0;}
 .pt-th .pt-bar{flex:none; margin-top:4px;}
+
+/* Caixa de confirmação/aviso sempre por cima das outras janelas (Configurações,
+   Verificar, Acervo…) e da tela de entrada: ela é aberta a partir delas. */
+#appDialog{z-index:1100;}
+
+/* ---------- Pedidos de acesso ---------- */
+.settings-btn-wrap{position:relative; display:inline-flex;}
+.settings-badge{position:absolute; top:-4px; right:-4px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--red); color:#fff; font:700 10px/16px var(--ui-font); text-align:center; pointer-events:none;}
+.settings-badge[hidden]{display:none;}
+.login-pedido{display:flex; flex-direction:column; gap:10px; margin-bottom:12px; text-align:left;}
+.login-pedido textarea{font:400 14px/1.4 var(--ui-font); padding:10px 12px; border:1px solid var(--ui-border-strong); border-radius:10px; background:var(--ui-surface); color:var(--ui-text); resize:vertical; min-height:64px;}
+.login-pedido .check-btn{height:44px; width:100%; font-size:14.5px;}
+.login-msg.is-ok{color:var(--ui-green);}
+.pedidos-bloco{padding:12px; margin:8px 0 4px; border:1px solid var(--ui-amber-soft); background:var(--ui-warn-soft); border-radius:10px;}
+.pedido-item{padding:10px 0; border-bottom:1px dashed var(--ui-border-strong);}
+.pedido-item:last-child{border-bottom:none;}
+.pedido-quem{font-weight:600;}
+.pedido-email{color:var(--ui-text-2); font-size:13px;}
+.pedido-msg{margin:4px 0; font-size:13px; color:var(--ui-text-2); white-space:pre-wrap; overflow-wrap:anywhere;}
+.pedido-acoes{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;}
+.pedido-acoes .check-btn{padding:5px 10px; font-size:12.5px;}

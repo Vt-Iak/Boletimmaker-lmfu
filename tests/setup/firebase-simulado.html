@@ -8,6 +8,8 @@
 //   dono       -> dono, banco vazio: envia edições e cria a lista de acesso; adiciona o professor
 //   editor     -> professor (editor) editando ao mesmo tempo que o dono
 //   revisor    -> e-mail na lista de revisores: só comenta
+//   linkoff    -> login por link desligado no Firebase (auth/operation-not-allowed)
+//   (semacesso também pede acesso e é liberado pelo dono; dono também aprova um pedido)
 var cenario = (location.search.match(/cenario=(\w+)/) || [])[1] || "dono";
 try { localStorage.clear(); } catch (e) {}
 var DONO = "joaovcsoares5@gmail.com", PROF = "prof@uniso.br";
@@ -28,7 +30,8 @@ if (cenario === "editor" || cenario === "revisor") {
   docs["app/settings"] = { json: JSON.stringify({ order: ["ed_1"], migrations: {} }), updatedAt: 1 };
 }
 if (cenario !== "dono") docs["app/acesso"] = { editores: [PROF], revisores: ["leitor@uniso.br"] };
-var usuario = cenario === "semlogin" ? null
+if (cenario === "dono") docs["pedidos/u_novo"] = { uid: "u_novo", email: "novo@uniso.br", nome: "Prof. Novo", mensagem: "Sou o orientador do boletim.", criadoEm: 1000, status: "pendente" };
+var usuario = cenario === "semlogin" || cenario === "linkoff" ? null
   : cenario === "semacesso" ? { uid: "u_x", email: "estranho@gmail.com", displayName: "Estranho" }
   : cenario === "editor" ? { uid: "u_prof", email: PROF, displayName: "Prof. Ana" }
   : cenario === "revisor" ? { uid: "u_leitor", email: "leitor@uniso.br", displayName: "Leitor" }
@@ -79,7 +82,10 @@ var authObj = {
   currentUser: usuario,
   onAuthStateChanged: function (cb) { setTimeout(function () { cb(usuario); }, 10); return function () {}; },
   isSignInWithEmailLink: function () { return false; },
-  sendSignInLinkToEmail: function (email, s) { log.push("link para " + email + " volta em " + (s && s.url ? "url" : "?")); return Promise.resolve(); },
+  sendSignInLinkToEmail: function (email, s) {
+    if (cenario === "linkoff") return Promise.reject({ code: "auth/operation-not-allowed", message: "x" });
+    log.push("link para " + email + " volta em " + (s && s.url ? "url" : "?")); return Promise.resolve();
+  },
   signOut: function () { return Promise.resolve(); }
 };
 window.firebase = { apps: [], initializeApp: function (c) { this.apps.push(c); return {}; }, auth: function () { return authObj; }, firestore: function () { return db; } };
@@ -111,17 +117,51 @@ if (cenario === "revisor") setTimeout(function () {
   var ta = document.getElementById("notaTexto"); ta.value = "Rever a manchete.";
   document.querySelector('[data-nota-action="salvar"]').click();
 }, 2500);
-if (cenario === "semlogin") setTimeout(function () {
+if (cenario === "semlogin" || cenario === "linkoff") setTimeout(function () {
   document.getElementById("loginEmail").value = "Prof@Uniso.br";
   document.getElementById("loginForm").dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
 }, 1500);
-if (cenario === "dono") setTimeout(function () {
-  document.getElementById("btnSettings").click();
-  document.querySelector('#settingsDialog [data-settings-aba="acesso"]').click();
-  var f = document.querySelector('#settingsBody .acesso-add[data-lista="editores"]');
-  f.querySelector("input").value = "Prof@Uniso.br";
-  f.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-}, 2500);
+var extra = {};
+// Fora da lista: pede acesso; depois o dono aprova e o boletim abre sozinho.
+if (cenario === "semacesso") {
+  setTimeout(function () {
+    extra.pedidoVisivel = !document.getElementById("loginPedido").hidden;
+    document.getElementById("loginPedidoMsg").value = "Sou o professor orientador.";
+    document.getElementById("loginPedidoBtn").click();
+  }, 1500);
+  setTimeout(function () {
+    extra.pedido = docs["pedidos/u_x"] || null;
+    extra.msgAposPedido = document.getElementById("loginMsg").textContent;
+    extra.gravacoesAntes = log.filter(function (l) { return l.indexOf("set editions/") === 0; }).length;
+    docs["app/acesso"] = { editores: [PROF, "estranho@gmail.com"], revisores: ["leitor@uniso.br"] };
+    notify("app/acesso", "modified");
+  }, 2500);
+}
+if (cenario === "dono") {
+  setTimeout(function () {
+    extra.badge = document.getElementById("pedidosBadge").hidden ? "" : document.getElementById("pedidosBadge").textContent;
+    document.getElementById("btnSettings").click();
+    extra.abaAberta = (document.querySelector("#settingsDialog [data-settings-aba].is-active") || {}).dataset;
+    extra.abaAberta = extra.abaAberta ? extra.abaAberta.settingsAba : "";
+    extra.pedidoNaTela = /Prof\. Novo/.test(document.getElementById("settingsBody").textContent);
+    var f = document.querySelector('#settingsBody .acesso-add[data-lista="editores"]');
+    f.querySelector("input").value = "Prof@Uniso.br";
+    f.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+  }, 2500);
+  setTimeout(function () {
+    var b = document.querySelector('#settingsBody [data-settings-act="pedido-aprovar"][data-papel="revisor"][data-uid="u_novo"]');
+    if (b) b.click();
+  }, 3200);
+  // A confirmação de "Sair" precisa ficar por cima da janela de Configurações.
+  setTimeout(function () {
+    document.querySelector('#settingsDialog [data-settings-aba="conta"]').click();
+    document.querySelector('#settingsBody [data-settings-act="sair"]').click();
+    var box = document.querySelector("#appDialog .app-dialog-box").getBoundingClientRect();
+    var el = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+    extra.sairPorCima = !document.getElementById("appDialog").hidden && !!el && !!el.closest("#appDialog");
+    document.getElementById("appDialogCancel").click();
+  }, 4200);
+}
 
 setTimeout(function () {
   var out = document.createElement("pre"); out.id = "testout";
@@ -139,6 +179,8 @@ setTimeout(function () {
     editionWrites: log.filter(function (l) { return l.indexOf("set editions/") === 0; }).length,
     nota: nota,
     versao: document.getElementById("versionChip").title,
+    extra: extra,
+    pedidoDono: docs["pedidos/u_novo"] || null,
     abas: Array.prototype.filter.call(document.querySelectorAll("#settingsDialog [data-settings-aba]"), function (b) { return !b.hidden; }).map(function (b) { return b.dataset.settingsAba; })
   }, null, 1);
   document.body.appendChild(out);

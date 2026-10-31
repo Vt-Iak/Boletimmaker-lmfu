@@ -4,7 +4,7 @@ Editor do **Boletim Econômico semanal** da Liga de Mercado Financeiro, publicad
 com o Laboratório de CSA da UNISO. Produz duas páginas A4 (frente e verso) e
 exporta em PDF com links clicáveis.
 
-- Versão: **1.4.0-beta** (Beta)
+- Versão: **1.4.1-beta** (Beta)
 - Autor: João Vitor C. Soares
 - Tecnologia: HTML + CSS + JavaScript ES2017. Não usa framework, build nem servidor.
 - **Plataforma principal:** <https://vt-iak.github.io/Boletimmaker-lmfu/> (GitHub Pages + Firebase; login por e-mail ou Google, sem conta Claude)
@@ -38,10 +38,18 @@ Fluxo de uma edição:
   `Vt-Iak/Boletimmaker-lmfu`, ramo `main`. Um `git push` atualiza o site em cerca de 1 minuto.
 - **Dados e login:** o Firebase (projeto `boletimmaker-lmfu`, `js/firebase-config.js`) guarda os dados.
   - Entrada por link enviado ao e-mail (sem senha) ou pela conta Google.
+    Ninguém cria senha. No Firebase precisam estar ligados, em *Authentication →
+    Método de login*: **E-mail/senha** com a opção **Link do e-mail (login sem
+    senha)**, e **Google**.
   - Só entra quem estiver na lista. O dono (`joaovcsoares5@gmail.com`) gerencia a lista em
     **Configurações → Acesso**:
     - **Podem editar e comentar** (ex.: o professor);
     - **Só comentam**.
+  - **Pedido de acesso:** quem entra e não está na lista clica em **Pedir acesso
+    ao autor**, com uma mensagem opcional (documento `pedidos/<uid>`).
+    - O dono vê um número na engrenagem e os pedidos em **Configurações → Acesso**.
+    - Ali, **Aprovar: edita e comenta**, **Aprovar: só comenta** ou **recusar**.
+    - Ao ser aprovado, o boletim abre sozinho para quem pediu.
 - **Edição simultânea:** o app junta as alterações campo a campo (`merge3`).
   - Ao receber uma alteração de outra pessoa com mudanças ainda não enviadas aqui.
   - No envio, numa transação, quando alguém gravou no meio do caminho.
@@ -51,7 +59,10 @@ Fluxo de uma edição:
   - Só membros leem.
   - Editores gravam.
   - Só o dono exclui edições e altera o acesso.
+  - Cada pessoa só cria o próprio pedido de acesso, com o e-mail verdadeiro da
+    conta; só o dono lê e responde aos pedidos.
   - Configurações pessoais ficam privadas.
+  - Sempre que `firestore.rules` mudar, cole e publique de novo.
 - **Imagens:** cada imagem fica num documento `imagens/<hash>`, até ~900 KB.
   O Firebase Storage não é usado (exigiria plano pago).
 - **Levar as edições do claude.ai:** lá, use **⋯ → Backup completo**. Aqui, use **⋯ → Importar JSON**.

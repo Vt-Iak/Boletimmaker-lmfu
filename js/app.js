@@ -39,7 +39,7 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.4.0-beta";
+  var APP_VERSION = "1.4.1-beta";
   // Logo oficial do parceiro (Laboratório de CSA UNISO), em cores originais —
   // arquivo enviado pelo usuário, salvo como asset do projeto em vez de
   // embutido em base64 aqui (mantém o app.js enxuto).
@@ -1094,22 +1094,106 @@
   function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* ok */ } }
   function normEmail(e) { return String(e || "").trim().toLowerCase(); }
 
-  // modo: "login" | "enviado" | "semAcesso"
-  function showLogin(modo, email) {
+  // Erros do login do Firebase em português, com o que fazer.
+  function erroLogin(err, via) {
+    var c = (err && err.code) || "";
+    if (c === "auth/operation-not-allowed") return via === "google"
+      ? "A entrada com Google está desligada neste boletim. Use o link por e-mail ou peça ao autor para ligar o Google no Firebase."
+      : "A entrada por link no e-mail está desligada neste boletim. Use \"Entrar com Google\" ou peça ao autor para ligar o \"Link do e-mail (login sem senha)\" no Firebase.";
+    if (c === "auth/invalid-email") return "Este e-mail não parece válido. Confira e tente de novo.";
+    if (c === "auth/quota-exceeded" || c === "auth/too-many-requests") return "Muitos pedidos de link agora. Espere alguns minutos ou use \"Entrar com Google\".";
+    if (c === "auth/unauthorized-continue-uri" || c === "auth/unauthorized-domain") return "Este endereço do site ainda não está autorizado no Firebase. O autor precisa adicioná-lo em Authentication → Configurações → Domínios autorizados.";
+    if (c === "auth/popup-closed-by-user" || c === "auth/cancelled-popup-request") return "A janela do Google foi fechada antes de terminar. Tente de novo.";
+    if (c === "auth/network-request-failed") return "Sem conexão com a internet agora. Tente de novo em instantes.";
+    return "Não foi possível entrar (" + (c || "erro") + "). Tente de novo.";
+  }
+
+  // modo: "login" | "enviado" | "semAcesso" (pode pedir acesso) | "pedidoEnviado"
+  function showLogin(modo, email, extra) {
     var tela = document.getElementById("loginScreen");
     if (!tela) return;
     tela.hidden = false;
     document.getElementById("loginForm").hidden = modo !== "login";
     document.getElementById("loginGoogle").hidden = modo !== "login";
     document.getElementById("loginOr").hidden = modo !== "login";
-    document.getElementById("loginSair").hidden = modo !== "semAcesso";
+    document.getElementById("loginPedido").hidden = modo !== "semAcesso";
+    document.getElementById("loginSair").hidden = modo !== "semAcesso" && modo !== "pedidoEnviado";
     var msg = document.getElementById("loginMsg");
-    msg.classList.toggle("is-error", modo === "semAcesso");
+    msg.classList.toggle("is-error", false);
+    msg.classList.toggle("is-ok", modo === "pedidoEnviado" || modo === "enviado");
     msg.textContent = modo === "enviado"
       ? "Pronto! Enviamos um link para " + email + ". Abra o e-mail e toque no link para entrar (confira também o spam). Pode fechar esta aba."
       : modo === "semAcesso"
-        ? "O e-mail " + email + " ainda não tem acesso a este boletim. Peça ao autor para adicioná-lo em Configurações → Acesso e depois entre de novo."
-        : "Entre com o seu e-mail para abrir o boletim. Não precisa de senha nem de conta no Claude.";
+        ? "O e-mail " + email + " ainda não tem acesso a este boletim. Peça acesso ao autor: ele recebe o aviso no Boletim e libera com um clique."
+        : modo === "pedidoEnviado"
+          ? "Pedido de acesso enviado" + (extra && extra.criadoEm ? " em " + quando(extra.criadoEm) : "") + ". Assim que o autor aprovar, o boletim abre aqui sozinho — pode deixar esta aba aberta ou voltar depois com o mesmo e-mail."
+          : "Entre com o seu e-mail para abrir o boletim. Não precisa de senha nem de conta no Claude.";
+  }
+
+  // Quem entrou mas não está na lista: pode pedir acesso (pedidos/<uid>) e
+  // o boletim abre sozinho quando o dono aprovar (escuta app/acesso).
+  var pararEsperaAcesso = null;
+  async function mostrarSemAcesso(user, email) {
+    var db = cloud.db;
+    cloud.mode = "offline";
+    var pedido = null;
+    try { var p = await db.doc("pedidos/" + user.uid).get(); if (p.exists) pedido = p.data(); } catch (e) { /* sem pedido */ }
+    showLogin(pedido ? "pedidoEnviado" : "semAcesso", email, pedido);
+    var btn = document.getElementById("loginPedidoBtn");
+    btn.onclick = async function () {
+      btn.disabled = true;
+      var dados = { uid: user.uid, email: email, nome: String(user.displayName || email).slice(0, 120), mensagem: (document.getElementById("loginPedidoMsg").value || "").trim().slice(0, 500), criadoEm: Date.now(), status: "pendente" };
+      try {
+        await db.doc("pedidos/" + user.uid).set(dados);
+        showLogin("pedidoEnviado", email, dados);
+      } catch (e) {
+        var m = document.getElementById("loginMsg");
+        m.classList.add("is-error");
+        m.textContent = "Não foi possível enviar o pedido (" + ((e && e.code) || "erro") + "). Avise o autor por outro meio ou tente de novo.";
+      } finally { btn.disabled = false; }
+    };
+    if (pararEsperaAcesso) pararEsperaAcesso();
+    pararEsperaAcesso = db.doc("app/acesso").onSnapshot(function (snap) {
+      if (!snap.exists) return;
+      var d = snap.data();
+      var lista = (d.editores || []).concat(d.revisores || []).map(normEmail);
+      if (lista.indexOf(email) === -1) return;
+      if (pararEsperaAcesso) { pararEsperaAcesso(); pararEsperaAcesso = null; }
+      uiToast("Acesso liberado pelo autor. Bem-vindo!");
+      startFirebaseSession(user);
+    }, function () { /* sem permissão de leitura: segue esperando um novo login */ });
+  }
+
+  // Dono: lista dos pedidos de acesso (pedidos/*), com aviso na engrenagem.
+  var pedidosAcesso = [];
+  var pedidosVistos = null;
+  function assinarPedidos(db) {
+    db.collection("pedidos").onSnapshot(function (snap) {
+      pedidosAcesso = snap.docs.map(function (d) { return d.data(); }).filter(function (p) { return p && p.email; })
+        .sort(function (a, b) { return (a.criadoEm || 0) - (b.criadoEm || 0); });
+      var badge = document.getElementById("pedidosBadge");
+      if (badge) { badge.hidden = !pedidosAcesso.length; badge.textContent = String(pedidosAcesso.length); }
+      var btn = document.getElementById("btnSettings");
+      if (btn) btn.title = pedidosAcesso.length ? pedidosAcesso.length + " pedido(s) de acesso — Configurações → Acesso" : "Configurações e atalhos (Ctrl+,)";
+      var novos = pedidosAcesso.filter(function (p) { return !pedidosVistos || pedidosVistos.indexOf(p.uid) === -1; });
+      if (novos.length) uiToast(novos.length === 1 ? (novos[0].nome || novos[0].email) + " pediu acesso ao boletim (Configurações → Acesso)." : novos.length + " pedidos de acesso aguardando (Configurações → Acesso).");
+      pedidosVistos = pedidosAcesso.map(function (p) { return p.uid; });
+      if (!document.getElementById("settingsDialog").hidden && settingsAba === "acesso") renderSettings();
+    }, function () { /* regras antigas sem "pedidos": ignora */ });
+  }
+  function responderPedido(uid, papel) {
+    var p = pedidosAcesso.filter(function (x) { return x.uid === uid; })[0];
+    if (!p || !cloud.db) return;
+    if (papel) {
+      var l = papel === "editor" ? "editores" : "revisores", outra = papel === "editor" ? "revisores" : "editores";
+      var email = normEmail(p.email);
+      if (acessoAtual[l].indexOf(email) === -1) acessoAtual[l].push(email);
+      acessoAtual[outra] = acessoAtual[outra].filter(function (x) { return x !== email; });
+      salvarAcesso();
+    }
+    cloud.db.doc("pedidos/" + uid).delete().then(function () {
+      uiToast(papel ? (p.nome || p.email) + " agora tem acesso (" + (papel === "editor" ? "edita e comenta" : "só comenta") + ")." : "Pedido de " + (p.nome || p.email) + " recusado.");
+    }).catch(function () { uiAlert("Não foi possível atualizar o pedido. Confira se as regras novas do Firebase foram publicadas."); });
   }
 
   function initLoginScreen() {
@@ -1126,7 +1210,9 @@
         lsSet(LOGIN_EMAIL_KEY, email);
         showLogin("enviado", email);
       } catch (err) {
-        document.getElementById("loginMsg").textContent = "Não foi possível enviar o link (" + (err && err.code || "erro") + "). Confira o e-mail e tente de novo.";
+        var m = document.getElementById("loginMsg");
+        m.classList.add("is-error");
+        m.textContent = erroLogin(err, "link");
       } finally { btn.disabled = false; }
     });
     document.getElementById("loginGoogle").addEventListener("click", async function () {
@@ -1136,8 +1222,8 @@
         if (r && r.user) { document.getElementById("loginScreen").hidden = true; await startFirebaseSession(r.user); }
       } catch (err) {
         // Celular costuma bloquear janelas: entra pelo redirecionamento.
-        if (err && /popup/.test(err.code || "")) firebase.auth().signInWithRedirect(provider);
-        else document.getElementById("loginMsg").textContent = "Não foi possível entrar com o Google (" + (err && err.code || "erro") + ").";
+        if (err && /popup-blocked|operation-not-supported/.test(err.code || "")) firebase.auth().signInWithRedirect(provider);
+        else { var mg = document.getElementById("loginMsg"); mg.classList.add("is-error"); mg.textContent = erroLogin(err, "google"); }
       }
     });
     document.getElementById("loginSair").addEventListener("click", sairDaConta);
@@ -1194,7 +1280,8 @@
     } catch (e) { /* sem leitura: decide pelo dono */ }
     var editor = IS_OWNER || acessoAtual.editores.indexOf(email) !== -1;
     var revisor = !editor && acessoAtual.revisores.indexOf(email) !== -1;
-    if (!editor && !revisor) { cloud.mode = "offline"; showLogin("semAcesso", email); return; }
+    if (!editor && !revisor) { await mostrarSemAcesso(user, email); return; }
+    if (IS_OWNER) assinarPedidos(db);
     REVIEWER = revisor;
     viewer = { id: user.uid, papel: IS_OWNER ? "autor" : "revisor", nome: user.displayName || email, email: email };
     nomes[user.uid] = viewer.nome;
@@ -7420,7 +7507,18 @@
           }).join("") + "</ul>" : '<p class="kbd-none">Ninguém ainda.</p>') +
           '<form class="acesso-add" data-lista="' + chave + '"><input type="email" required placeholder="email@exemplo.com" aria-label="E-mail"><button type="submit" class="check-btn">Adicionar</button></form></div>';
       };
-      html += lista("Podem editar e comentar", "editores", "Ex.: o professor. Editam o boletim junto com você, ao mesmo tempo, e deixam observações.") +
+      if (pedidosAcesso.length) {
+        html += '<div class="pedidos-bloco"><div class="acesso-titulo">Pedidos de acesso (' + pedidosAcesso.length + ")</div>" +
+          pedidosAcesso.map(function (p) {
+            var u = ' data-uid="' + esc(p.uid) + '"';
+            return '<div class="pedido-item"><div class="pedido-quem">' + esc(p.nome || p.email) + '</div><div class="pedido-email">' + esc(p.email) + (p.criadoEm ? " · " + esc(quando(p.criadoEm)) : "") + "</div>" +
+              (p.mensagem ? '<div class="pedido-msg">' + esc(p.mensagem) + "</div>" : "") +
+              '<div class="pedido-acoes"><button type="button" class="check-btn primary" data-settings-act="pedido-aprovar" data-papel="editor"' + u + ">Aprovar: edita e comenta</button>" +
+              '<button type="button" class="check-btn" data-settings-act="pedido-aprovar" data-papel="revisor"' + u + ">Aprovar: só comenta</button>" +
+              '<button type="button" class="check-link" data-settings-act="pedido-recusar"' + u + ">recusar</button></div></div>";
+          }).join("") + "</div>";
+      }
+      html += lista("Podem editar e comentar", "editores","Ex.: o professor. Editam o boletim junto com você, ao mesmo tempo, e deixam observações.") +
         lista("Só comentam", "revisores", "Leem tudo e deixam observações; não alteram o texto.") +
         '<p class="prop-note">Depois de adicionar, envie o endereço <strong>' + esc(location.origin + location.pathname) + "</strong>. A pessoa entra com o mesmo e-mail, pelo link de acesso ou pelo Google — sem senha e sem conta no Claude.</p>";
     } else if (settingsAba === "integracoes") {
@@ -7470,7 +7568,7 @@
     loadPrefs();
     applyPrefs(true);
     initAtalhos();
-    document.getElementById("btnSettings").addEventListener("click", function () { openSettings("interface"); });
+    document.getElementById("btnSettings").addEventListener("click", function () { openSettings(IS_OWNER && IN_FIREBASE && pedidosAcesso.length ? "acesso" : "interface"); });
     document.getElementById("settingsClose").addEventListener("click", function () { capturandoAtalho = null; dlg.hidden = true; });
     document.getElementById("settingsReset").addEventListener("click", function () {
       uiConfirm(settingsAba === "atalhos" ? "Voltar todos os atalhos ao padrão?" : "Voltar as configurações de interface ao padrão?", "Restaurar").then(function (yes) {
@@ -7515,6 +7613,12 @@
       }
       if (b.dataset.settingsAct === "sair") {
         uiConfirm("Sair desta conta? O boletim continua salvo no servidor.", "Sair").then(function (yes) { if (yes) sairDaConta(); });
+        return;
+      }
+      if (b.dataset.settingsAct === "pedido-aprovar" || b.dataset.settingsAct === "pedido-recusar") {
+        responderPedido(b.dataset.uid, b.dataset.settingsAct === "pedido-aprovar" ? b.dataset.papel : null);
+        pedidosAcesso = pedidosAcesso.filter(function (p) { return p.uid !== b.dataset.uid; });
+        renderSettings();
         return;
       }
       if (b.dataset.settingsAct === "acesso-remover") {
