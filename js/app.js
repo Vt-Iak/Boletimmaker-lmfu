@@ -39,7 +39,7 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.4.1-beta";
+  var APP_VERSION = "1.4.2-beta";
   // Logo oficial do parceiro (Laboratório de CSA UNISO), em cores originais —
   // arquivo enviado pelo usuário, salvo como asset do projeto em vez de
   // embutido em base64 aqui (mantém o app.js enxuto).
@@ -1122,7 +1122,7 @@
     msg.classList.toggle("is-error", false);
     msg.classList.toggle("is-ok", modo === "pedidoEnviado" || modo === "enviado");
     msg.textContent = modo === "enviado"
-      ? "Pronto! Enviamos um link para " + email + ". Abra o e-mail e toque no link para entrar (confira também o spam). Pode fechar esta aba."
+      ? "Pronto! Enviamos um link para " + email + ". Abra o e-mail (remetente noreply@" + ((FB && FB.config && FB.config.authDomain) || "firebaseapp.com") + ") e toque no link para entrar. Se não aparecer em 1 minuto, confira o spam. Pode fechar esta aba."
       : modo === "semAcesso"
         ? "O e-mail " + email + " ainda não tem acesso a este boletim. Peça acesso ao autor: ele recebe o aviso no Boletim e libera com um clique."
         : modo === "pedidoEnviado"
@@ -1252,6 +1252,10 @@
     }
     initLoginScreen();
     var auth = firebase.auth();
+    // E-mail do link de acesso e janela do Google em português (o texto do
+    // e-mail é o modelo do Firebase; o nome que aparece nele é o "Nome
+    // público" do projeto, em Configurações do projeto no console).
+    auth.languageCode = "pt-BR";
     // Voltando pelo link de acesso enviado por e-mail
     if (auth.isSignInWithEmailLink(location.href)) {
       var email = lsGet(LOGIN_EMAIL_KEY);

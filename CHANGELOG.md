@@ -3,6 +3,11 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.4.2-beta] — 2026-10-31
+
+- E-mail do link de acesso e janela do Google em **português** (`auth.languageCode = "pt-BR"`).
+- A mensagem depois do envio diz de qual endereço o e-mail chega (remetente do Firebase).
+
 ## [1.4.1-beta] — 2026-10-31
 
 - **Pedido de acesso:** quem entra e não está na lista pede acesso ao autor

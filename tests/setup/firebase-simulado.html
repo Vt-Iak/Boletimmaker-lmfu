@@ -84,7 +84,7 @@ var authObj = {
   isSignInWithEmailLink: function () { return false; },
   sendSignInLinkToEmail: function (email, s) {
     if (cenario === "linkoff") return Promise.reject({ code: "auth/operation-not-allowed", message: "x" });
-    log.push("link para " + email + " volta em " + (s && s.url ? "url" : "?")); return Promise.resolve();
+    log.push("link para " + email + " volta em " + (s && s.url ? "url" : "?") + " idioma " + authObj.languageCode); return Promise.resolve();
   },
   signOut: function () { return Promise.resolve(); }
 };

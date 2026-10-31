@@ -4,7 +4,7 @@ Editor do **Boletim Econômico semanal** da Liga de Mercado Financeiro, publicad
 com o Laboratório de CSA da UNISO. Produz duas páginas A4 (frente e verso) e
 exporta em PDF com links clicáveis.
 
-- Versão: **1.4.1-beta** (Beta)
+- Versão: **1.4.2-beta** (Beta)
 - Autor: João Vitor C. Soares
 - Tecnologia: HTML + CSS + JavaScript ES2017. Não usa framework, build nem servidor.
 - **Plataforma principal:** <https://vt-iak.github.io/Boletimmaker-lmfu/> (GitHub Pages + Firebase; login por e-mail ou Google, sem conta Claude)

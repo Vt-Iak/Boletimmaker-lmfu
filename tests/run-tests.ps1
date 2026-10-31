@@ -167,7 +167,7 @@ if (-not $Only.Count -or $Only -contains "firebase") {
       switch ($sc) {
         "semlogin" {
           $checks += $(if ($r.loginVisivel) { "OK tela de entrada aparece" } else { "FALHA sem tela de entrada" })
-          $checks += $(if ($r.log -contains "link para prof@uniso.br volta em url") { "OK envia link de acesso (e-mail normalizado)" } else { "FALHA link não enviado: $($r.log -join ' | ')" })
+          $checks += $(if ($r.log -contains "link para prof@uniso.br volta em url idioma pt-BR") { "OK envia link de acesso em português (e-mail normalizado)" } else { "FALHA link não enviado: $($r.log -join ' | ')" })
           $checks += $(if ($r.loginMsg -like "*Enviamos um link*") { "OK orienta a abrir o e-mail" } else { "FALHA mensagem: $($r.loginMsg)" })
           $checks += $(if (-not ($r.docIds | Where-Object { $_ -like "editions/*" })) { "OK nada gravado sem login" } else { "FALHA gravou sem login" })
         }
