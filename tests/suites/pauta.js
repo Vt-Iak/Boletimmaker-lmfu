@@ -192,7 +192,8 @@ passo(function () {
 }, 3000);
 passo(function () {
   if ($$("#pautasLista .pautas-item").length !== 2) return "esperar";
-  ok("busca marcada como aberta e como busca", /aberta/.test($$("#pautasLista .pautas-item")[0].textContent) && /busca/.test($$("#pautasLista .pautas-item")[0].textContent));
+  var itemBusca = Array.prototype.filter.call($$("#pautasLista .pautas-item"), function (li) { return li.textContent.indexOf("busca-2026-10-25-petrobras.json") !== -1; })[0];
+  ok("busca marcada como aberta e como busca, depois das semanas", !!itemBusca && /aberta/.test(itemBusca.textContent) && /busca/.test(itemBusca.textContent) && $$("#pautasLista .pautas-item")[1] === itemBusca);
   var cb = document.querySelector('#pautasLista input[data-pautas-arq="busca-2026-10-25-petrobras.json"]');
   cb.checked = true; cb.dispatchEvent(new Event("change", { bubbles: true }));
   ok("botão mostra quantas vão ser apagadas", !$("#pautasApagar").disabled && /Apagar 1 pauta/.test($("#pautasApagar").textContent));
@@ -210,6 +211,29 @@ passo(function () {
 passo(function () {
   if ($('#pautaView [data-pauta-campo="arquivo"]').value !== "2026-10-19.json") return "esperar";
   ok("a pauta aberta apagada dá lugar à da semana", $$("#pautasLista .pautas-item").length === 1);
+  $("#pautasFechar").click();
+  // Limpeza: duas pautas da mesma semana (datas relativas a hoje, para o teste não envelhecer)
+  var iso = function (d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); };
+  var hoje = new Date(); hoje.setHours(12, 0, 0, 0);
+  var seg = new Date(hoje.getTime() - (((hoje.getDay() + 6) % 7) + 7) * 864e5); // segunda da semana passada
+  var sex = new Date(seg.getTime() + 4 * 864e5), sexAnt = new Date(seg.getTime() - 3 * 864e5);
+  window.__INDICE = { formato: "boletimMaker.pautas", versao: 1, pautas: [
+    { arquivo: "semana-boa.json", tipo: "semana", termo: null, inicio: iso(seg), fim: iso(sex), geradoEm: new Date(Date.now() - 3 * 864e5).toISOString(), temas: 5, materias: 40 },
+    { arquivo: "semana-dup.json", tipo: "semana", termo: null, inicio: iso(sexAnt), fim: iso(sex), geradoEm: new Date().toISOString(), temas: 4, materias: 30 },
+    { arquivo: "semana-velha.json", tipo: "semana", termo: null, inicio: iso(new Date(seg.getTime() - 63 * 864e5)), fim: iso(new Date(sex.getTime() - 63 * 864e5)), geradoEm: new Date(Date.now() - 60 * 864e5).toISOString(), temas: 5, materias: 40 }
+  ] };
+  act("gerenciar");
+});
+passo(function () {
+  if ($$("#pautasLista .pautas-item").length !== 3) return "esperar";
+  var item = function (a) { return Array.prototype.filter.call($$("#pautasLista .pautas-item"), function (li) { return li.textContent.indexOf(a) !== -1; })[0]; };
+  ok("pauta repetida da semana é marcada (fica a de segunda a sexta, mesmo sendo mais antiga)", /repetida/.test(item("semana-dup.json").textContent) && !/repetida|antiga/.test(item("semana-boa.json").textContent));
+  ok("semana que terminou há mais de 4 semanas é marcada como antiga", /antiga/.test(item("semana-velha.json").textContent));
+  ok("lista em ordem de semana (mais recente primeiro)", $$("#pautasLista .pautas-item")[2] === item("semana-velha.json"));
+  document.querySelector('#pautasDialog [data-pautas-act="limpeza"]').click();
+  var marc = function (a) { return document.querySelector('#pautasLista input[data-pautas-arq="' + a + '"]').checked; };
+  ok("'Selecionar repetidas e antigas' marca só a tralha", marc("semana-dup.json") && marc("semana-velha.json") && !marc("semana-boa.json") && /Apagar 2 pautas/.test($("#pautasApagar").textContent));
+  ok("resumo avisa o que a limpeza automática vai tirar", /2 repetidas ou antigas/.test($("#pautasResumo").textContent), $("#pautasResumo").textContent);
   $("#pautasFechar").click();
   // Exportar canais para a coleta: nenhum validado
   $('[data-modo="pagina"]').click();

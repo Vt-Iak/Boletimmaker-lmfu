@@ -3,6 +3,19 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.4.4-beta] — 2026-11-01
+
+- **Limpeza automática das pautas** (coletor, a cada execução; ou só a limpeza:
+  Actions → Pauta → Run workflow → "Só limpar"):
+  - uma pauta por semana (fica a de segunda a sexta; se nenhuma for, a mais recente);
+  - semanas que terminaram há mais de 4 semanas e buscas com mais de 7 dias saem;
+  - arquivos órfãos saem;
+  - prazos em `.github/workflows/pauta.yml` (`RETER_SEMANAS`, `RETER_BUSCAS_DIAS`).
+- **Lista de arquivos organizada:** semanas da mais recente para a mais antiga, buscas à parte; a
+  hora só aparece quando há duas da mesma semana. A aba abre a pauta da semana da edição.
+- **Gerenciar:** marca as repetidas e antigas (mesma regra) e "Selecionar repetidas e antigas".
+- Repositório limpo: removida a pauta repetida 16/10–23/10.
+
 ## [1.4.3-beta] — 2026-10-31
 
 - **Gerenciar pautas** (aba Pauta → Gerenciar): lista todas as pautas do repositório.

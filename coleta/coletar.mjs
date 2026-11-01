@@ -13,8 +13,10 @@
 //   TERMO=Petrobras                   busca por palavra-chave (grava busca-…)
 //   SAIDA=pautas                      pasta de saída (testes usam outra)
 //   ATRASO_MS=250                     pausa entre pedidos a um mesmo site
+//   SO_LIMPAR=1                       só aplica a limpeza das pautas (sem coletar)
+//   RETER_SEMANAS=4 RETER_BUSCAS_DIAS=7  quanto tempo as pautas ficam (ver "Limpeza")
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -296,6 +298,7 @@ const publica = (m) => ({
 
 // ---------- Principal ----------
 async function principal() {
+  if (/^(1|true|sim)$/i.test(process.env.SO_LIMPAR || "")) { log("Só limpeza das pautas (sem coleta)."); limparPautas(null); return; }
   const padrao = periodoPadrao();
   const inicio = process.env.INICIO || padrao.inicio, fim = process.env.FIM || padrao.fim;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(inicio) || !/^\d{4}-\d{2}-\d{2}$/.test(fim) || inicio > fim) throw new Error("Período inválido: " + inicio + " a " + fim);
@@ -403,6 +406,74 @@ async function principal() {
   for (const [nome, c] of Object.entries(porCanal)) log(`  ${nome.padEnd(26)} ${String(c.brutos).padStart(4)} lidas · ${String(c.aceitas).padStart(3)} aceitas`);
   log(`Descartadas: ${JSON.stringify(descartadas)}`);
   log(`Gravado ${arquivo}: ${temas.length} temas, ${avulsas.length} avulsas, ${materias.length} matérias (${materias.filter((m) => !m.linkConfirmado).length} sem link confirmado).`);
+  limparPautas(arquivo);
+}
+
+// ---------- Limpeza das pautas (para não acumular tralha) ----------
+// Roda a cada execução, depois de gravar (ou sozinha, com SO_LIMPAR=1):
+//   1. uma pauta por semana (semana da data final): fica a de período padrão
+//      segunda a sexta; se nenhuma for padrão, a gerada por último;
+//   2. semanas que terminaram há mais de RETER_SEMANAS semanas saem;
+//   3. buscas por palavra-chave com mais de RETER_BUSCAS_DIAS dias saem;
+//   4. arquivo sem linha no índice (e linha sem arquivo) sai.
+// A pauta gravada nesta execução nunca é apagada nela. As edições não são
+// tocadas: notícias e fontes já criadas a partir de uma pauta continuam lá.
+const RETER_SEMANAS = Number(process.env.RETER_SEMANAS || 4);
+const RETER_BUSCAS_DIAS = Number(process.env.RETER_BUSCAS_DIAS || 7);
+function segundaDaSemana(isoData) {
+  const d = new Date(isoData + "T12:00:00Z");
+  return iso(new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * 864e5));
+}
+function periodoSegASex(p) {
+  const i = new Date(p.inicio + "T12:00:00Z"), f = new Date(p.fim + "T12:00:00Z");
+  return i.getUTCDay() === 1 && f.getUTCDay() === 5 && f - i === 4 * 864e5;
+}
+function planoDeLimpeza(pautas, hoje, protegido) {
+  const remover = new Map();
+  const semanas = pautas.filter((p) => p.tipo !== "busca" && p.inicio && p.fim);
+  const grupos = {};
+  semanas.forEach((p) => (grupos[segundaDaSemana(p.fim)] = grupos[segundaDaSemana(p.fim)] || []).push(p));
+  for (const g of Object.values(grupos)) {
+    if (g.length < 2) continue;
+    g.sort((a, b) => periodoSegASex(b) - periodoSegASex(a) || (b.geradoEm > a.geradoEm ? 1 : -1));
+    g.slice(1).forEach((p) => remover.set(p.arquivo, "repetida (a semana fica com " + g[0].arquivo + ")"));
+  }
+  const limiteSemana = iso(new Date(hoje.getTime() - RETER_SEMANAS * 7 * 864e5));
+  semanas.forEach((p) => { if (p.fim < limiteSemana) remover.set(p.arquivo, "antiga (terminou há mais de " + RETER_SEMANAS + " semanas)"); });
+  const limiteBusca = new Date(hoje.getTime() - RETER_BUSCAS_DIAS * 864e5).toISOString();
+  pautas.filter((p) => p.tipo === "busca").forEach((p) => { if ((p.geradoEm || "") < limiteBusca) remover.set(p.arquivo, "busca com mais de " + RETER_BUSCAS_DIAS + " dias"); });
+  if (protegido) remover.delete(protegido);
+  return remover;
+}
+function limparPautas(protegido) {
+  const idxCaminho = join(SAIDA, "index.json");
+  if (!existsSync(idxCaminho)) return;
+  const idx = JSON.parse(readFileSync(idxCaminho, "utf8"));
+  const antes = idx.pautas.length;
+  // linhas sem arquivo
+  idx.pautas = idx.pautas.filter((p) => {
+    const ok = existsSync(join(SAIDA, p.arquivo));
+    if (!ok) log(`  limpeza: ${p.arquivo} — linha sem arquivo`);
+    return ok;
+  });
+  const remover = planoDeLimpeza(idx.pautas, new Date(), protegido);
+  for (const [arquivo, motivo] of remover) {
+    rmSync(join(SAIDA, arquivo), { force: true });
+    log(`  limpeza: ${arquivo} — ${motivo}`);
+  }
+  idx.pautas = idx.pautas.filter((p) => !remover.has(p.arquivo));
+  // arquivos sem linha no índice
+  const conhecidos = new Set(idx.pautas.map((p) => p.arquivo));
+  for (const nome of readdirSync(SAIDA)) {
+    if (nome === "index.json" || !nome.endsWith(".json") || conhecidos.has(nome)) continue;
+    rmSync(join(SAIDA, nome), { force: true });
+    log(`  limpeza: ${nome} — arquivo fora do índice`);
+  }
+  if (idx.pautas.length !== antes || remover.size) {
+    idx.atualizadoEm = new Date().toISOString();
+    writeFileSync(idxCaminho, JSON.stringify(idx, null, 1) + "\n");
+  }
+  log(`Limpeza: ${antes - idx.pautas.length} pauta(s) removida(s); ${idx.pautas.length} no índice.`);
 }
 
 // Regras de confiabilidade (seção 5.6 do CONTEXTO.md): o arquivo só é gravado se passar.

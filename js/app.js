@@ -39,7 +39,7 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.4.3-beta";
+  var APP_VERSION = "1.4.4-beta";
   // Logo oficial do parceiro (Laboratório de CSA UNISO), em cores originais —
   // arquivo enviado pelo usuário, salvo como asset do projeto em vez de
   // embutido em base64 aqui (mantém o app.js enxuto).
@@ -3973,10 +3973,31 @@
 
   // ---- Dados ----
   function dataCurta(isoTxt) { var d = parseIsoDate(isoTxt); return d ? ddmm(d) : ""; }
-  function rotuloPauta(p) {
+  function rotuloPauta(p, semHora) {
     var ger = p.geradoEm ? new Date(p.geradoEm) : null;
-    return (p.tipo === "busca" ? "Busca \"" + (p.termo || "") + "\"" : "Semana " + dataCurta(p.inicio) + " a " + dataCurta(p.fim)) +
-      (ger && !isNaN(ger) ? " · " + ddmm(ger) + " " + pad2(ger.getHours()) + ":" + pad2(ger.getMinutes()) : "");
+    return (p.tipo === "busca" ? "Busca \"" + (p.termo || "") + "\" · " + dataCurta(p.inicio) + " a " + dataCurta(p.fim) : "Semana " + dataCurta(p.inicio) + " a " + dataCurta(p.fim)) +
+      (!semHora && ger && !isNaN(ger) ? " · gerada " + ddmm(ger) + " " + pad2(ger.getHours()) + ":" + pad2(ger.getMinutes()) : "");
+  }
+  // Mesma regra de limpeza do coletor (coleta/coletar.mjs → planoDeLimpeza):
+  // uma pauta por semana (fica a de segunda a sexta, ou a mais recente),
+  // semanas que terminaram há mais de 4 semanas e buscas com mais de 7 dias.
+  var RETER_SEMANAS = 4, RETER_BUSCAS_DIAS = 7;
+  function segundaDaSemana(isoTxt) { var d = parseIsoDate(isoTxt); return d ? isoOf(addDays(d, -((d.getDay() + 6) % 7))) : ""; }
+  function periodoSegASex(p) { var i = parseIsoDate(p.inicio), f = parseIsoDate(p.fim); return !!(i && f && i.getDay() === 1 && f.getDay() === 5 && isoOf(addDays(i, 4)) === p.fim); }
+  function planoLimpezaPautas(lista) {
+    var remover = {}, grupos = {};
+    lista.forEach(function (p) { if (p.tipo !== "busca" && p.fim) (grupos[segundaDaSemana(p.fim)] = grupos[segundaDaSemana(p.fim)] || []).push(p); });
+    Object.keys(grupos).forEach(function (k) {
+      var g = grupos[k];
+      if (g.length < 2) return;
+      g.sort(function (a, b) { return (periodoSegASex(b) - periodoSegASex(a)) || ((b.geradoEm || "") > (a.geradoEm || "") ? 1 : -1); });
+      g.slice(1).forEach(function (p) { remover[p.arquivo] = "repetida: a semana fica com " + rotuloPauta(g[0]); });
+    });
+    var limite = isoOf(addDays(new Date(), -7 * RETER_SEMANAS));
+    lista.forEach(function (p) { if (p.tipo !== "busca" && p.fim && p.fim < limite) remover[p.arquivo] = "antiga: terminou há mais de " + RETER_SEMANAS + " semanas"; });
+    var limBusca = new Date(Date.now() - RETER_BUSCAS_DIAS * 864e5).toISOString();
+    lista.forEach(function (p) { if (p.tipo === "busca" && (p.geradoEm || "") < limBusca) remover[p.arquivo] = "busca com mais de " + RETER_BUSCAS_DIAS + " dias"; });
+    return remover;
   }
   function pautaEstado() {
     var s = state();
@@ -4073,6 +4094,7 @@
     var s = state(), v = s.meta.vars || {};
     var escolhido = (s.pauta && lista.filter(function (p) { return p.arquivo === s.pauta.arquivo; })[0]) ||
       lista.filter(function (p) { return p.tipo === "semana" && p.inicio === v.coberturaInicio; })[0] ||
+      lista.filter(function (p) { return p.tipo === "semana" && v.coberturaFim && segundaDaSemana(p.fim) === segundaDaSemana(v.coberturaFim); })[0] ||
       lista.filter(function (p) { return p.tipo === "semana"; })[0] || lista[0];
     pauta.msg = "";
     if (escolhido) await carregarPauta(escolhido.arquivo);
@@ -4129,9 +4151,7 @@
     box.innerHTML =
       '<div class="pauta-bloco"><div class="pauta-titulo">Pauta</div>' +
         '<p class="pauta-cob">Edição ' + esc(v.edicao || "") + " · cobertura <strong>" + esc(dataCurta(v.coberturaInicio) || "?") + " a " + esc(dataCurta(v.coberturaFim) || "?") + "</strong></p>" +
-        (lista.length ? '<label class="pauta-campo"><span>Arquivo</span><select data-pauta-campo="arquivo">' + lista.map(function (p) {
-          return '<option value="' + esc(p.arquivo) + '"' + (p.arquivo === pauta.arquivo ? " selected" : "") + ">" + esc(p.tipo === "importada" ? "Importada: " + p.arquivo : rotuloPauta(p)) + "</option>";
-        }).join("") + "</select></label>" : "") +
+        (lista.length ? '<label class="pauta-campo"><span>Arquivo</span><select data-pauta-campo="arquivo">' + opcoesPautas(lista) + "</select></label>" : "") +
         '<div class="pauta-acoes"><button type="button" class="check-btn" data-pauta-act="atualizar">' + icon("reset") + "Atualizar</button>" +
         '<button type="button" class="check-btn" data-pauta-act="importar">' + icon("upload") + "Importar</button>" +
         (REVIEWER ? "" : '<button type="button" class="check-btn" data-pauta-act="gerenciar" title="Ver todas as pautas geradas e apagar as erradas ou antigas">' + icon("trash") + "Gerenciar</button>") + "</div>" +
@@ -4159,6 +4179,22 @@
           return '<option value="' + esc(n) + '"' + (f.veiculo === n ? " selected" : "") + ">" + esc(n) + "</option>";
         }).join("") + "</select>" +
       "</div>";
+  }
+  // Lista de arquivos em ordem: semanas da mais recente para a mais antiga;
+  // buscas à parte. A hora só aparece quando há duas da mesma semana.
+  function opcoesPautas(lista) {
+    var opt = function (p, semHora) {
+      return '<option value="' + esc(p.arquivo) + '"' + (p.arquivo === pauta.arquivo ? " selected" : "") + ">" +
+        esc(p.tipo === "importada" ? "Importada: " + p.arquivo : rotuloPauta(p, semHora)) + "</option>";
+    };
+    var semanas = lista.filter(function (p) { return p.tipo === "semana"; }).sort(function (a, b) { return (b.inicio || "") > (a.inicio || "") ? 1 : (b.inicio || "") < (a.inicio || "") ? -1 : ((b.geradoEm || "") > (a.geradoEm || "") ? 1 : -1); });
+    var porSemana = {};
+    semanas.forEach(function (p) { var k = segundaDaSemana(p.fim); porSemana[k] = (porSemana[k] || 0) + 1; });
+    var buscas = lista.filter(function (p) { return p.tipo === "busca"; }).sort(function (a, b) { return (b.geradoEm || "") > (a.geradoEm || "") ? 1 : -1; });
+    var outras = lista.filter(function (p) { return p.tipo !== "semana" && p.tipo !== "busca"; });
+    return outras.map(function (p) { return opt(p, true); }).join("") +
+      (semanas.length ? '<optgroup label="Semanas">' + semanas.map(function (p) { return opt(p, porSemana[segundaDaSemana(p.fim)] < 2); }).join("") + "</optgroup>" : "") +
+      (buscas.length ? '<optgroup label="Buscas por palavra-chave">' + buscas.map(function (p) { return opt(p, false); }).join("") + "</optgroup>" : "");
   }
   function barras(n) { var h = ""; for (var i = 1; i <= 5; i++) h += "<i" + (i <= n ? ' class="f"' : "") + "></i>"; return '<span class="pt-bar" title="Relevância ' + n + ' de 5">' + h + "</span>"; }
   function renderPautaTemas() {
@@ -4324,7 +4360,6 @@
   // apagar é um commit pela API do GitHub, com a chave deste aparelho.
   // O conteúdo continua no histórico do GitHub, se um dia precisar.
   var pautasSel = {};
-  function idadeDias(p) { var d = parseIsoDate(p.fim || p.inicio); return d ? Math.floor((Date.now() - d.getTime()) / 864e5) : 0; }
   async function abrirGerenciarPautas() {
     var dlg = document.getElementById("pautasDialog");
     pautasSel = {};
@@ -4334,20 +4369,26 @@
     renderGerenciarPautas();
   }
   function renderGerenciarPautas() {
-    var lista = (pauta.indice && pauta.indice.pautas) || [];
+    var bruta = (pauta.indice && pauta.indice.pautas) || [];
+    // Mesma ordem da lista de arquivos: semanas (mais recente primeiro), depois buscas
+    var lista = bruta.filter(function (p) { return p.tipo !== "busca"; }).sort(function (a, b) { return (b.inicio || "") > (a.inicio || "") ? 1 : (b.inicio || "") < (a.inicio || "") ? -1 : ((b.geradoEm || "") > (a.geradoEm || "") ? 1 : -1); })
+      .concat(bruta.filter(function (p) { return p.tipo === "busca"; }).sort(function (a, b) { return (b.geradoEm || "") > (a.geradoEm || "") ? 1 : -1; }));
     var tem = !!ghToken();
+    var plano = planoLimpezaPautas(bruta);
+    var nPlano = Object.keys(plano).length;
     document.getElementById("pautasResumo").textContent = lista.length
-      ? lista.length + (lista.length === 1 ? " pauta no repositório." : " pautas no repositório.") + " Marque as que quer apagar."
+      ? lista.length + (lista.length === 1 ? " pauta no repositório" : " pautas no repositório") +
+        (nPlano ? " · " + nPlano + (nPlano === 1 ? " repetida ou antiga (sai na limpeza automática de sábado)." : " repetidas ou antigas (saem na limpeza automática de sábado).") : " · nada a limpar.")
       : "Nenhuma pauta no repositório.";
     document.getElementById("pautasLista").innerHTML = lista.length ? lista.map(function (p) {
-      var aberta = p.arquivo === pauta.arquivo, antiga = p.tipo === "semana" && idadeDias(p) > 56;
-      return '<li class="pautas-item"><label><input type="checkbox" data-pautas-arq="' + esc(p.arquivo) + '"' + (pautasSel[p.arquivo] ? " checked" : "") + (tem ? "" : " disabled") + ">" +
+      var aberta = p.arquivo === pauta.arquivo, motivo = plano[p.arquivo];
+      return '<li class="pautas-item' + (motivo ? " is-tralha" : "") + '"><label><input type="checkbox" data-pautas-arq="' + esc(p.arquivo) + '"' + (pautasSel[p.arquivo] ? " checked" : "") + (tem ? "" : " disabled") + ">" +
         '<span class="pautas-info"><strong>' + esc(rotuloPauta(p)) + "</strong>" +
-        '<span class="pautas-meta">' + esc(p.arquivo) + " · cobertura " + esc(dataCurta(p.inicio)) + " a " + esc(dataCurta(p.fim)) +
-          " · " + (p.temas || 0) + " temas · " + (p.materias || 0) + " matérias</span></span>" +
+        '<span class="pautas-meta">' + esc(p.arquivo) + " · " + (p.temas || 0) + " temas · " + (p.materias || 0) + " matérias" +
+          (motivo ? " · " + esc(motivo) : "") + "</span></span>" +
         (aberta ? '<span class="chip chip-aprovado">aberta</span>' : "") +
         (p.tipo === "busca" ? '<span class="chip">busca</span>' : "") +
-        (antiga ? '<span class="chip">antiga</span>' : "") + "</label></li>";
+        (motivo ? '<span class="chip chip-incompleta">' + (/^repetida/.test(motivo) ? "repetida" : "antiga") + "</span>" : "") + "</label></li>";
     }).join("") : "";
     var n = Object.keys(pautasSel).filter(function (k) { return pautasSel[k]; }).length;
     var btn = document.getElementById("pautasApagar");
@@ -4423,7 +4464,7 @@
       var lista = (pauta.indice && pauta.indice.pautas) || [];
       if (b.dataset.pautasAct === "config") { dlg.hidden = true; openSettings("integracoes"); return; }
       if (b.dataset.pautasAct === "nenhuma") pautasSel = {};
-      if (b.dataset.pautasAct === "antigas") lista.forEach(function (p) { if (p.tipo === "semana" && idadeDias(p) > 56) pautasSel[p.arquivo] = true; });
+      if (b.dataset.pautasAct === "limpeza") Object.keys(planoLimpezaPautas(lista)).forEach(function (a) { pautasSel[a] = true; });
       if (b.dataset.pautasAct === "buscas") lista.forEach(function (p) { if (p.tipo === "busca") pautasSel[p.arquivo] = true; });
       renderGerenciarPautas();
     });

@@ -4,6 +4,7 @@
 #
 # Quando roda:
 #   - todo sábado às 08h (Brasília), para a semana de segunda a sexta que terminou;
+#     a cada execução também apaga pautas repetidas e antigas (ver "env" e coletar.mjs);
 #   - à mão: Actions → Pauta → Run workflow (também pelo app do GitHub no celular)
 #     ou pelo botão "Buscar agora" da aba Pauta, com período e/ou palavra-chave.
 # Não usa nenhuma credencial além do GITHUB_TOKEN da própria execução e não acessa o Firebase.
@@ -26,6 +27,16 @@ on:
         description: "Palavra-chave para uma busca (opcional, ex.: Petrobras)"
         required: false
         default: ""
+      somente_limpar:
+        description: "Só limpar as pautas repetidas e antigas (sem coletar)"
+        type: boolean
+        required: false
+        default: false
+
+# Quanto tempo as pautas ficam no repositório (a limpeza roda a cada execução).
+env:
+  RETER_SEMANAS: "4"       # semanas: guarda as que terminaram nas últimas 4 semanas
+  RETER_BUSCAS_DIAS: "7"   # buscas por palavra-chave: 7 dias
 
 permissions:
   contents: write
@@ -51,11 +62,13 @@ jobs:
           INICIO: ${{ inputs.inicio }}
           FIM: ${{ inputs.fim }}
           TERMO: ${{ inputs.termo }}
+          SO_LIMPAR: ${{ inputs.somente_limpar }}
         run: node coleta/coletar.mjs
 
       - name: Gravar a pauta no repositório
         env:
           TERMO: ${{ inputs.termo }}
+          SO_LIMPAR: ${{ inputs.somente_limpar && 'sim' || '' }}
         run: |
           git config user.name "Coletor da Pauta"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -64,7 +77,7 @@ jobs:
             echo "Nada novo para gravar."
             exit 0
           fi
-          git commit -m "Pauta: $(date -u +%Y-%m-%d)${TERMO:+ · busca: $TERMO}"
+          git commit -m "Pauta: $(date -u +%Y-%m-%d)${TERMO:+ · busca: $TERMO}${SO_LIMPAR:+ · limpeza}"
           for tentativa in 1 2 3; do
             git pull --rebase origin main && git push origin HEAD:main && exit 0
             sleep 5

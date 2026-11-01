@@ -1161,3 +1161,4 @@ body.modo-pauta .zoom-bar, body.modo-pauta .block-toolbar, body.modo-pauta .text
 .check-btn.danger-btn{background:var(--ui-danger); border-color:var(--ui-danger); color:#fff;}
 .check-btn.danger-btn:hover:not(:disabled){filter:brightness(.92); background:var(--ui-danger);}
 .check-btn:disabled{opacity:.5; cursor:not-allowed;}
+.pautas-item.is-tralha strong{color:var(--ui-text-2);}

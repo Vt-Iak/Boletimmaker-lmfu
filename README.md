@@ -4,7 +4,7 @@ Editor do **Boletim Econômico semanal** da Liga de Mercado Financeiro, publicad
 com o Laboratório de CSA da UNISO. Produz duas páginas A4 (frente e verso) e
 exporta em PDF com links clicáveis.
 
-- Versão: **1.4.3-beta** (Beta)
+- Versão: **1.4.4-beta** (Beta)
 - Autor: João Vitor C. Soares
 - Tecnologia: HTML + CSS + JavaScript ES2017. Não usa framework, build nem servidor.
 - **Plataforma principal:** <https://vt-iak.github.io/Boletimmaker-lmfu/> (GitHub Pages + Firebase; login por e-mail ou Google, sem conta Claude)
@@ -133,8 +133,13 @@ por tema. Não precisa abrir o Claude nem o GitHub.
     o arquivo.
   - O app também reaplica o filtro ao abrir a pauta: a matéria de um canal que
     saiu da lista fica oculta.
-- **Gerenciar:** apaga pautas erradas ou antigas (uma ou várias; atalhos para as de
-  mais de 8 semanas e para as buscas). Exige a chave do GitHub; o conteúdo apagado
+- **Limpeza automática:** a cada execução, o coletor deixa uma pauta por semana
+  (a de segunda a sexta), apaga semanas que terminaram há mais de 4 semanas e
+  buscas com mais de 7 dias. Os prazos ficam em `pauta.yml` (`RETER_SEMANAS`,
+  `RETER_BUSCAS_DIAS`). Para limpar sem coletar: *Actions → Pauta → Run workflow*
+  → marcar **Só limpar**.
+- **Gerenciar:** mostra o que é repetido ou antigo e apaga na hora (uma, várias ou
+  "Selecionar repetidas e antigas"). Exige a chave do GitHub; o conteúdo apagado
   fica no histórico do GitHub.
 - **Offline, no Windows ou no claude.ai:** fica a última pauta aberta no
   aparelho, ou importe um arquivo `.json` de pauta.
