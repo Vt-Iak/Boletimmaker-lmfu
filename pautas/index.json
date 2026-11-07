@@ -3,6 +3,16 @@
  "versao": 1,
  "pautas": [
   {
+   "arquivo": "2026-11-02.json",
+   "tipo": "semana",
+   "termo": null,
+   "inicio": "2026-11-02",
+   "fim": "2026-11-06",
+   "geradoEm": "2026-11-07T16:47:58.976Z",
+   "temas": 40,
+   "materias": 279
+  },
+  {
    "arquivo": "2026-10-26.json",
    "tipo": "semana",
    "termo": null,
@@ -33,5 +43,5 @@
    "materias": 290
   }
  ],
- "atualizadoEm": "2026-11-01T14:09:32.876Z"
+ "atualizadoEm": "2026-11-07T16:47:58.976Z"
 }
