@@ -180,6 +180,8 @@ button:disabled{opacity:.4; cursor:default !important;}
 .status-pill[data-status="rascunho"]{background:var(--ui-amber-soft) !important; color:var(--ui-amber) !important;}
 .status-pill[data-status="pendente"]{background:var(--ui-blue-soft) !important; color:var(--ui-blue) !important;}
 .status-pill[data-status="aprovado"]{background:var(--ui-green-soft) !important; color:var(--ui-green) !important;}
+/* A lista aberta não herda a cor do status, que é clara no tema escuro */
+.edition-picker option{background:var(--ui-surface); color:var(--ui-text); font-weight:500;}
 
 .save-status{font:400 12px/1.3 var(--ui-font); color:var(--ui-muted); display:inline-flex; align-items:center; gap:6px; white-space:nowrap;}
 .save-status::before{content:""; width:7px; height:7px; border-radius:50%; background:#2f9e5b;}

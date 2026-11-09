@@ -3,6 +3,10 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.4.6-beta] — 2026-11-08
+
+- **Correção:** no tema escuro, as opções da lista de status ficavam quase invisíveis.
+
 ## [1.4.5-beta] — 2026-11-08
 
 - **Status "Revisado" agora é "Pendente"**, o estado em que a edição ou notícia aguarda o

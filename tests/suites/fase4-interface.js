@@ -60,6 +60,11 @@ step(function () {
 }, 200);
 step(function () {
   ok("status da edição salvo", cur().data.meta.status === "pendente" && $("#editionStatus").dataset.status === "pendente");
+  var raiz = document.documentElement, tema = raiz.getAttribute("data-ui-theme");
+  raiz.setAttribute("data-ui-theme", "dark");
+  var opcao = getComputedStyle($("#editionStatus").options[0]);
+  ok("tema escuro: lista de status com texto claro sobre fundo escuro", opcao.color === "rgb(232, 232, 232)" && opcao.backgroundColor === "rgb(30, 30, 30)", opcao.color + " / " + opcao.backgroundColor);
+  if (tema === null) raiz.removeAttribute("data-ui-theme"); else raiz.setAttribute("data-ui-theme", tema);
 });
 
 /* Camadas: selecionar, travar, reordenar */

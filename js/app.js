@@ -39,7 +39,7 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.4.5-beta";
+  var APP_VERSION = "1.4.6-beta";
   // Logo oficial do parceiro (Laboratório de CSA UNISO), em cores originais —
   // arquivo enviado pelo usuário, salvo como asset do projeto em vez de
   // embutido em base64 aqui (mantém o app.js enxuto).
