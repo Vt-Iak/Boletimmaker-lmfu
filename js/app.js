@@ -39,7 +39,7 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.4.4-beta";
+  var APP_VERSION = "1.4.5-beta";
   // Logo oficial do parceiro (Laboratório de CSA UNISO), em cores originais —
   // arquivo enviado pelo usuário, salvo como asset do projeto em vez de
   // embutido em base64 aqui (mantém o app.js enxuto).
@@ -426,6 +426,12 @@
       ensurePhase5(store.customDefaultTemplate);
       store.migrations.phase5 = true;
     }
+    // Status "Revisado" passou a ser "Pendente" (aguarda o professor)
+    if (!store.migrations.statusPendente) {
+      Object.keys(store.editions).forEach(function (id) { migrarStatusPendente(store.editions[id].data); });
+      migrarStatusPendente(store.customDefaultTemplate);
+      store.migrations.statusPendente = true;
+    }
     // Canais de referência: semeia a lista inicial uma vez (cada canal nasce
     // "a validar"); depois disso a lista é só do usuário.
     if (!store.migrations.canais) {
@@ -598,6 +604,7 @@
       if (!data || typeof data !== "object" || Array.isArray(data)) return;
       ensureVars(data);
       ensurePhase5(data);
+      migrarStatusPendente(data);
       fillDefaults(data, blankTemplate());
       moveNewsLinksInline(data);
       var id = uid();
@@ -939,7 +946,9 @@
   function parseEditionDoc(id, body) {
     if (!body || typeof body.json !== "string") return null;
     try {
-      return { id: id, name: body.name || "Edição", updatedAt: body.updatedAt || 0, data: JSON.parse(body.json) };
+      var data = JSON.parse(body.json);
+      migrarStatusPendente(data);
+      return { id: id, name: body.name || "Edição", updatedAt: body.updatedAt || 0, data: data };
     } catch (e) {
       return null;
     }
@@ -2144,6 +2153,15 @@
     d.meta.phase5 = true;
   }
 
+  // Edição salva com o status antigo "revisado": vira "pendente".
+  function migrarStatusPendente(d) {
+    if (!d || typeof d !== "object") return;
+    if (d.meta && d.meta.status === "revisado") d.meta.status = "pendente";
+    (Array.isArray(d.columns) ? d.columns : []).forEach(function (c) {
+      if (c && c.status === "revisado") c.status = "pendente";
+    });
+  }
+
   /* ---------------------------------------------------------------------
      Render — Página 1
      --------------------------------------------------------------------- */
@@ -2721,6 +2739,7 @@
     // migra aqui também, para nunca sobrescrever texto escrito à mão.
     ensureVars(state()); // antes de fillDefaults, que criaria variáveis vazias sem proteger o texto
     ensurePhase5(state()); // idem: cria fontes a partir dos links antes dos padrões
+    migrarStatusPendente(state());
     fillDefaults(state(), blankTemplate());
     applyVars(state());
     renderVarsBar();
@@ -3548,7 +3567,7 @@
       if (col) {
         var st = col.status || "rascunho";
         content += '<div class="prop-field"><span class="prop-field-label">Status (não aparece no PDF)</span>' +
-          segButtons([["rascunho", "Rascunho"], ["revisado", "Revisado"], ["aprovado", "Aprovado"]],
+          segButtons([["rascunho", "Rascunho"], ["pendente", "Pendente"], ["aprovado", "Aprovado"]],
             function (it) { return 'data-action="set-news-status" data-index="' + ci + '" data-value="' + it[0] + '"'; },
             function (it) { return it[0] === st; }) + "</div>";
         var linked = col.sourceId ? sourceById(s, col.sourceId) : null;
@@ -5583,7 +5602,7 @@
       var w = warns[key];
       var tail = "";
       if (w) tail += '<span class="layer-warn" title="' + esc(w.join(" · ")) + '">' + icon("alert") + "</span>";
-      if (isNews && it.status !== "rascunho") tail += '<span class="chip chip-' + it.status + '">' + (it.status === "aprovado" ? "Aprov." : "Rev.") + "</span>";
+      if (isNews && it.status !== "rascunho") tail += '<span class="chip chip-' + it.status + '">' + (it.status === "aprovado" ? "Aprov." : "Pend.") + "</span>";
       if (isNews) {
         tail += '<button type="button" class="layer-btn" data-layer-move="-1" title="Subir" aria-label="Subir"' + (it.news === 0 ? " disabled" : "") + ">" + icon("up") + "</button>";
         tail += '<button type="button" class="layer-btn" data-layer-move="1" title="Descer" aria-label="Descer"' + (it.news === nCols - 1 ? " disabled" : "") + ">" + icon("down") + "</button>";
@@ -6759,7 +6778,7 @@
       if (e.key === "Escape" && !menu.hidden) { setMenu(false); menuBtn.focus(); }
     });
 
-    // Status da edição (Rascunho/Revisado/Aprovado) — não sai no PDF
+    // Status da edição (Rascunho/Pendente/Aprovado) — não sai no PDF
     document.getElementById("editionStatus").addEventListener("change", function (e) {
       state().meta.status = e.target.value;
       e.target.dataset.status = e.target.value;
@@ -6924,6 +6943,7 @@
           }
           ensureVars(data); // antes de fillDefaults (ver render)
           ensurePhase5(data);
+          migrarStatusPendente(data);
           fillDefaults(data, blankTemplate());
           moveNewsLinksInline(data);
           var id = uid();

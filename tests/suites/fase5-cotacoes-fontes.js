@@ -134,6 +134,7 @@ if (MODE === "migr") {
     ok("migração: card com seta que não bate com o sinal fica 'pela seta'", d.ticker[0].modoCor === "seta" && d.ticker[1].modoCor === "sinal", d.ticker.map(function (t) { return t.modoCor; }).join(","));
     ok("migração: aparência do card mantida (seta manual)", card(0).querySelector(".ticker-change").classList.contains("trend-up"));
     ok("migração: notícia mostra o selo da fonte", $('#workspace [data-source-of="0"]') && /\[1\] Reuters/.test($('#workspace [data-source-of="0"]').textContent));
+    ok("migração: status Revisado vira Pendente na edição e na notícia", d.meta.status === "pendente" && d.columns[0].status === "pendente" && $("#editionStatus").value === "pendente");
   });
 }
 setTimeout(run, 900);

@@ -55,10 +55,11 @@ step(function () { click($("#appDialogOk")); }, 200);
 step(function () {
   var sel = $("#editionStatus");
   ok("status da edição começa em Rascunho", sel.value === "rascunho" && sel.dataset.status === "rascunho");
-  sel.value = "revisado"; sel.dispatchEvent(new Event("change", { bubbles: true }));
+  ok("status oferece Rascunho, Pendente e Aprovado", Array.prototype.map.call(sel.options, function (o) { return o.textContent; }).join() === "Rascunho,Pendente,Aprovado");
+  sel.value = "pendente"; sel.dispatchEvent(new Event("change", { bubbles: true }));
 }, 200);
 step(function () {
-  ok("status da edição salvo", cur().data.meta.status === "revisado" && $("#editionStatus").dataset.status === "revisado");
+  ok("status da edição salvo", cur().data.meta.status === "pendente" && $("#editionStatus").dataset.status === "pendente");
 });
 
 /* Camadas: selecionar, travar, reordenar */
@@ -140,6 +141,10 @@ step(function () {
 /* Status da notícia */
 step(function () {
   click(layer("news-2"));
+  click(insp('[data-action="set-news-status"][data-value="pendente"]'));
+}, 200);
+step(function () {
+  ok("status Pendente da notícia salvo e na camada", cur().data.columns[2].status === "pendente" && /Pend\./.test(layer("news-2").textContent));
   click(insp('[data-action="set-news-status"][data-value="aprovado"]'));
 }, 200);
 step(function () {

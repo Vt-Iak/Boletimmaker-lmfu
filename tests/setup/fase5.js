@@ -4,7 +4,7 @@ try { localStorage.clear(); } catch (e) {}
 if (MODE === "migr") {
   // Loja de depois da Fase 2 (tem variáveis), de antes da Fase 5
   var d = {
-    meta: { title: "PANORAMA ECONÔMICO", subtitle: "s", logo: null, publisherLogo: null, vars: { edicao: "05/2026", data: "", coberturaInicio: "", coberturaFim: "", proxima: "" }, overrides: { "masthead.line1": true } },
+    meta: { status: "revisado", title: "PANORAMA ECONÔMICO", subtitle: "s", logo: null, publisherLogo: null, vars: { edicao: "05/2026", data: "", coberturaInicio: "", coberturaFim: "", proxima: "" }, overrides: { "masthead.line1": true } },
     locked: false, elements: [], blockLayout: {},
     masthead: { line1: "L1", line2: "L2" },
     headline: { tag: "T", title: "Manchete", deck: "d", image: null, paragraphs: ["p"] },
@@ -12,7 +12,7 @@ if (MODE === "migr") {
       { label: "DÓLAR", value: "R$ 4,98", change: "-0,60%", trend: "up" },
       { label: "BRENT", value: "US$ 100", change: "+1,00%", trend: "up" }
     ],
-    columns: [{ tag: "X", title: "Notícia", body: "b", linkText: '<a href="https://www.reuters.com/x">Leia mais →</a>', image: null }],
+    columns: [{ status: "revisado", tag: "X", title: "Notícia", body: "b", linkText: '<a href="https://www.reuters.com/x">Leia mais →</a>', image: null }],
     note: "", weekTable: { title: "", rows: [] },
     footerFront: { fontes: "", autoria: "", verso: "", disclaimer: "" },
     page2Header: { editionLabel: "", note: "" },

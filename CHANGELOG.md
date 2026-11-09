@@ -3,6 +3,12 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.4.5-beta] — 2026-11-08
+
+- **Status "Revisado" agora é "Pendente"**, o estado em que a edição ou notícia aguarda o
+  professor/tutor antes da aprovação (Rascunho → Pendente → Aprovado).
+- Edições salvas como "Revisado" passam a aparecer como "Pendente" ao abrir.
+
 ## [1.4.4-beta] — 2026-11-01
 
 - **Limpeza automática das pautas** (coletor, a cada execução; ou só a limpeza:
