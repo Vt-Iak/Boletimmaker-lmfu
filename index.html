@@ -52,6 +52,7 @@
       <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 19.1 1.4-1.4"/><path d="m17.7 6.3 1.4-1.4"/></symbol>
       <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
       <symbol id="i-auto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" style="fill:currentColor"/></symbol>
+      <symbol id="i-slides" viewBox="0 0 24 24"><rect x="6.5" y="3.5" width="11" height="17" rx="2"/><path d="M3 6.5v11"/><path d="M21 6.5v11"/></symbol>
     </defs>
   </svg>
 
@@ -60,7 +61,7 @@
       <div class="tb-group">
         <span class="brand-mark" aria-hidden="true">B</span>
         <strong class="brand-mini">Boletim Maker</strong>
-        <span class="version-chip" id="versionChip" title="Versão 1.4.6-beta">Beta</span>
+        <span class="version-chip" id="versionChip" title="Versão 1.5.0-beta">Beta</span>
       </div>
       <div class="tb-group edition-picker">
         <select id="editionSelect" title="Edição atual" aria-label="Edição atual"></select>
@@ -73,6 +74,7 @@
       <div class="tb-group modo-seg" role="group" aria-label="Modo de trabalho">
         <button type="button" class="modo-btn is-active" data-modo="pagina" aria-pressed="true" title="Editar a página do boletim"><svg class="ic"><use href="#i-file"/></svg>Página</button>
         <button type="button" class="modo-btn" data-modo="pauta" aria-pressed="false" title="Pauta da semana: matérias coletadas e agrupadas por tema (Ctrl+Alt+P)"><svg class="ic"><use href="#i-news"/></svg>Pauta <span class="tab-count" id="pautaCount"></span></button>
+        <button type="button" class="modo-btn" data-modo="carrossel" aria-pressed="false" title="Carrossel do Instagram: slides montados a partir da edição, editáveis e exportados em PNG (Ctrl+Alt+C)"><svg class="ic"><use href="#i-slides"/></svg>Carrossel</button>
       </div>
       <div class="tb-group menu-wrap">
         <button id="btnMenu" class="icon-btn" title="Mais ações" aria-label="Mais ações" aria-haspopup="true" aria-expanded="false"><svg class="ic"><use href="#i-more"/></svg></button>
@@ -237,6 +239,20 @@
     </div>
     <div class="pauta-col pauta-detalhe" id="pautaDetalhe"></div>
     <input type="file" id="pautaImport" accept="application/json,.json" hidden>
+  </section>
+
+  <!-- Carrossel do Instagram: slides 1080×1350 montados a partir da edição (js/app.js, seção "Carrossel") -->
+  <section id="carrosselView" class="cs-view no-print" hidden aria-label="Carrossel do Instagram">
+    <div class="cs-col cs-col-lista">
+      <div class="pauta-head"><h2>Slides</h2><span class="tab-count" id="csCount"></span></div>
+      <div id="csLista" class="cs-lista"></div>
+      <div class="cs-add">
+        <select id="csNovoTipo" aria-label="Tipo do novo slide"></select>
+        <button type="button" class="check-btn" data-cs-act="adicionar" title="Adicionar um slide depois do selecionado"><svg class="ic"><use href="#i-plus"/></svg>Slide</button>
+      </div>
+    </div>
+    <div class="cs-palco" id="csPalco" aria-label="Slide selecionado"></div>
+    <div class="cs-col cs-painel" id="csPainel"></div>
   </section>
 
   <div class="zoom-bar no-print" id="zoomBar">

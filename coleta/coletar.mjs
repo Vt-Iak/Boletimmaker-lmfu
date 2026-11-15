@@ -8,6 +8,15 @@
 // Nada aqui inventa texto: título e resumo de cada tema são trechos reais das
 // matérias coletadas, e todo link vem da própria fonte.
 //
+// Equilíbrio entre veículos (para a pauta não depender de um canal só):
+//   - busca por site é feita dia a dia (o Google Notícias corta em 100 por busca);
+//   - cada canal entra com no máximo MAX_POR_CANAL_DIA matérias por dia (fontes
+//     oficiais não têm teto) e no máximo 3 matérias por tema;
+//   - o título do tema vem de fonte oficial, se houver; senão, do veículo que
+//     menos deu títulos até ali; o resumo usa no máximo uma frase por veículo;
+//   - a relevância conta veículos diferentes, não matérias; tema de um veículo
+//     só sai marcado (fonteUnica) e fica abaixo dos demais.
+//
 // Uso:  node coleta/coletar.mjs
 //   INICIO=2026-10-19 FIM=2026-10-23  período (padrão: última semana seg–sex)
 //   TERMO=Petrobras                   busca por palavra-chave (grava busca-…)
@@ -15,6 +24,8 @@
 //   ATRASO_MS=250                     pausa entre pedidos a um mesmo site
 //   SO_LIMPAR=1                       só aplica a limpeza das pautas (sem coletar)
 //   RETER_SEMANAS=4 RETER_BUSCAS_DIAS=7  quanto tempo as pautas ficam (ver "Limpeza")
+//   MAX_POR_CANAL_DIA=8               teto de matérias por canal por dia
+//   MAX_DECODIFICAR=250               links do Google Notícias resolvidos por execução
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -26,7 +37,9 @@ const ATRASO = Number(process.env.ATRASO_MS || 250);
 const TERMO = (process.env.TERMO || "").trim();
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36 BoletimMaker-Pauta/1.0";
 const TRECHO_MAX = 300;
-const MAX_DECODIFICAR = 250; // links do Google Notícias resolvidos por execução
+const MAX_DECODIFICAR = Number(process.env.MAX_DECODIFICAR || 250); // links do Google Notícias resolvidos por execução
+const MAX_POR_CANAL_DIA = Number(process.env.MAX_POR_CANAL_DIA || 8);  // fontes oficiais não têm teto
+const MAX_POR_VEICULO_TEMA = 3;
 
 const log = (...a) => console.log(...a);
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -155,8 +168,25 @@ async function descricaoDaPagina(url) {
   return m ? m[1] : "";
 }
 
+// Busca no Google Notícias; se ele pedir calma (429/503), espera e tenta de novo.
+async function buscarGoogle(url) {
+  let r = await baixar(url);
+  if (r.status === 429 || r.status === 503) { await espera(8000); r = await baixar(url); }
+  return r;
+}
+
 // ---------- Coleta por canal ----------
 async function coletarCanal(canal, inicio, fim) {
+  const brutos = await coletarPorMetodo(canal, inicio, fim);
+  const reserva = canal.coleta && canal.coleta.reserva;
+  // Método principal sem resposta (ex.: API que bloqueia servidores de fora): busca reserva.
+  if (!brutos.length && reserva) {
+    log("  · " + canal.nome + ": nada pelo método principal; usando a busca reserva");
+    return coletarPorMetodo({ ...canal, coleta: { ...reserva, idioma: reserva.idioma || canal.coleta.idioma, editoria: reserva.editoria || canal.coleta.editoria } }, inicio, fim);
+  }
+  return brutos;
+}
+async function coletarPorMetodo(canal, inicio, fim) {
   const c = canal.coleta || {};
   const brutos = [];
   if (c.metodo === "atom" || c.metodo === "rss") {
@@ -185,22 +215,33 @@ async function coletarCanal(canal, inicio, fim) {
     const [A, M, D] = inicio.split("-"), [A2, M2, D2] = fim.split("-");
     const url = c.endereco.replace("{AAAA}", A).replace("{MM}", M).replace("{DD}", D).replace("{AAAA2}", A2).replace("{MM2}", M2).replace("{DD2}", D2)
       + (TERMO ? "&busca=" + encodeURIComponent(TERMO) : "");
-    const r = await baixar(url);
-    try {
-      for (const it of JSON.parse(r.texto).items || []) {
+    // A API pagina (30 por página, mesmo pedindo mais): segue até 5 páginas.
+    for (let pag = 1; pag <= 5; pag++) {
+      const r = await baixar(url + (pag > 1 ? "&page=" + pag : ""));
+      let j;
+      try { j = JSON.parse(r.texto); } catch { log("  ! " + canal.nome + ": resposta da API ilegível (" + r.status + ")"); break; }
+      for (const it of j.items || []) {
         const m = /^(\d{2})\/(\d{2})\/(\d{4})(?: (\d{2}:\d{2}:\d{2}))?/.exec(it.data_publicacao || "");
         brutos.push({ titulo: it.titulo, url: it.link, trecho: it.introducao, data: m ? new Date(`${m[3]}-${m[2]}-${m[1]}T${m[4] || "12:00:00"}-03:00`) : new Date(NaN) });
       }
-    } catch { log("  ! " + canal.nome + ": resposta da API ilegível (" + r.status + ")"); }
+      if (!j.totalPages || pag >= j.totalPages) break;
+    }
   } else if (c.metodo === "busca_site") {
-    const r = await baixar(buscaGoogle(c.busca || "site:" + canal.dominio, c.idioma, inicio, fim));
-    for (const it of lerRss(r.texto)) {
-      // O Google acrescenta " - Nome do veículo" ao título: tira.
-      const sufixo = it.fonteNome ? " - " + it.fonteNome : "";
-      it.titulo = sufixo && it.titulo.endsWith(sufixo) ? it.titulo.slice(0, -sufixo.length) : it.titulo.replace(/\s+-\s+[^-]+$/, "");
-      it.viaGoogle = true;
-      it.trecho = "";
-      brutos.push(it);
+    // Uma busca por dia: o Google Notícias devolve no máximo 100 itens por
+    // busca, e uma busca só para a semana cortava os canais que publicam muito.
+    const vistos = new Set();
+    for (const dia of diasEntre(inicio, fim)) {
+      const r = await buscarGoogle(buscaGoogle(c.busca || "site:" + canal.dominio, c.idioma, dia, dia));
+      for (const it of lerRss(r.texto)) {
+        if (vistos.has(it.url)) continue;
+        vistos.add(it.url);
+        // O Google acrescenta " - Nome do veículo" ao título: tira.
+        const sufixo = it.fonteNome ? " - " + it.fonteNome : "";
+        it.titulo = sufixo && it.titulo.endsWith(sufixo) ? it.titulo.slice(0, -sufixo.length) : it.titulo.replace(/\s+-\s+[^-]+$/, "");
+        it.viaGoogle = true;
+        it.trecho = "";
+        brutos.push(it);
+      }
     }
   }
   return brutos;
@@ -248,36 +289,72 @@ function parecidas(a, b, eventos) {
   const uniao = a.palavras.size + b.palavras.size - comuns;
   return comuns >= 3 || (comuns >= 2 && uniao && comuns / uniao >= 0.25);
 }
+// Um mesmo veículo entra com no máximo MAX_POR_VEICULO_TEMA matérias num tema;
+// a 4ª matéria dele sobre o mesmo assunto é repetição e fica de fora.
 function agrupar(materias, eventos) {
-  const grupos = [];
+  const grupos = [], excedentes = [];
+  const doCanal = (gr, id) => gr.reduce((n, x) => n + (x.canalId === id), 0);
   for (const m of materias) {
-    const g = grupos.find((gr) => gr.length < 12 && parecidas(gr[0], m, eventos));
-    if (g) g.push(m); else grupos.push([m]);
+    const parecidos = grupos.filter((gr) => gr.length < 12 && parecidas(gr[0], m, eventos));
+    const g = parecidos.find((gr) => doCanal(gr, m.canalId) < MAX_POR_VEICULO_TEMA);
+    if (g) g.push(m);
+    else if (parecidos.length) excedentes.push(m);
+    else grupos.push([m]);
   }
-  return grupos;
+  return { grupos, excedentes };
 }
-function montarTema(grupo, n) {
-  grupo.sort((a, b) => a.prioridade - b.prioridade || a.data - b.data);
-  const veiculos = new Set(grupo.map((m) => m.canalId)).size;
-  const principal = grupo[0];
-  // Resumo: a primeira frase do trecho de até 3 matérias, na ordem de
-  // prioridade. resumoFrases guarda de qual matéria saiu cada frase, para o
-  // app pôr o link certo ao lado de cada dado.
-  const resumo = [], resumoDe = [], resumoFrases = [];
-  for (const m of grupo) {
-    let f = frases(m.trecho)[0];
-    if (!f || /…$/.test(f) || resumo.some((r) => r.slice(0, 40) === f.slice(0, 40))) continue; // frase cortada não entra
-    if (!/[.!?]["”]?$/.test(f)) f += ".";
-    resumo.push(f);
-    resumoDe.push(m.id);
-    resumoFrases.push({ texto: f, de: m.id });
-    if (resumo.length === 3 || resumo.join(" ").length > 420) break;
+// Monta os temas com equilíbrio entre veículos. Os de mais veículos vêm
+// primeiro e escolhem antes quem dá o título; titulosPor conta quantos
+// títulos cada veículo já deu, para nenhum virar a "voz" da pauta inteira.
+function montarTemas(grupos) {
+  const titulosPor = {};
+  return grupos
+    .map((g) => ({ g, n: new Set(g.map((m) => m.canalId)).size }))
+    .sort((a, b) => b.n - a.n || b.g.length - a.g.length)
+    .map((x, i) => montarTema(x.g, i + 1, titulosPor));
+}
+function montarTema(grupo, n, titulosPor) {
+  // Matérias por veículo, a mais ligada ao assunto primeiro
+  const porVeiculo = new Map();
+  for (const m of grupo.slice().sort((a, b) => b.pontos - a.pontos || a.data - b.data)) {
+    if (!porVeiculo.has(m.canalId)) porVeiculo.set(m.canalId, []);
+    porVeiculo.get(m.canalId).push(m);
   }
+  // Quem dá o título: fonte oficial, se houver; senão o veículo que deu menos
+  // títulos até aqui (empate: link confirmado, depois prioridade do canal).
+  const usos = (ms) => titulosPor[ms[0].canalId] || 0;
+  const veics = [...porVeiculo.values()].sort((a, b) =>
+    (b[0].grupo === "oficial") - (a[0].grupo === "oficial") || usos(a) - usos(b) ||
+    b[0].linkConfirmado - a[0].linkConfirmado || a[0].prioridade - b[0].prioridade);
+  const principal = veics[0][0];
+  titulosPor[principal.canalId] = usos(veics[0]) + 1;
+  // Ordem no tema: uma matéria de cada veículo por vez (a principal primeiro)
+  const ordenadas = [];
+  for (let r = 0; ordenadas.length < grupo.length; r++) for (const ms of veics) if (ms[r]) ordenadas.push(ms[r]);
+  // Resumo: até 3 frases, no máximo uma por veículo (tema de um veículo só:
+  // até 2 frases dele). resumoFrases guarda de qual matéria saiu cada frase,
+  // para o app pôr o link certo ao lado de cada dado.
+  const resumo = [], resumoDe = [], resumoFrases = [];
+  const porVeic = veics.length === 1 ? 2 : 1;
+  for (const ms of veics) {
+    let dele = 0;
+    for (const m of ms) {
+      let f = frases(m.trecho)[0];
+      if (!f || /…$/.test(f) || resumo.some((r) => r.slice(0, 40) === f.slice(0, 40))) continue; // frase cortada não entra
+      if (!/[.!?]["”]?$/.test(f)) f += ".";
+      resumo.push(f);
+      resumoDe.push(m.id);
+      resumoFrases.push({ texto: f, de: m.id });
+      if (++dele >= porVeic) break;
+    }
+    if (resumo.length >= 3 || resumo.join(" ").length > 420) break;
+  }
+  const veiculos = veics.length;
   let relevancia = 1;
-  if (grupo.length >= 2) relevancia++;
+  if (veiculos >= 2) relevancia++;
   if (veiculos >= 3) relevancia++;
   if (grupo.some((m) => m.grupo === "oficial")) relevancia++;
-  if (grupo.length >= 5) relevancia++;
+  if (veiculos >= 4) relevancia++;
   return {
     id: "tema_" + n,
     titulo: principal.titulo,
@@ -287,8 +364,17 @@ function montarTema(grupo, n) {
     resumoFrases,
     relevancia: Math.min(5, relevancia),
     veiculos,
-    materias: grupo.map(publica)
+    fonteUnica: veiculos === 1,
+    materias: ordenadas.map(publica)
   };
+}
+// Lista alternando os veículos (um de cada por vez), mantendo a ordem de cada um.
+function intercalar(lista) {
+  const filas = new Map();
+  for (const m of lista) { if (!filas.has(m.canalId)) filas.set(m.canalId, []); filas.get(m.canalId).push(m); }
+  const out = [];
+  for (let r = 0; out.length < lista.length; r++) for (const f of filas.values()) if (f[r]) out.push(f[r]);
+  return out;
 }
 const publica = (m) => ({
   id: m.id, canalId: m.canalId, veiculo: m.veiculo, dominio: m.dominio, grupo: m.grupo, prioridade: m.prioridade,
@@ -312,7 +398,7 @@ async function principal() {
   const de = noFuso(inicio, "00:00:00"), ate = noFuso(fim, "23:59:59");
   log(`Pauta ${inicio} a ${fim}${TERMO ? " · termo: " + TERMO : ""} · ${canais.length} canais`);
 
-  const descartadas = { foraDaLista: 0, foraDoPeriodo: 0, semData: 0, foraDoTema: 0, duplicadas: 0 };
+  const descartadas = { foraDaLista: 0, foraDoPeriodo: 0, semData: 0, foraDoTema: 0, duplicadas: 0, acimaDoTeto: 0, repetidasNoTema: 0 };
   const vistas = new Set(), titulosVistos = new Set(), materias = [];
   const porCanal = {};
   for (const canal of canais) {
@@ -343,6 +429,8 @@ async function principal() {
       if (TERMO ? !citaTermo && !m.viaGoogle : !cl && !oficial) { descartadas.foraDoTema++; continue; }
       m.editoria = cl ? cl.tag : (canal.coleta && canal.coleta.editoria) || "OUTROS";
       m.achados = cl ? cl.achados : [];
+      m.pontos = cl ? cl.pontos : 0;
+      m.dia = iso(new Date(m.data.getTime() - 3 * 3600e3));
       const chaveTitulo = semAcento(m.titulo).replace(/[^a-z0-9]/g, "");
       if (vistas.has(m.url) || titulosVistos.has(chaveTitulo)) { descartadas.duplicadas++; continue; }
       vistas.add(m.url);
@@ -352,8 +440,34 @@ async function principal() {
     }
   }
 
+  // Teto por canal e por dia (as mais ligadas ao assunto ficam): um canal que
+  // publica muito não pode encher a pauta. Fontes oficiais não têm teto.
+  const porCanalDia = {};
+  const mantidas = [];
+  for (const m of materias.slice().sort((a, b) => b.pontos - a.pontos || b.data - a.data)) {
+    if (m.grupo !== "oficial") {
+      const k = m.canalId + "|" + m.dia;
+      porCanalDia[k] = (porCanalDia[k] || 0) + 1;
+      if (porCanalDia[k] > MAX_POR_CANAL_DIA) {
+        descartadas.acimaDoTeto++;
+        porCanal[m.veiculo].aceitas--;
+        porCanal[m.veiculo].acimaDoTeto = (porCanal[m.veiculo].acimaDoTeto || 0) + 1;
+        continue;
+      }
+    }
+    mantidas.push(m);
+  }
+  mantidas.sort((a, b) => a.prioridade - b.prioridade || a.data - b.data);
+  mantidas.forEach((m, i) => { m.id = "m_" + (i + 1); m.palavras = palavras(m.titulo); });
+
+  const { grupos, excedentes } = agrupar(mantidas, eventos);
+  descartadas.repetidasNoTema = excedentes.length;
+  const deTemas = grupos.filter((g) => g.length >= 2), soltas = grupos.filter((g) => g.length === 1).map((g) => g[0]);
+
   // Links do Google Notícias → endereço original; trecho pela página da matéria.
-  for (const m of materias) {
+  // Primeiro as matérias dos temas, alternando os veículos (o limite de links
+  // resolvidos por execução não fica todo com um canal só), depois as avulsas.
+  for (const m of intercalar(deTemas.flat()).concat(intercalar(soltas))) {
     if (m.viaGoogle) {
       const original = await linkOriginal(m.url);
       if (original) {
@@ -368,15 +482,22 @@ async function principal() {
       if (cl && m.editoria === "OUTROS") { m.editoria = cl.tag; m.achados = cl.achados; }
     }
   }
-  materias.sort((a, b) => a.prioridade - b.prioridade || a.data - b.data);
-  materias.forEach((m, i) => { m.id = "m_" + (i + 1); m.palavras = palavras(m.titulo); });
 
-  const grupos = agrupar(materias, eventos);
-  const temas = grupos.filter((g) => g.length >= 2)
-    .map((g, i) => montarTema(g, i + 1))
-    .sort((a, b) => b.relevancia - a.relevancia || b.materias.length - a.materias.length || a.materias[0].prioridade - b.materias[0].prioridade)
+  const temas = montarTemas(deTemas)
+    .sort((a, b) => b.relevancia - a.relevancia || b.veiculos - a.veiculos || b.materias.length - a.materias.length || a.materias[0].prioridade - b.materias[0].prioridade)
     .map((t, i) => ({ ...t, id: "tema_" + (i + 1) }));
-  const avulsas = grupos.filter((g) => g.length === 1).map((g) => publica(g[0]));
+  const avulsas = soltas.map(publica);
+  const materiasNaPauta = temas.reduce((n, t) => n + t.materias.length, 0) + avulsas.length;
+
+  // Participação de cada veículo (para conferir o equilíbrio no app e no log)
+  const participacao = {};
+  const conta = (nome, campo) => { (participacao[nome] = participacao[nome] || { materias: 0, titulos: 0, frases: 0 })[campo]++; };
+  temas.forEach((t) => {
+    t.materias.forEach((m) => conta(m.veiculo, "materias"));
+    conta(t.materias[0].veiculo, "titulos");
+    t.resumoFrases.forEach((f) => { const m = t.materias.find((x) => x.id === f.de); if (m) conta(m.veiculo, "frases"); });
+  });
+  avulsas.forEach((m) => conta(m.veiculo, "materias"));
 
   const pauta = {
     formato: "boletimMaker.pauta",
@@ -384,7 +505,8 @@ async function principal() {
     geradoEm: new Date().toISOString(),
     cobertura: { inicio, fim },
     canais: dominios,
-    coleta: { origem: process.env.GITHUB_ACTIONS ? "github-actions" : "local", termo: TERMO || null, descartadas, porCanal },
+    coleta: { origem: process.env.GITHUB_ACTIONS ? "github-actions" : "local", termo: TERMO || null, descartadas, porCanal,
+      equilibrio: { maxPorCanalDia: MAX_POR_CANAL_DIA, maxPorVeiculoTema: MAX_POR_VEICULO_TEMA, participacao } },
     temas,
     avulsas
   };
@@ -397,7 +519,7 @@ async function principal() {
   const idxCaminho = join(SAIDA, "index.json");
   const idx = existsSync(idxCaminho) ? JSON.parse(readFileSync(idxCaminho, "utf8")) : { formato: "boletimMaker.pautas", versao: 1, pautas: [] };
   idx.pautas = idx.pautas.filter((p) => p.arquivo !== arquivo);
-  idx.pautas.unshift({ arquivo, tipo: TERMO ? "busca" : "semana", termo: TERMO || null, inicio, fim, geradoEm: pauta.geradoEm, temas: temas.length, materias: materias.length });
+  idx.pautas.unshift({ arquivo, tipo: TERMO ? "busca" : "semana", termo: TERMO || null, inicio, fim, geradoEm: pauta.geradoEm, temas: temas.length, materias: materiasNaPauta });
   idx.pautas.sort((a, b) => (b.geradoEm > a.geradoEm ? 1 : -1));
   idx.atualizadoEm = pauta.geradoEm;
   writeFileSync(idxCaminho, JSON.stringify(idx, null, 1) + "\n");
@@ -405,7 +527,13 @@ async function principal() {
   log("Canais:");
   for (const [nome, c] of Object.entries(porCanal)) log(`  ${nome.padEnd(26)} ${String(c.brutos).padStart(4)} lidas · ${String(c.aceitas).padStart(3)} aceitas`);
   log(`Descartadas: ${JSON.stringify(descartadas)}`);
-  log(`Gravado ${arquivo}: ${temas.length} temas, ${avulsas.length} avulsas, ${materias.length} matérias (${materias.filter((m) => !m.linkConfirmado).length} sem link confirmado).`);
+  log("Participação na pauta (matérias · títulos de tema · frases de resumo):");
+  for (const [nome, p] of Object.entries(participacao).sort((a, b) => b[1].materias - a[1].materias)) {
+    log(`  ${nome.padEnd(26)} ${String(p.materias).padStart(4)} (${Math.round(100 * p.materias / Math.max(1, materiasNaPauta))}%) · ${p.titulos} · ${p.frases}`);
+  }
+  log(`Temas de um veículo só: ${temas.filter((t) => t.fonteUnica).length} de ${temas.length}.`);
+  const naPauta = temas.flatMap((t) => t.materias).concat(avulsas);
+  log(`Gravado ${arquivo}: ${temas.length} temas, ${avulsas.length} avulsas, ${materiasNaPauta} matérias (${naPauta.filter((m) => !m.linkConfirmado).length} sem link confirmado).`);
   limparPautas(arquivo);
 }
 

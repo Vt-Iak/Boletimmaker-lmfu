@@ -59,6 +59,7 @@ if (-not (Test-Path $Ico)) {
 # Recursos: arquivos do editor (app/...) e DLLs (lib/... gerenciadas, native/... nativa).
 $res = @()
 $files = @("index.html", "css\style.css", "js\app.js", "js\firebase-config.js") +
+  (Get-ChildItem (Join-Path $Root "js\vendor") -File | ForEach-Object { "js\vendor\" + $_.Name }) +
   (Get-ChildItem (Join-Path $Root "css\fonts") -File | ForEach-Object { "css\fonts\" + $_.Name }) +
   (Get-ChildItem (Join-Path $Root "img") -File | ForEach-Object { "img\" + $_.Name })
 foreach ($f in $files) { $res += "/resource:" + (Join-Path $Root $f) + ",app/" + ($f -replace "\\", "/") }

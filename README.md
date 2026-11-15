@@ -4,7 +4,7 @@ Editor do **Boletim Econômico semanal** da Liga de Mercado Financeiro, publicad
 com o Laboratório de CSA da UNISO. Produz duas páginas A4 (frente e verso) e
 exporta em PDF com links clicáveis.
 
-- Versão: **1.4.6-beta** (Beta)
+- Versão: **1.5.0-beta** (Beta)
 - Autor: João Vitor C. Soares
 - Tecnologia: HTML + CSS + JavaScript ES2017. Não usa framework, build nem servidor.
 - **Plataforma principal:** <https://vt-iak.github.io/Boletimmaker-lmfu/> (GitHub Pages + Firebase; login por e-mail ou Google, sem conta Claude)
@@ -104,14 +104,28 @@ por tema. Não precisa abrir o Claude nem o GitHub.
      - API do IBGE;
      - feed por dia do InfoMoney;
      - RSS da Advisor Perspectives;
-     - busca por site no Google Notícias para os demais, com o endereço original da matéria recuperado.
+     - busca por site no Google Notícias para os demais, **uma por dia** (o
+       Google corta em 100 por busca), com o endereço original recuperado;
+     - canal com `reserva` (o IBGE) usa a busca reserva quando o método
+       principal volta vazio.
   2. Filtra: domínio da lista, período, assunto econômico pelo dicionário
      `coleta/editorias.json` e duplicadas. Fontes oficiais entram sempre.
   3. Agrupa matérias parecidas em temas. O título e o resumo de cada tema são
      **frases reais** das matérias, sem IA e sem invenção.
+     - **Equilíbrio entre veículos**, para a pauta não depender de um canal só
+       (risco de soar como cópia e de herdar o viés de um veículo):
+       - cada canal entra com no máximo 8 matérias por dia (`MAX_POR_CANAL_DIA`;
+         fontes oficiais sem teto) e no máximo 3 por tema;
+       - o título do tema vem de fonte oficial, se houver; senão, do veículo que
+         menos deu títulos até ali;
+       - o resumo usa no máximo uma frase por veículo;
+       - a relevância conta veículos diferentes, não matérias. Tema de um
+         veículo só sai com `fonteUnica` e fica abaixo dos outros.
   4. Valida o arquivo antes de gravar: link do domínio certo, data no
      período e cada frase com a matéria de origem.
 - **Na aba:**
+  - **Equilíbrio das fontes** mostra o peso de cada veículo na pauta e avisa
+    quando um passa de 30%; temas de um veículo só levam o selo **1 veículo**;
   - filtre por palavra, editoria, grupo e veículo;
   - **confirme** ou **descarte** temas (fica salvo na edição);
   - **Usar como fonte** transforma a matéria em fonte numerada;
@@ -119,7 +133,7 @@ por tema. Não precisa abrir o Claude nem o GitHub.
     leva o link da matéria de onde saiu e o selo `[n]` aponta para a principal.
     O texto é dos veículos e precisa ser reescrito antes de aprovar.
 - **Buscar agora:** escolha um período e, se quiser, uma palavra-chave (ex.:
-  "Petrobras"). A coleta roda na hora (3 a 7 minutos) e a pauta abre sozinha
+  "Petrobras"). A coleta roda na hora (10 a 15 minutos com os 16 canais) e a pauta abre sozinha
   quando fica pronta.
   - Exige uma **chave do GitHub neste aparelho**: Configurações →
     **Integrações**, token *fine-grained* só deste repositório, com *Actions*
@@ -133,6 +147,9 @@ por tema. Não precisa abrir o Claude nem o GitHub.
     o arquivo.
   - O app também reaplica o filtro ao abrir a pauta: a matéria de um canal que
     saiu da lista fica oculta.
+  - Desde a 1.5.0: **16 canais**. Entraram Agência Brasil, Valor Econômico,
+    Estadão, Folha de S.Paulo, g1 e CNN Brasil, que chegam à lista de quem já
+    usa o app **a validar**. Um canal novo removido não volta.
 - **Limpeza automática:** a cada execução, o coletor deixa uma pauta por semana
   (a de segunda a sexta), apaga semanas que terminaram há mais de 4 semanas e
   buscas com mais de 7 dias. Os prazos ficam em `pauta.yml` (`RETER_SEMANAS`,
@@ -144,6 +161,41 @@ por tema. Não precisa abrir o Claude nem o GitHub.
 - **Offline, no Windows ou no claude.ai:** fica a última pauta aberta no
   aparelho, ou importe um arquivo `.json` de pauta.
 - **Formato do arquivo:** `boletimMaker.pauta`, descrito em `CONTEXTO.md`, seção 5.3.
+
+### Carrossel do Instagram
+
+Botão **Carrossel** no topo (ou **Ctrl+Alt+C**). Monta os slides do post a
+partir da edição aberta, no padrão do carrossel da Liga (1080 × 1350, 4:5):
+
+1. **Capa:** logo, número e período da edição, título da manchete e o número em destaque (Ibovespa na semana).
+2. **Termômetro:** os cards de cotação da página 1, com as fontes da legenda do termômetro.
+3. **Uma notícia por slide:** editoria, título e até 3 frases do texto, com as fontes da notícia no rodapé.
+4. **Agenda:** os eventos de maior relevância da página 2.
+5. **Glossário:** os termos que cabem, chamada para o PDF, logos, autoria e aviso.
+
+Nada é inventado. O que a edição não tem fica vazio para preencher, como os
+números em destaque das notícias (botão **+ Card**).
+
+- **Editar:** clique no texto do slide, como na página A4 (Ctrl+B: negrito).
+  O painel da direita tem:
+  - mover, duplicar, ocultar e excluir o slide;
+  - cor da etiqueta e tamanho do título e do texto;
+  - cards, itens, linhas e termos de cada tipo;
+  - perfil do Instagram e nome no topo.
+- **Agenda:** clique na etiqueta da linha para trocar a relevância (Alta, Média, Baixa).
+- **"+ Slide"** acrescenta um slide de qualquer tipo depois do selecionado.
+- **Montar de novo a partir da edição** refaz tudo (Ctrl+Z desfaz).
+- **Estouro:** conteúdo que passa do espaço fica marcado em vermelho no slide e
+  na miniatura, e o painel avisa.
+- **Exportar:** PNG em **2160 × 2700**: este slide, ou todos num `.zip`.
+  - No celular, **Enviar para o Instagram** gera as imagens e abre o
+    compartilhamento do aparelho.
+  - Slides ocultos e campos vazios ficam de fora.
+- O carrossel fica na edição (`data.carrossel`) e sincroniza como o resto. A
+  **Próxima edição** começa um carrossel novo e mantém o perfil e o nome.
+- As imagens são geradas no navegador pelo `html2canvas` (`js/vendor/`, MIT),
+  sem internet. As fontes do carrossel são Inter e Source Serif 4 Display
+  (`css/fonts/`, OFL).
 
 ### Atalhos de teclado e configurações
 
@@ -260,8 +312,9 @@ são migradas automaticamente na importação.
 ```
 index.html                 interface (toolbar, painéis, diálogos, sprite de ícones)
 css/style.css              tokens de UI (claro/escuro), editor e a página A4
-css/fonts/                 IBM Plex Sans (interface) e Source Serif 4 (página, Fase 6) — woff2, OFL
-js/app.js                  aplicação inteira (IIFE única, ~5.200 linhas)
+css/fonts/                 IBM Plex Sans (interface), Source Serif 4 (página, Fase 6) e Inter + Source Serif 4 Display (carrossel) — woff2, OFL
+js/app.js                  aplicação inteira (IIFE única, ~9.000 linhas)
+js/vendor/                 html2canvas 1.4.1 (MIT), carregado só ao exportar o carrossel
 img/                       logo do parceiro (arquivo padrão do modelo)
 tests/                     testes automatizados (ver seção 8)
 desktop/                   aplicativo Windows: BoletimMaker.cs, build.ps1, ícone, DLLs do WebView2
@@ -321,6 +374,7 @@ Cálculo do termômetro: cada linha guarda as entradas em
 | `footerFront`, `page2Header`, `footerBack`, `note` | Rodapés e cabeçalho do verso |
 | `elements` | Camada livre: textos, imagens e linhas posicionados |
 | `blockLayout` | Ajustes por bloco. Só grava o que difere do padrão (ver 4.2) |
+| `carrossel` | Carrossel do Instagram: `{ perfil, marca, slides: [{ id, tipo, oculto, escTitulo, escTexto, tag, tagCor, titulo, … }] }`. Tipos: `capa`, `termometro`, `noticia`, `agenda`, `glossario` (campos em `csMontar`) |
 
 Textos ricos são HTML sanitizado (`sanitizeRichHtml`). Ficam só
 negrito/itálico/cor/tamanho em `span`, `br` e links `a.inline-link` com URL

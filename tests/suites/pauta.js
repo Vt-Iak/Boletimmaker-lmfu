@@ -52,6 +52,11 @@ passo(function () {
   ok("item de matérias avulsas", !!$("#pautaTemas .pauta-avulsas"));
   ok("detalhe do primeiro tema", $("#pautaDetalhe h3").textContent === PAUTA.temas[0].titulo);
   ok("selo de contagem no seletor", $("#pautaCount").textContent === String(n0));
+  // Equilíbrio das fontes: peso de cada veículo e temas de um veículo só
+  var unicos = PAUTA.temas.filter(function (t) { var v = {}; t.materias.forEach(function (m) { v[m.veiculo] = 1; }); return Object.keys(v).length === 1; }).length;
+  ok("quadro de equilíbrio das fontes", /Equilíbrio das fontes/.test($("#pautaPesquisa").textContent) && $$("#pautaPesquisa .pauta-eq-l").length > 0);
+  ok("conta os temas de um veículo só", new RegExp(unicos + " de " + n0 + " temas com um veículo só").test($("#pautaPesquisa").textContent), $("#pautaPesquisa").textContent.slice(-120));
+  ok("selo \"1 veículo\" nos temas de fonte única", Array.prototype.filter.call($$("#pautaTemas .pauta-tema:not(.pauta-avulsas) .chip-incompleta"), function (c) { return c.textContent === "1 veículo"; }).length === unicos);
   campo("q", "IPCA");
 }, 450);
 passo(function () {

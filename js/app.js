@@ -39,7 +39,14 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.4.6-beta";
+  var APP_VERSION = "1.5.0-beta";
+  // Pasta do site (onde estão js/ e css/), tirada do endereço deste script:
+  // arquivos carregados sob demanda (js/vendor/) funcionam no site, no disco
+  // e nos testes, que abrem a página de outra pasta.
+  var APP_BASE = (function () {
+    var sc = document.currentScript;
+    return sc && sc.src ? sc.src.replace(/[^\/]*$/, "").replace(/js\/$/, "") : "";
+  })();
   // Logo oficial do parceiro (Laboratório de CSA UNISO), em cores originais —
   // arquivo enviado pelo usuário, salvo como asset do projeto em vez de
   // embutido em base64 aqui (mantém o app.js enxuto).
@@ -451,6 +458,7 @@
       if (mudou) store.canaisAt = Date.now();
       store.migrations.canaisColeta = true;
     }
+    garantirCanaisNovos();
   }
 
   function loadStore() {
@@ -956,7 +964,7 @@
 
   function isEditingText() {
     var a = document.activeElement;
-    return !!(a && a.hasAttribute && a.hasAttribute("contenteditable") && a.closest("#workspace"));
+    return !!(a && a.hasAttribute && a.hasAttribute("contenteditable") && a.closest("#workspace, #carrosselView"));
   }
 
   function applyRemoteEdition(id, body) {
@@ -1025,6 +1033,8 @@
     store.assetIndex = Object.assign({}, s.assetIndex || {}, store.assetIndex || {});
     mergeRemoteCanais(s);
     cloud.settingsStr = body.json;
+    canaisDaNuvemLidos = true;
+    garantirCanaisNovos();
     saveLocal();
     renderToolbar();
     invalidateChecks();
@@ -1404,6 +1414,7 @@
           // Aparelho novo: a lista semeada aqui (canaisAt 0) cede à da nuvem.
           mergeRemoteCanais(settings);
         }
+        canaisDaNuvemLidos = true;
         if (!store.editions[store.currentId]) store.currentId = store.order[0];
         runOneTimeMigrations();
       }
@@ -1978,6 +1989,8 @@
     d.meta.status = "rascunho";
     d.meta.ignoredChecks = [];
     delete d.pauta; // a pauta é da semana: a próxima edição escolhe a sua
+    // Carrossel: os slides são da semana (remontados ao abrir); perfil e nome ficam.
+    if (d.carrossel) d.carrossel = { perfil: d.carrossel.perfil || "", marca: d.carrossel.marca || "" };
     // Calculadora: o fechamento desta semana vira a abertura da próxima;
     // o fechamento novo e a abertura do dia ficam para preencher. Na virada
     // do ano a base anual também precisa ser trocada (fica vazia).
@@ -2754,6 +2767,7 @@
     renderNotas();
     lockForReview();
     if (modoAtual === "pauta") renderPauta();
+    if (modoAtual === "carrossel") renderCarrossel();
     updateBlockToolbar();
     scheduleOverflowCheck();
   }
@@ -4182,7 +4196,7 @@
         '<input type="search" data-pauta-campo="termo" placeholder="Palavra-chave (opcional), ex.: Petrobras" aria-label="Palavra-chave da busca">' +
         '<div class="pauta-periodo"><input type="date" data-pauta-campo="inicio" value="' + esc(v.coberturaInicio || "") + '" aria-label="Início"><span>a</span><input type="date" data-pauta-campo="fim" value="' + esc(v.coberturaFim || "") + '" aria-label="Fim"></div>' +
         '<button type="button" class="check-btn primary pauta-buscar" data-pauta-act="buscar"' + (pauta.buscando ? " disabled" : "") + ">" + icon("search") + (pauta.buscando ? "Buscando…" : "Buscar agora") + "</button>" +
-        (pauta.buscando ? '<p class="pauta-msg">A busca roda no GitHub e costuma levar de 3 a 7 minutos. Pode continuar trabalhando: a pauta abre sozinha quando ficar pronta.</p>'
+        (pauta.buscando ? '<p class="pauta-msg">A busca roda no GitHub e costuma levar de 10 a 15 minutos (são 16 canais, dia a dia). Pode continuar trabalhando: a pauta abre sozinha quando ficar pronta.</p>'
           : '<p class="prop-note">Busca nos seus canais, no período escolhido. Sem palavra-chave, refaz a pauta da semana.' +
             (semChave ? ' Para buscar daqui, configure a chave do GitHub uma vez neste aparelho: <button type="button" class="check-link" data-pauta-act="config">configurar</button>.' : "") + "</p>") +
       "</div>" +
@@ -4197,7 +4211,31 @@
         '<select data-pauta-campo="veiculo" aria-label="Veículo"><option value="">Todos os veículos</option>' + Object.keys(veiculos).sort().map(function (n) {
           return '<option value="' + esc(n) + '"' + (f.veiculo === n ? " selected" : "") + ">" + esc(n) + "</option>";
         }).join("") + "</select>" +
-      "</div>";
+      "</div>" + blocoEquilibrio(a);
+  }
+  // Quanto cada veículo pesa na pauta aberta: a pauta não deve depender de um
+  // canal só (risco de soar como cópia e de herdar o viés de um veículo).
+  function blocoEquilibrio(a) {
+    if (!a || !a.temas) return "";
+    var cont = {}, total = 0;
+    todasMaterias().forEach(function (m) { var n = m.veiculo || m.dominio || "?"; cont[n] = (cont[n] || 0) + 1; total++; });
+    if (!total) return "";
+    var lista = Object.keys(cont).sort(function (x, y) { return cont[y] - cont[x]; });
+    var unicos = a.temas.filter(function (t) { return temaFonteUnica(t); }).length;
+    var topo = lista[0], pctTopo = Math.round(100 * cont[topo] / total);
+    return '<div class="pauta-bloco"><div class="pauta-titulo">Equilíbrio das fontes</div>' +
+      (pctTopo > 30 ? '<p class="prop-note pauta-alerta">' + icon("alert") + " " + esc(topo) + " concentra " + pctTopo + "% das matérias desta pauta. Prefira temas com mais veículos.</p>" : "") +
+      '<div class="pauta-eq">' + lista.slice(0, 8).map(function (n) {
+        var pct = Math.round(100 * cont[n] / total);
+        return '<div class="pauta-eq-l"><span class="pauta-eq-n" title="' + esc(n) + '">' + esc(n) + '</span><span class="pauta-eq-b"><i style="width:' + Math.max(2, pct) + '%"></i></span><span class="pauta-eq-p">' + pct + "%</span></div>";
+      }).join("") + "</div>" +
+      '<p class="prop-note">' + lista.length + " veículos · " + unicos + " de " + a.temas.length + " temas com um veículo só (marcados com “1 veículo”).</p></div>";
+  }
+  function temaFonteUnica(t) {
+    if (typeof t.fonteUnica === "boolean") return t.fonteUnica;
+    var v = {};
+    (t.materias || []).forEach(function (m) { v[m.veiculo || m.dominio] = 1; });
+    return Object.keys(v).length <= 1;
   }
   // Lista de arquivos em ordem: semanas da mais recente para a mais antiga;
   // buscas à parte. A hora só aparece quando há duas da mesma semana.
@@ -4239,6 +4277,7 @@
             : st === "descartado" ? '<span class="chip">Descartado</span>' + (REVIEWER ? "" : '<button type="button" class="check-link" data-pauta-act="desfazer" data-id="' + esc(t.id) + '">desfazer</button>')
             : (REVIEWER ? "" : '<button type="button" class="check-btn pt-btn" data-pauta-act="confirmar" data-id="' + esc(t.id) + '">' + icon("check") + 'Confirmar</button><button type="button" class="check-link" data-pauta-act="descartar" data-id="' + esc(t.id) + '">descartar</button>')) +
           '<span class="pt-n">' + t.materias.length + (t.materias.length === 1 ? " matéria" : " matérias") + " · " + (t.veiculos || 1) + (t.veiculos === 1 ? " veículo" : " veículos") + "</span>" +
+          (temaFonteUnica(t) ? '<span class="chip chip-incompleta" title="Só um veículo cobriu este tema: confira os dados em outra fonte antes de usar">1 veículo</span>' : "") +
         "</div></div>";
     }).join("") +
       (avulsas.length ? '<div class="pauta-tema pauta-avulsas' + (pauta.sel === "avulsas" ? " is-sel" : "") + '" data-pauta-act="sel-tema" data-id="avulsas" tabindex="0">' +
@@ -4356,7 +4395,8 @@
     render();
     showLeftTab("estrutura");
     selectAndReveal(layerElement("block", "news-" + idx));
-    uiToast("Notícia " + (idx + 1) + " criada como rascunho, com " + Object.keys(fontes).length + " fonte(s). Reescreva o texto antes de aprovar.");
+    uiToast("Notícia " + (idx + 1) + " criada como rascunho, com " + Object.keys(fontes).length + " fonte(s). Reescreva o texto antes de aprovar." +
+      (temaFonteUnica(t) ? " Só um veículo cobriu este tema: confirme os dados em outra fonte." : ""));
   }
   async function criarNoticiaDaMateria(m) {
     var src = await usarComoFonte(m, true);
@@ -4511,7 +4551,7 @@
       uiAlert("O GitHub recusou o pedido" + (e.detalhe ? " (" + e.detalhe + ")" : " (" + e.message + ")") + ". Confira a chave em Configurações → Integrações: ela precisa da permissão \"Actions: Read and write\".");
       return;
     }
-    uiToast("Busca iniciada no GitHub. Costuma levar de 3 a 7 minutos.");
+    uiToast("Busca iniciada no GitHub. Costuma levar de 10 a 15 minutos.");
     esperarBusca(0);
   }
   function esperarBusca(tentativa) {
@@ -4529,7 +4569,7 @@
           return;
         }
       } catch (e) { /* tenta de novo */ }
-      if (tentativa >= 30) {
+      if (tentativa >= 60) { // ~20 min (a coleta leva 10 a 15)
         pauta.buscando = null;
         renderPautaPesquisa();
         uiAlert("A busca está demorando mais que o normal. Veja o andamento em GitHub → Actions → Pauta.");
@@ -4540,11 +4580,14 @@
   }
 
   function setModo(modo) {
-    modoAtual = modo === "pauta" ? "pauta" : "pagina";
-    var aberta = modoAtual === "pauta";
+    modoAtual = modo === "pauta" || modo === "carrossel" ? modo : "pagina";
+    var aberta = modoAtual === "pauta", carr = modoAtual === "carrossel";
     document.body.classList.toggle("modo-pauta", aberta);
+    document.body.classList.toggle("modo-carrossel", carr);
     var view = document.getElementById("pautaView");
     if (view) view.hidden = !aberta;
+    var csView = document.getElementById("carrosselView");
+    if (csView) csView.hidden = !carr;
     document.querySelectorAll("[data-modo]").forEach(function (b) {
       b.classList.toggle("is-active", b.dataset.modo === modoAtual);
       b.setAttribute("aria-pressed", b.dataset.modo === modoAtual ? "true" : "false");
@@ -4552,6 +4595,8 @@
     if (aberta) {
       if (!pauta.atual && !pauta.msg) carregarIndicePauta();
       else renderPauta();
+    } else if (carr) {
+      renderCarrossel();
     } else {
       updateBlockToolbar();
     }
@@ -4620,6 +4665,797 @@
       };
       r.readAsText(file);
     });
+  }
+
+  /* ---------------------------------------------------------------------
+     Carrossel do Instagram — slides 1080×1350 (4:5) montados a partir da
+     edição e editáveis no próprio slide, como a página A4. "Baixar" gera
+     PNG em 2160×2700 (html2canvas, em js/vendor/); vários vão num .zip.
+     Estado por edição: s.carrossel = { perfil, marca, slides: [
+       { id, tipo, oculto, escTitulo, escTexto, tag, tagCor, titulo, ... } ] }
+     Tipos: capa, termometro, noticia, agenda, glossario (campos em csMontar).
+     Campo vazio não sai na imagem (card, item, rodapé, perfil); no editor
+     aparece tracejado, com uma dica. Caminhos dos campos (data-cpath) são
+     relativos a s.carrossel.
+     --------------------------------------------------------------------- */
+  var CS_W = 1080, CS_H = 1350;
+  var CS_TIPOS = [["capa", "Capa"], ["termometro", "Termômetro"], ["noticia", "Notícia"], ["agenda", "Agenda"], ["glossario", "Glossário"]];
+  var CS_CORES = [["vermelho", "Vermelho"], ["azul", "Azul"], ["verde", "Verde"], ["marinho", "Marinho"]];
+  var CS_CORES_CARD = [["auto", "Pelo sinal"], ["branco", "Branco"], ["salmao", "Salmão"], ["verde", "Verde"]];
+  var CS_REL = ["ALTA", "MÉDIA", "BAIXA"];
+  var CS_MAX = { tcards: 6, cards: 3, itens: 5, linhas: 7, termos: 4 };
+  var CS_AVISO = "Conteúdo informativo e educacional. Não constitui recomendação de investimento. Variações refletem fechamentos públicos e podem ser revisadas pelas fontes oficiais.";
+  var CS_H2C = APP_BASE + "js/vendor/html2canvas.min.js";
+  var CS_CAMINHO = /^(marca|slides\.\d+\.[a-zA-Z]+(\.\d+(\.[a-zA-Z]+)?)?)$/;
+  var cs = { sel: 0, previa: false, ocupado: false, miniTimer: null, msg: "", prontos: null, armado: null, empurrado: false, escEmpurrado: false };
+
+  function csTipoNome(t) { var x = CS_TIPOS.filter(function (it) { return it[0] === t; })[0]; return x ? x[1] : "Slide"; }
+  function csTxt(html) { return esc(plainText(html)); }
+  // "-1,74%" -> "−1,74%" (sinal de menos tipográfico, como nas imagens)
+  function csNum(html) { return esc(plainText(html).replace(/^\s*-\s*/, "−")); }
+  function csSinal(v) {
+    var t = plainText(v).replace(/\s/g, "");
+    return /^[-−–]/.test(t) ? "down" : /^\+/.test(t) ? "up" : "";
+  }
+  function csSemSinal(v) { return esc(plainText(v).replace(/^\s*[-−–+]\s*/, "")); }
+  function csDiaCurto(d) { return DIAS_SEMANA[d.getDay()].slice(0, 3); }
+  function csRel(v) { var c = relClass(plainText(v)); return c === "rel-alta" ? "ALTA" : c === "rel-media" ? "MÉDIA" : "BAIXA"; }
+  function csEscala(v) { var n = parseFloat(v); return (isFinite(n) && n >= 50 && n <= 200 ? n : 100) / 100; }
+  function csVazio(v) { return !plainText(v); }
+
+  function csPeriodo(v) {
+    var a = parseIsoDate(v.coberturaInicio), b = parseIsoDate(v.coberturaFim);
+    if (!a || !b) return "";
+    if (a.getMonth() === b.getMonth()) return a.getDate() + " a " + b.getDate() + " de " + MESES[b.getMonth()];
+    return a.getDate() + " de " + MESES[a.getMonth()] + " a " + b.getDate() + " de " + MESES[b.getMonth()];
+  }
+
+  // Só o que cabe no slide: o primeiro sempre entra; os seguintes enquanto o
+  // total de caracteres não passar do limite (medido nos slides de exemplo).
+  function csCaber(lista, texto, limite) {
+    var total = 0;
+    return lista.filter(function (x, i) { total += texto(x).length; return i === 0 || total <= limite; });
+  }
+
+  // Frases do texto da notícia, para os itens do slide.
+  function csFrases(html, max) {
+    var t = plainText(String(html || "").replace(/<br\s*\/?>/gi, " ")).replace(/\s+/g, " ").trim();
+    if (!t) return [];
+    var partes = t.split(/([.!?])\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ"“(])/);
+    var out = [];
+    for (var i = 0; i < partes.length; i += 2) out.push((partes[i] + (partes[i + 1] || "")).trim());
+    return out.filter(Boolean).slice(0, max);
+  }
+
+  // Veículos citados pela notícia: fonte vinculada e links do "Fonte:".
+  function csFontesDaNoticia(s, c) {
+    var nomes = [];
+    function add(n) { n = (n || "").trim(); if (n && nomes.indexOf(n) === -1) nomes.push(n); }
+    var src = c.sourceId ? sourceById(s, c.sourceId) : null;
+    if (src) add(plainText(src.veiculo));
+    var tmp = document.createElement("div");
+    tmp.innerHTML = sanitizeRichHtml(c.linkText || "");
+    tmp.querySelectorAll("a").forEach(function (a) { add(a.textContent); });
+    return nomes.length ? (nomes.length > 1 ? "Fontes: " : "Fonte: ") + nomes.join(" · ") : "";
+  }
+
+  // Fontes dos cards do Termômetro: cada card acha a linha do termômetro da
+  // página 2 pelo nome do ativo e a legenda (F1: B3; F2: …) dá o veículo.
+  function csFontesTermo(s, tk) {
+    var th = s.thermometer || {}, leg = {}, ordem = [], re = /F(\d+)\s*[:=]?\s*\(?\s*([^;)]+?)\s*\)?\s*(?:;|\.?$)/g, m;
+    var txt = plainText(th.fontesLegenda);
+    while ((m = re.exec(txt))) { leg["F" + m[1]] = m[2].trim(); ordem.push(m[2].trim()); }
+    var linhas = [];
+    (th.groups || []).forEach(function (g) { (g.rows || []).forEach(function (r) { linhas.push(r); }); });
+    var nomes = [];
+    tk.forEach(function (t) {
+      var palavras = semAcento(plainText(t.label)).split(/[\s()]+/).filter(function (w) { return w.length >= 3; });
+      var r = linhas.filter(function (x) { var a = semAcento(plainText(x.ativo)); return palavras.some(function (w) { return a.indexOf(w) !== -1; }); })[0];
+      var n = r && leg[String(r.fonte || "").trim().toUpperCase()];
+      if (n && nomes.indexOf(n) === -1) nomes.push(n);
+    });
+    if (!nomes.length) nomes = ordem.filter(function (n, i) { return ordem.indexOf(n) === i; });
+    return nomes.length ? (nomes.length > 1 ? "Fontes: " : "Fonte: ") + nomes.join(" · ") : "";
+  }
+
+  // Linha da agenda da página 2 -> linha do slide ("Seg 19", evento, detalhe).
+  function csLinhaAgenda(r) {
+    var dm = /^\s*([A-Za-zÀ-ú]{3})[A-Za-zÀ-ú-]*\.?,?\s*(\d{1,2})\/(\d{1,2})/.exec(plainText(r.data));
+    var dia = dm ? dm[1].charAt(0).toUpperCase() + dm[1].slice(1).toLowerCase() + " " + parseInt(dm[2], 10) : plainText(r.data);
+    var partes = plainText(r.evento).split(/\s+[—–-]\s+/);
+    var titulo = partes.shift() || "", det = [];
+    var par = /\s*\(([^)]*)\)\s*$/.exec(titulo);
+    if (par) { titulo = titulo.slice(0, par.index); det.push(par[1]); }
+    partes.forEach(function (p) { p = p.replace(/^\(\s*|\s*\)$/g, "").trim(); if (p) det.push(p); });
+    return {
+      linha: { dia: esc(dia), evento: esc(titulo.trim()), detalhe: esc([plainText(r.pais)].concat(det).filter(Boolean).join(" · ")), relevancia: csRel(r.relevancia), destaque: false },
+      dm: dm ? [parseInt(dm[2], 10), parseInt(dm[3], 10)] : null,
+      peso: (csRel(r.relevancia) === "ALTA" ? 3 : csRel(r.relevancia) === "MÉDIA" ? 1 : 0) + (r.bold ? 2 : 0)
+    };
+  }
+
+  // Monta o carrossel inteiro a partir da edição (nada inventado: o que
+  // não existe na edição fica vazio para preencher).
+  function csMontar(s, base) {
+    base = base || {};
+    var v = (s.meta && s.meta.vars) || {};
+    var tk = s.ticker || [];
+    var ibov = tk.filter(function (t) { return /IBOV/i.test(plainText(t.label)); })[0] || tk[0] || null;
+    var ref = ibov ? parseIsoDate(ibov.refData) : null;
+    var slides = [];
+    var PER = { semana: " NA SEMANA", dia: " NO DIA", mes: " NO MÊS", ano: " NO ANO" };
+
+    var info = [];
+    if (ibov) {
+      var valor = plainText(ibov.value);
+      info.push(esc(valor + (/IBOV/i.test(plainText(ibov.label)) && !/[a-z$]/i.test(valor) ? " pts" : "")));
+      if (ref) info.push(((ibov.tipo || "fechamento") === "fechamento" ? "fech. " : "") + csDiaCurto(ref) + " " + ddmm(ref));
+    }
+    slides.push({ tipo: "capa", edicao: v.edicao ? "EDIÇÃO " + esc(v.edicao) : "", periodo: esc(csPeriodo(v)),
+      tag: "A SEMANA NO MERCADO", tagCor: "vermelho", titulo: csTxt(s.headline && s.headline.title),
+      destaqueRotulo: ibov ? esc(plainText(ibov.label).toUpperCase() + (PER[ibov.periodo || "semana"] || "")) : "",
+      destaqueValor: ibov ? csSemSinal(ibov.change) : "", destaqueSeta: ibov ? csSinal(ibov.change) || "nenhuma" : "nenhuma",
+      destaqueInfo: info.join("<br>"), publicadoPor: "PUBLICADO POR", arraste: "Arraste" });
+
+    var cards = tk.slice(0, CS_MAX.tcards).map(function (t) {
+      return { rotulo: esc(plainText(t.label).toUpperCase()), valor: esc(plainText(t.value)), variacao: csNum(t.change) };
+    });
+    if (cards.length) {
+      slides.push({ tipo: "termometro", tag: "TERMÔMETRO", tagCor: "vermelho", titulo: "A semana em " + cards.length + " números",
+        subtitulo: "Variação semanal" + (ref ? " · fechamento de " + csDiaCurto(ref) + ", " + ddmm(ref) : ""), cards: cards,
+        rodape: esc(csFontesTermo(s, tk.slice(0, CS_MAX.tcards))) });
+    }
+
+    (s.columns || []).forEach(function (c) {
+      var tag = plainText(c.tag);
+      slides.push({ tipo: "noticia", tag: esc(tag), tagCor: /EXTERIOR|MUNDO|EUA|GLOBAL|INTERNACIONAL/i.test(tag) ? "azul" : "vermelho",
+        titulo: csTxt(c.title), cardsTopo: false,
+        cards: [],
+        itens: csCaber(csFrases(c.body, 3), function (f) { return f; }, 340).map(esc), rodape: esc(csFontesDaNoticia(s, c)) });
+    });
+
+    var cal = (s.calendar && s.calendar.rows) || [];
+    if (cal.length) {
+      var linhas = cal.map(csLinhaAgenda).map(function (x, k) { x.k = k; return x; });
+      var escolha = linhas.slice().sort(function (a, b) { return b.peso - a.peso || a.k - b.k; }).slice(0, 6).sort(function (a, b) { return a.k - b.k; });
+      var ini = escolha[0].dm, fim = escolha[escolha.length - 1].dm, faixa = "";
+      if (ini && fim) faixa = ini[1] === fim[1] ? ini[0] + " A " + pad2(fim[0]) + "/" + pad2(fim[1]) : pad2(ini[0]) + "/" + pad2(ini[1]) + " A " + pad2(fim[0]) + "/" + pad2(fim[1]);
+      slides.push({ tipo: "agenda", tag: "AGENDA" + (faixa ? " · " + faixa : ""), tagCor: "vermelho", titulo: "O que vem por aí",
+        linhas: escolha.map(function (x) { return x.linha; }), rodape: "Relevância: avaliação editorial" });
+    }
+
+    var nAtivos = 0;
+    ((s.thermometer && s.thermometer.groups) || []).forEach(function (g) { nAtivos += (g.rows || []).length; });
+    slides.push({ tipo: "glossario", tag: "GLOSSÁRIO DA SEMANA", tagCor: "vermelho",
+      termos: csCaber(((s.glossary && s.glossary.items) || []).slice(0, 3), function (it) { return plainText(it.term) + plainText(it.def); }, 300)
+        .map(function (it) { return { termo: csTxt(it.term), def: csTxt(it.def) }; }),
+      ctaTitulo: "Boletim completo em PDF",
+      ctaTexto: (nAtivos ? "Termômetro com " + nAtivos + " ativos, dia a dia" : "Termômetro, dia a dia") + " do Ibovespa e agenda completa: link na bio.",
+      autoria: csTxt(s.footerFront && s.footerFront.autoria), aviso: CS_AVISO });
+
+    slides.forEach(function (sl) { sl.id = uid(); });
+    return { perfil: base.perfil || "", marca: base.marca || plainText(s.meta && s.meta.title) || "BOLETIM ECONÔMICO", slides: slides };
+  }
+
+  // Slide novo (botão "+ Slide"): do tipo pedido, com o que a edição tem.
+  function csNovo(tipo, s) {
+    var pronto = csMontar(s).slides.filter(function (x) { return x.tipo === tipo; })[0];
+    if (pronto && tipo !== "noticia") return pronto;
+    if (tipo === "termometro") return { id: uid(), tipo: tipo, tag: "TERMÔMETRO", tagCor: "vermelho", titulo: "", subtitulo: "", cards: [{ rotulo: "", valor: "", variacao: "" }], rodape: "" };
+    if (tipo === "agenda") return { id: uid(), tipo: tipo, tag: "AGENDA", tagCor: "vermelho", titulo: "O que vem por aí", linhas: [{ dia: "", evento: "", detalhe: "", relevancia: "MÉDIA", destaque: false }], rodape: "" };
+    return { id: uid(), tipo: "noticia", tag: "", tagCor: "vermelho", titulo: "", cardsTopo: false,
+      cards: [{ topo: "", valor: "", legenda: "", cor: "auto" }], itens: ["", "", ""], rodape: "" };
+  }
+
+  // Edição importada ou antiga: listas que faltam passam a existir.
+  function csNormalizar(c) {
+    c.slides.forEach(function (sl) {
+      if (!sl.id) sl.id = uid();
+      if (sl.tipo === "termometro" || sl.tipo === "noticia") sl.cards = Array.isArray(sl.cards) ? sl.cards : [];
+      if (sl.tipo === "noticia") sl.itens = Array.isArray(sl.itens) ? sl.itens : [];
+      if (sl.tipo === "agenda") sl.linhas = Array.isArray(sl.linhas) ? sl.linhas : [];
+      if (sl.tipo === "glossario") sl.termos = Array.isArray(sl.termos) ? sl.termos : [];
+    });
+  }
+
+  function csGarantir() {
+    var s = state(), c = s.carrossel;
+    if (c && Array.isArray(c.slides) && c.slides.length) { csNormalizar(c); return; }
+    s.carrossel = csMontar(s, c);
+    if (!REVIEWER) scheduleSave();
+  }
+
+  // ---- Desenho de um slide ----
+  // Campo de texto: editável no editor; na imagem, só o texto (vazio some).
+  function csCampo(tag, cls, path, valor, ed, dica, linha) {
+    var v = richHtml(valor);
+    if (!ed) return v ? "<" + tag + ' class="' + cls + '">' + v + "</" + tag + ">" : "";
+    return "<" + tag + ' class="' + cls + '" contenteditable="true" data-cpath="' + path + '"' + (linha ? ' data-linha="1"' : "") +
+      ' data-dica="' + esc(dica || "") + '">' + v + "</" + tag + ">";
+  }
+  // Seta em SVG com a cor no próprio desenho (o html2canvas não aplica o CSS
+  // de fora dentro do SVG).
+  function csSeta(dir, cls, tam, cor) {
+    if (dir !== "up" && dir !== "down") return "";
+    var pts = dir === "up" ? "0,90 50,4 100,90" : "0,10 100,10 50,96";
+    return '<svg class="' + cls + '" viewBox="0 0 100 100" width="' + tam + '" height="' + tam + '" aria-hidden="true"><polygon points="' + pts + '" fill="' + cor + '"/></svg>';
+  }
+  function csSetaDireita() {
+    return '<svg class="cs-arraste-seta" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><path d="M5 20h28M21 8l12 12-12 12" fill="none" stroke="#ffffff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  function csCtx(s) {
+    var c = s.carrossel, vis = c.slides.filter(function (x) { return !x.oculto; });
+    return { c: c, ed: (s.meta.vars && s.meta.vars.edicao) || "", total: vis.length, ordem: function (sl) { return vis.indexOf(sl) + 1; } };
+  }
+  function csPag(ctx, sl) {
+    var n = ctx.ordem(sl);
+    return esc(ctx.ed) + (ctx.ed ? " · " : "") + (n ? n + "/" + ctx.total : "oculto");
+  }
+  function csTag(sl, i, ed) {
+    return csCampo("div", "cs-tag cs-nowrap cs-cor-" + esc(sl.tagCor || "vermelho"), "slides." + i + ".tag", sl.tag, ed, "EDITORIA", true);
+  }
+  function csLogo(src, cls, ed, dica) {
+    var u = safeImageSrc(src);
+    // Endereço relativo (img/…): a partir da pasta do site, para valer também na imagem gerada
+    if (u && !/^(data:|https?:)/i.test(u)) u = APP_BASE + u.replace(/^\.?\//, "");
+    if (u) return '<img class="' + cls + '" src="' + esc(u) + '" alt="">';
+    return ed ? '<div class="' + cls + ' cs-logo-vazio">' + esc(dica) + "</div>" : '<div class="' + cls + ' cs-logo-nada"></div>';
+  }
+  function csRodape(ctx, sl, i, ed) {
+    var perfil = (ctx.c.perfil || "").trim();
+    return '<div class="cs-base cs-rodape">' + csCampo("div", "cs-fontes", "slides." + i + ".rodape", sl.rodape, ed, "Fontes: veículos citados", true) +
+      (perfil ? '<div class="cs-perfil">' + esc(perfil) + "</div>" : ed ? '<div class="cs-perfil cs-perfil-vazio">@perfil (no painel)</div>' : "") + "</div>";
+  }
+  function csCorCard(cd) {
+    var c = cd.cor && cd.cor !== "auto" ? cd.cor : csSinal(cd.valor) === "down" ? "salmao" : "branco";
+    return "cs-v-" + c;
+  }
+
+  function csSlideHtml(s, sl, i, ed) {
+    var ctx = csCtx(s);
+    var escuro = sl.tipo === "capa" || sl.tipo === "glossario";
+    var cls = "cs-slide cs-" + esc(sl.tipo) + " cs-acento-" + esc(sl.tagCor || "vermelho") + (escuro ? " cs-escuro" : " cs-claro") + (ed ? " cs-ed" : "");
+    var estilo = ' style="--esc-t:' + csEscala(sl.escTitulo) + ";--esc-x:" + csEscala(sl.escTexto) + '"';
+    var corpo = sl.tipo === "capa" ? csCapa(s, sl, i, ed, ctx) : sl.tipo === "glossario" ? csGlossario(s, sl, i, ed, ctx) : csInterno(sl, i, ed, ctx);
+    return '<div class="' + cls + '" data-cs-slide="' + i + '"' + estilo + ">" + corpo + "</div>";
+  }
+
+  function csCapa(s, sl, i, ed, ctx) {
+    var p = "slides." + i + ".";
+    var seta = sl.destaqueSeta === "up" || sl.destaqueSeta === "down" ? sl.destaqueSeta : "";
+    return '<div class="cs-capa-topo">' + csLogo(s.meta && s.meta.logo, "cs-capa-logo", ed, "Logo da Liga (cabeçalho da Página)") +
+        '<div class="cs-capa-ed">' + csCampo("div", "cs-capa-num", p + "edicao", sl.edicao, ed, "EDIÇÃO 00/0000", true) +
+        csCampo("div", "cs-capa-per", p + "periodo", sl.periodo, ed, "período da semana", true) + "</div></div>" +
+      '<div class="cs-capa-linha"></div>' +
+      '<div class="cs-fluxo cs-capa-meio">' + csCampo("div", "cs-capa-marca", "marca", ctx.c.marca, ed, "NOME DO BOLETIM", true) +
+        csTag(sl, i, ed) + csCampo("h2", "cs-titulo", p + "titulo", sl.titulo, ed, "Título da capa") + "</div>" +
+      '<div class="cs-base cs-capa-base">' +
+        csCampo("div", "cs-capa-rot", p + "destaqueRotulo", sl.destaqueRotulo, ed, "NÚMERO EM DESTAQUE", true) +
+        '<div class="cs-capa-dest"><div class="cs-capa-dest-esq">' + csSeta(seta, "cs-capa-seta", 92, seta === "up" ? "#5fd39a" : "#ff6b6b") +
+          csCampo("div", "cs-capa-valor cs-nowrap cs-capa-" + (seta || "nenhuma"), p + "destaqueValor", sl.destaqueValor, ed, "0,00%", true) + "</div>" +
+          csCampo("div", "cs-capa-info", p + "destaqueInfo", sl.destaqueInfo, ed, "valor e data") + "</div>" +
+        '<div class="cs-capa-pub"><div class="cs-capa-pub-esq">' + csCampo("div", "cs-capa-pub-rot", p + "publicadoPor", sl.publicadoPor, ed, "PUBLICADO POR", true) +
+          '<div class="cs-logo-caixa">' + csLogo(s.meta && s.meta.publisherLogo, "cs-logo-img", ed, "Logo do parceiro") + "</div></div>" +
+          '<div class="cs-arraste">' + csCampo("span", "cs-arraste-txt", p + "arraste", sl.arraste, ed, "Arraste", true) +
+          (ed || !csVazio(sl.arraste) ? csSetaDireita() : "") + "</div></div>" +
+      "</div>";
+  }
+
+  function csInterno(sl, i, ed, ctx) {
+    var p = "slides." + i + ".", miolo = csTag(sl, i, ed) + csCampo("h2", "cs-titulo", p + "titulo", sl.titulo, ed, "Título");
+    if (sl.tipo === "termometro") {
+      miolo += csCampo("div", "cs-sub", p + "subtitulo", sl.subtitulo, ed, "Subtítulo (opcional)");
+      var tc = (sl.cards || []).map(function (cd, j) {
+        var q = p + "cards." + j + ".", vazio = csVazio(cd.rotulo) && csVazio(cd.valor) && csVazio(cd.variacao);
+        if (vazio && !ed) return "";
+        var dir = csSinal(cd.variacao) || "flat";
+        return '<div class="cs-tcard' + (vazio ? " cs-vazio-box" : "") + '">' + csCampo("div", "cs-tcard-rot cs-nowrap", q + "rotulo", cd.rotulo, ed, "ATIVO", true) +
+          csCampo("div", "cs-tcard-valor cs-nowrap", q + "valor", cd.valor, ed, "0,00", true) +
+          '<div class="cs-tcard-var cs-' + dir + '">' + csSeta(dir, "cs-tseta", 28, dir === "up" ? "#178046" : "#c0202b") +
+          csCampo("span", "cs-tcard-pct", q + "variacao", cd.variacao, ed, "+0,00%", true) + "</div></div>";
+      }).join("");
+      if (tc) miolo += '<div class="cs-tgrid">' + tc + "</div>";
+    } else if (sl.tipo === "agenda") {
+      var ln = (sl.linhas || []).map(function (r, k) {
+        var q = p + "linhas." + k + ".", rel = CS_REL.indexOf(r.relevancia) !== -1 ? r.relevancia : "MÉDIA";
+        var pill = rel === "ALTA" ? "alta" : rel === "MÉDIA" ? "media" : "baixa";
+        if (!ed && csVazio(r.dia) && csVazio(r.evento) && csVazio(r.detalhe)) return "";
+        return '<div class="cs-linha' + (r.destaque ? " cs-destaque" : "") + '">' + csCampo("div", "cs-dia", q + "dia", r.dia, ed, "Dia", true) +
+          '<div class="cs-ev">' + csCampo("div", "cs-ev-titulo", q + "evento", r.evento, ed, "Evento", true) + csCampo("div", "cs-ev-det", q + "detalhe", r.detalhe, ed, "País · órgão", true) + "</div>" +
+          (ed ? '<button type="button" class="cs-pill cs-pill-' + pill + '" data-cs-act="rel" data-k="' + k + '" title="Clique para trocar a relevância">' + rel + "</button>"
+            : '<div class="cs-pill cs-pill-' + pill + '">' + rel + "</div>") + "</div>";
+      }).join("");
+      if (ln) miolo += '<div class="cs-agenda-tabela">' + ln + "</div>";
+    } else {
+      var cards = (sl.cards || []).map(function (cd, j) {
+        var q = p + "cards." + j + ".", vazio = csVazio(cd.valor) && csVazio(cd.legenda) && csVazio(cd.topo);
+        if (vazio && !ed) return "";
+        return '<div class="cs-card' + (vazio ? " cs-vazio-box" : "") + '">' +
+          (sl.cardsTopo ? csCampo("div", "cs-card-topo cs-nowrap", q + "topo", cd.topo, ed, "RÓTULO", true) : "") +
+          csCampo("div", "cs-card-valor cs-nowrap " + csCorCard(cd), q + "valor", cd.valor, ed, "Número", true) +
+          csCampo("div", "cs-card-legenda", q + "legenda", cd.legenda, ed, "o que o número mostra") + "</div>";
+      }).filter(Boolean);
+      if (cards.length) miolo += '<div class="cs-cards cs-n' + cards.length + (sl.cardsTopo ? " cs-com-topo" : "") + '">' + cards.join("") + "</div>";
+      var itens = (sl.itens || []).map(function (t, k) {
+        if (!ed && csVazio(t)) return "";
+        return '<li class="cs-item"><span class="cs-dot"></span>' + csCampo("div", "cs-item-txt", p + "itens." + k, t, ed, "Texto do item (Ctrl+B: negrito)") + "</li>";
+      }).join("");
+      if (itens) miolo += '<ul class="cs-itens">' + itens + "</ul>";
+    }
+    return '<div class="cs-banda"><div class="cs-marca">' + esc(ctx.c.marca) + '</div><div class="cs-pag">' + csPag(ctx, sl) + "</div></div>" +
+      '<div class="cs-fluxo cs-corpo">' + miolo + "</div>" + csRodape(ctx, sl, i, ed);
+  }
+
+  function csGlossario(s, sl, i, ed, ctx) {
+    var p = "slides." + i + ".";
+    var termos = (sl.termos || []).map(function (t, k) {
+      if (!ed && csVazio(t.termo) && csVazio(t.def)) return "";
+      return '<div class="cs-termo">' + csCampo("div", "cs-termo-nome", p + "termos." + k + ".termo", t.termo, ed, "Termo", true) +
+        csCampo("div", "cs-termo-def", p + "termos." + k + ".def", t.def, ed, "O que significa") + "</div>";
+    }).join("");
+    var cta = ed || !csVazio(sl.ctaTitulo) || !csVazio(sl.ctaTexto)
+      ? '<div class="cs-cta">' + csCampo("div", "cs-cta-titulo", p + "ctaTitulo", sl.ctaTitulo, ed, "Chamada", true) + csCampo("div", "cs-cta-texto", p + "ctaTexto", sl.ctaTexto, ed, "Onde achar o PDF") + "</div>" : "";
+    return '<div class="cs-gl-topo">' + csTag(sl, i, ed) + '<div class="cs-pag">' + csPag(ctx, sl) + "</div></div>" +
+      '<div class="cs-fluxo cs-termos">' + termos + "</div>" +
+      '<div class="cs-base cs-gl-base">' + cta +
+        '<div class="cs-logos">' + csLogo(s.meta && s.meta.logo, "cs-gl-logo", ed, "Logo da Liga") +
+          '<div class="cs-logo-caixa">' + csLogo(s.meta && s.meta.publisherLogo, "cs-logo-img", ed, "Logo do parceiro") + "</div></div>" +
+        csCampo("div", "cs-autoria", p + "autoria", sl.autoria, ed, "Autoria: nome", true) + csCampo("div", "cs-aviso", p + "aviso", sl.aviso, ed, "Aviso legal") +
+      "</div>";
+  }
+
+  // O conteúdo passou do espaço do slide? (texto que desce sobre o rodapé
+  // ou número largo demais para a caixa)
+  function csEstourou(el) {
+    var f = el.querySelector(".cs-fluxo"), b = el.querySelector(".cs-base");
+    if (f && f.offsetTop + f.scrollHeight > (b ? b.offsetTop - 12 : CS_H - 40) + 1) return true;
+    return Array.prototype.some.call(el.querySelectorAll(".cs-nowrap"), function (n) { return n.scrollWidth > n.clientWidth + 1; });
+  }
+
+  // ---- Tela do carrossel ----
+  function renderCarrossel() {
+    if (modoAtual !== "carrossel") return;
+    if (!document.getElementById("carrosselView")) return;
+    csGarantir();
+    var s = state(), c = s.carrossel;
+    cs.sel = Math.max(0, Math.min(cs.sel, c.slides.length - 1));
+    document.getElementById("csCount").textContent = c.slides.length;
+    document.getElementById("csLista").innerHTML = c.slides.map(function (sl, i) {
+      return '<div class="cs-mini-item' + (i === cs.sel ? " is-active" : "") + (sl.oculto ? " is-oculto" : "") + '" data-cs-act="sel" data-i="' + i + '" role="button" tabindex="0" aria-label="Slide ' + (i + 1) + ", " + esc(csTipoNome(sl.tipo)) + '">' +
+        '<div class="cs-mini"><div class="cs-mini-escala">' + csSlideHtml(s, sl, i, false) + "</div></div>" +
+        '<div class="cs-mini-info"><b>' + (i + 1) + "</b><span>" + esc(csTipoNome(sl.tipo)) + "</span>" + (sl.oculto ? '<span class="cs-mini-tag">oculto</span>' : "") +
+        '<span class="cs-mini-alerta" hidden title="O conteúdo passa do slide">' + icon("alert") + "</span></div></div>";
+    }).join("");
+    var ed = !REVIEWER && !cs.previa;
+    document.getElementById("csPalco").innerHTML = '<div class="cs-escala">' + csSlideHtml(s, c.slides[cs.sel], cs.sel, ed) + "</div>";
+    csAjustarEscala();
+    renderCsPainel();
+    csChecar();
+  }
+
+  function csAjustarEscala() {
+    var palco = document.getElementById("csPalco"), box = palco && palco.querySelector(".cs-escala");
+    if (!box || !box.firstElementChild) return;
+    var w = palco.clientWidth - 48, h = window.innerWidth <= 900 ? Infinity : palco.clientHeight - 48;
+    var k = Math.max(0.15, Math.min(w / CS_W, h / CS_H, 1));
+    box.style.width = Math.round(CS_W * k) + "px";
+    box.style.height = Math.round(CS_H * k) + "px";
+    box.firstElementChild.style.transform = "scale(" + k + ")";
+  }
+
+  // Avisos de estouro: medidos nas miniaturas (iguais à imagem final) e, no
+  // slide aberto, também no editor (onde campos vazios ainda ocupam espaço).
+  function csChecar() {
+    var atual = false;
+    document.querySelectorAll("#csLista .cs-mini-item").forEach(function (it) {
+      var sl = it.querySelector(".cs-slide"), est = !!sl && csEstourou(sl);
+      it.querySelector(".cs-mini-alerta").hidden = !est;
+      it.classList.toggle("has-estouro", est);
+      if (+it.dataset.i === cs.sel) atual = est;
+    });
+    var palco = document.querySelector("#csPalco .cs-slide");
+    if (palco) {
+      palco.classList.remove("cs-estouro");
+      atual = atual || csEstourou(palco);
+      palco.classList.toggle("cs-estouro", atual);
+    }
+    var aviso = document.getElementById("csAlerta");
+    if (aviso) aviso.hidden = !atual;
+  }
+
+  function csAgendarMini(todas) {
+    clearTimeout(cs.miniTimer);
+    cs.miniTimer = setTimeout(function () { csAtualizarMinis(todas); }, 250);
+  }
+  function csAtualizarMinis(todas) {
+    var s = state(), c = s.carrossel;
+    if (!c || modoAtual !== "carrossel") return;
+    document.querySelectorAll("#csLista .cs-mini-item").forEach(function (it) {
+      var i = +it.dataset.i;
+      if ((todas || i === cs.sel) && c.slides[i]) it.querySelector(".cs-mini-escala").innerHTML = csSlideHtml(s, c.slides[i], i, false);
+    });
+    if (todas) {
+      var palco = document.querySelector("#csPalco .cs-escala");
+      if (palco && document.activeElement && !palco.contains(document.activeElement)) {
+        palco.innerHTML = csSlideHtml(s, c.slides[cs.sel], cs.sel, !REVIEWER && !cs.previa);
+        csAjustarEscala();
+      }
+    }
+    csChecar();
+  }
+
+  function csPodeCompartilhar() {
+    try { return !!(navigator.canShare && navigator.share && navigator.canShare({ files: [new File([""], "a.png", { type: "image/png" })] })); } catch (e) { return false; }
+  }
+
+  function renderCsPainel() {
+    var painel = document.getElementById("csPainel");
+    if (!painel) return;
+    var s = state(), c = s.carrossel, i = cs.sel, sl = c.slides[i];
+    var h = propHead("Carrossel do Instagram", "Slide " + (i + 1) + " de " + c.slides.length + " · " + csTipoNome(sl.tipo));
+    h += '<div class="prop-section">' +
+      '<button type="button" class="prop-btn primary-btn" data-cs-act="baixar-um"' + (cs.ocupado ? " disabled" : "") + ">" + icon("download") + "Baixar este slide (PNG)</button>" +
+      '<button type="button" class="prop-btn" data-cs-act="baixar-todos"' + (cs.ocupado ? " disabled" : "") + ">" + icon("download") + "Baixar todos (.zip)</button>" +
+      (csPodeCompartilhar() ? '<button type="button" class="prop-btn" data-cs-act="preparar-compartilhar"' + (cs.ocupado ? " disabled" : "") + ">" + icon("upload") + "Enviar para o Instagram…</button>" : "") +
+      (cs.prontos ? '<button type="button" class="prop-btn primary-btn" data-cs-act="compartilhar">' + icon("upload") + "Compartilhar " + cs.prontos.length + " imagens</button>" : "") +
+      '<p class="prop-note" id="csMsg" role="status">' + esc(cs.msg) + "</p>" +
+      '<p class="prop-note">2160 × 2700 px (4:5), o tamanho do Instagram. Slides ocultos e campos vazios ficam de fora.</p></div>';
+    if (REVIEWER) {
+      painel.innerHTML = h + '<div class="prop-section"><p class="prop-note">Modo revisão: o carrossel é só para leitura.</p></div>';
+      return;
+    }
+    var p = function (rot, corpo) { return '<div class="prop-field"><span class="prop-field-label">' + rot + "</span>" + corpo + "</div>"; };
+    var x = '<div class="prop-section">' +
+      '<p class="prop-note cs-alerta" id="csAlerta" hidden>' + icon("alert") + " O conteúdo passa do espaço do slide (aparece cortado na imagem). Encurte o texto ou diminua o tamanho.</p>" +
+      '<div class="cs-acoes">' +
+        '<button type="button" class="prop-btn" data-cs-act="subir" title="Mover para cima"' + (i === 0 ? " disabled" : "") + ">" + icon("up") + "</button>" +
+        '<button type="button" class="prop-btn" data-cs-act="descer" title="Mover para baixo"' + (i === c.slides.length - 1 ? " disabled" : "") + ">" + icon("down") + "</button>" +
+        '<button type="button" class="prop-btn" data-cs-act="duplicar" title="Duplicar slide">' + icon("copy") + "</button>" +
+        '<button type="button" class="prop-btn" data-cs-act="ocultar" title="' + (sl.oculto ? "Voltar a exportar este slide" : "Não exportar este slide") + '" aria-pressed="' + (sl.oculto ? "true" : "false") + '">' + icon(sl.oculto ? "eye-off" : "eye") + "</button>" +
+        '<button type="button" class="prop-btn danger" data-cs-act="excluir" title="Excluir slide"' + (c.slides.length < 2 ? " disabled" : "") + ">" + icon("trash") + "</button>" +
+      "</div>";
+    if (sl.tipo !== "termometro") {
+      x += p("Cor da etiqueta", segButtons(CS_CORES, function (it) { return 'data-cs-act="cor" data-v="' + it[0] + '"'; }, function (it) { return (sl.tagCor || "vermelho") === it[0]; }));
+    }
+    x += '<div class="prop-grid">' +
+      p("Título: <b>" + Math.round(csEscala(sl.escTitulo) * 100) + "%</b>", '<input type="range" min="70" max="130" step="5" data-cs-esc="escTitulo" value="' + Math.round(csEscala(sl.escTitulo) * 100) + '" aria-label="Tamanho do título">') +
+      p("Texto: <b>" + Math.round(csEscala(sl.escTexto) * 100) + "%</b>", '<input type="range" min="70" max="130" step="5" data-cs-esc="escTexto" value="' + Math.round(csEscala(sl.escTexto) * 100) + '" aria-label="Tamanho do texto">') +
+      "</div>";
+    x += csPainelTipo(sl);
+    x += "</div>";
+    var g = '<div class="prop-section">' +
+      '<div class="prop-field"><label for="csPerfil">Perfil do Instagram (rodapé)</label><input type="text" id="csPerfil" data-cs-campo="perfil" placeholder="@perfil_da_liga" value="' + esc(c.perfil || "") + '"></div>' +
+      '<div class="prop-field"><label for="csMarca">Nome no topo dos slides</label><input type="text" id="csMarca" data-cs-campo="marca" value="' + esc(c.marca || "") + '"></div>' +
+      '<label class="prop-check"><input type="checkbox" data-cs-chk="previa"' + (cs.previa ? " checked" : "") + "> Ver como vai sair na imagem</label>" +
+      "</div>" +
+      '<div class="prop-section"><button type="button" class="prop-btn" data-cs-act="remontar">' + icon("reset") + "Montar de novo a partir da edição</button>" +
+      '<p class="prop-note">Clique no texto do slide para editar. Ctrl+B deixa em negrito. Os logos vêm do cabeçalho da Página.</p></div>';
+    painel.innerHTML = h + x + g;
+  }
+
+  function csListaLinha(rot, extra, act, k) {
+    return '<div class="cs-lista-linha"><span class="cs-lista-rot" title="' + esc(rot) + '">' + esc(rot || "(vazio)") + "</span>" + (extra || "") +
+      '<button type="button" class="cs-x" data-cs-act="' + act + '" data-k="' + k + '" title="Remover" aria-label="Remover ' + esc(rot || "item") + '">' + icon("trash") + "</button></div>";
+  }
+  function csAddBtn(act, rot, desligado) {
+    return '<button type="button" class="prop-btn dashed" data-cs-act="' + act + '"' + (desligado ? " disabled" : "") + ">" + icon("plus") + esc(rot) + "</button>";
+  }
+
+  function csPainelTipo(sl) {
+    var h = "";
+    var lab = function (t) { return '<span class="prop-field-label">' + t + "</span>"; };
+    if (sl.tipo === "capa") {
+      h += '<div class="prop-field">' + lab("Seta do número em destaque") + segButtons([["up", "▲ Sobe"], ["down", "▼ Cai"], ["nenhuma", "Sem seta"]],
+        function (it) { return 'data-cs-act="seta" data-v="' + it[0] + '"'; }, function (it) { return (sl.destaqueSeta || "nenhuma") === it[0]; }) + "</div>";
+    } else if (sl.tipo === "termometro") {
+      h += '<div class="prop-field">' + lab("Cards (" + sl.cards.length + " de " + CS_MAX.tcards + ")") +
+        sl.cards.map(function (cd, k) { return csListaLinha(plainText(cd.rotulo), "", "tcard-del", k); }).join("") +
+        csAddBtn("tcard-add", "Card", sl.cards.length >= CS_MAX.tcards) + "</div>";
+    } else if (sl.tipo === "noticia") {
+      h += '<div class="prop-field">' + lab("Cards (" + sl.cards.length + " de " + CS_MAX.cards + ") · vazios não saem") +
+        sl.cards.map(function (cd, k) {
+          var sel = '<select data-cs-sel="cor" data-k="' + k + '" aria-label="Cor do número do card ' + (k + 1) + '">' +
+            CS_CORES_CARD.map(function (o) { return '<option value="' + o[0] + '"' + ((cd.cor || "auto") === o[0] ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select>";
+          return csListaLinha(plainText(cd.valor) || "Card " + (k + 1), sel, "card-del", k);
+        }).join("") + csAddBtn("card-add", "Card", sl.cards.length >= CS_MAX.cards) +
+        '<label class="prop-check"><input type="checkbox" data-cs-chk="cardsTopo"' + (sl.cardsTopo ? " checked" : "") + "> Rótulo acima do número</label></div>";
+      h += '<div class="prop-field">' + lab("Itens (" + sl.itens.length + " de " + CS_MAX.itens + ")") +
+        sl.itens.map(function (t, k) { return csListaLinha(plainText(t), "", "item-del", k); }).join("") +
+        csAddBtn("item-add", "Item", sl.itens.length >= CS_MAX.itens) + "</div>";
+    } else if (sl.tipo === "agenda") {
+      h += '<div class="prop-field">' + lab("Linhas (" + sl.linhas.length + " de " + CS_MAX.linhas + ") · clique na etiqueta do slide para trocar a relevância") +
+        sl.linhas.map(function (r, k) {
+          var chk = '<label class="cs-mini-chk" title="Destacar a linha"><input type="checkbox" data-cs-chk="destaque" data-k="' + k + '"' + (r.destaque ? " checked" : "") + "> Destaque</label>";
+          return csListaLinha(plainText(r.dia) + " · " + plainText(r.evento), chk, "linha-del", k);
+        }).join("") + csAddBtn("linha-add", "Linha", sl.linhas.length >= CS_MAX.linhas) + "</div>";
+    } else if (sl.tipo === "glossario") {
+      h += '<div class="prop-field">' + lab("Termos (" + sl.termos.length + " de " + CS_MAX.termos + ")") +
+        sl.termos.map(function (t, k) { return csListaLinha(plainText(t.termo), "", "termo-del", k); }).join("") +
+        csAddBtn("termo-add", "Termo", sl.termos.length >= CS_MAX.termos) + "</div>";
+    }
+    return h;
+  }
+
+  // Mudança de estrutura: um passo no desfazer, grava e redesenha.
+  function csMudar(fn) {
+    pushHistory();
+    fn(state().carrossel);
+    scheduleSave();
+    renderCarrossel();
+  }
+
+  function csAcao(act, b) {
+    var c = state().carrossel, i = cs.sel, sl = c.slides[i], k = parseInt(b.dataset.k, 10);
+    switch (act) {
+      case "sel": cs.sel = parseInt(b.dataset.i, 10) || 0; renderCarrossel(); return;
+      case "adicionar": {
+        var tipo = (document.getElementById("csNovoTipo") || {}).value || "noticia";
+        csMudar(function (cc) { cc.slides.splice(i + 1, 0, csNovo(tipo, state())); cs.sel = i + 1; });
+        return;
+      }
+      case "subir": if (i > 0) csMudar(function (cc) { cc.slides.splice(i - 1, 0, cc.slides.splice(i, 1)[0]); cs.sel = i - 1; }); return;
+      case "descer": if (i < c.slides.length - 1) csMudar(function (cc) { cc.slides.splice(i + 1, 0, cc.slides.splice(i, 1)[0]); cs.sel = i + 1; }); return;
+      case "duplicar": csMudar(function (cc) { var cp = JSON.parse(JSON.stringify(sl)); cp.id = uid(); cc.slides.splice(i + 1, 0, cp); cs.sel = i + 1; }); return;
+      case "ocultar": csMudar(function () { sl.oculto = !sl.oculto; }); return;
+      case "excluir":
+        if (c.slides.length < 2) return;
+        csMudar(function (cc) { cc.slides.splice(i, 1); cs.sel = Math.min(i, cc.slides.length - 1); });
+        uiToast("Slide excluído. Ctrl+Z desfaz.");
+        return;
+      case "cor": csMudar(function () { sl.tagCor = b.dataset.v; }); return;
+      case "seta": csMudar(function () { sl.destaqueSeta = b.dataset.v; }); return;
+      case "rel": csMudar(function () { var r = sl.linhas[k]; r.relevancia = CS_REL[(CS_REL.indexOf(r.relevancia) + 1) % CS_REL.length]; }); return;
+      case "tcard-add": csMudar(function () { sl.cards.push({ rotulo: "", valor: "", variacao: "" }); }); return;
+      case "card-add": csMudar(function () { sl.cards.push({ topo: "", valor: "", legenda: "", cor: "auto" }); }); return;
+      case "item-add": csMudar(function () { sl.itens.push(""); }); return;
+      case "linha-add": csMudar(function () { sl.linhas.push({ dia: "", evento: "", detalhe: "", relevancia: "MÉDIA", destaque: false }); }); return;
+      case "termo-add": csMudar(function () { sl.termos.push({ termo: "", def: "" }); }); return;
+      case "tcard-del": case "card-del": csMudar(function () { sl.cards.splice(k, 1); }); return;
+      case "item-del": csMudar(function () { sl.itens.splice(k, 1); }); return;
+      case "linha-del": csMudar(function () { sl.linhas.splice(k, 1); }); return;
+      case "termo-del": csMudar(function () { sl.termos.splice(k, 1); }); return;
+      case "remontar":
+        uiConfirm("Montar o carrossel de novo a partir da edição? Os textos e ajustes feitos aqui serão substituídos (Ctrl+Z desfaz).", "Montar de novo").then(function (ok) {
+          if (!ok) return;
+          csMudar(function () { var s = state(); s.carrossel = csMontar(s, s.carrossel); cs.sel = 0; });
+        });
+        return;
+      case "baixar-um": csExportar("um"); return;
+      case "baixar-todos": csExportar("todos"); return;
+      case "preparar-compartilhar": csExportar("compartilhar"); return;
+      case "compartilhar": csCompartilhar(); return;
+    }
+  }
+
+  // Ao digitar: cor e seta que dependem do sinal acompanham o texto.
+  function csVivo(el) {
+    var m = /^slides\.(\d+)\.cards\.(\d+)\.(variacao|valor)$/.exec(el.dataset.cpath);
+    if (!m) return;
+    var sl = state().carrossel.slides[+m[1]], cd = sl && sl.cards[+m[2]];
+    if (!cd) return;
+    if (sl.tipo === "termometro" && m[3] === "variacao") {
+      var box = el.closest(".cs-tcard-var"), dir = csSinal(cd.variacao) || "flat";
+      if (!box) return;
+      box.className = "cs-tcard-var cs-" + dir;
+      var velha = box.querySelector("svg");
+      if (velha) velha.parentNode.removeChild(velha);
+      box.insertAdjacentHTML("afterbegin", csSeta(dir, "cs-tseta", 28, dir === "up" ? "#178046" : "#c0202b"));
+    } else if (sl.tipo === "noticia" && m[3] === "valor") {
+      el.className = "cs-card-valor cs-nowrap " + csCorCard(cd);
+    }
+  }
+
+  // ---- Exportar (PNG / .zip / compartilhar) ----
+  function csStatus(msg) {
+    cs.msg = msg;
+    var p = document.getElementById("csMsg");
+    if (p) p.textContent = msg;
+  }
+  function csCarregarH2c() {
+    if (window.html2canvas) return Promise.resolve();
+    return loadScript(CS_H2C).catch(function () { return loadScript(PDF_LIBS[0]); }).then(function () {
+      if (!window.html2canvas) throw new Error("o gerador de imagens não carregou (verifique a internet)");
+    });
+  }
+  function csFontes() {
+    if (!document.fonts || !document.fonts.load) return Promise.resolve();
+    return Promise.all(["400", "500", "600", "700", "800"].map(function (w) { return document.fonts.load(w + ' 30px "Inter"'); })
+      .concat([document.fonts.load('700 40px "Source Serif 4 Display"')]).map(function (p) { return p.catch(function () { return null; }); }));
+  }
+  function csImagensProntas(el) {
+    return Promise.all(Array.prototype.map.call(el.querySelectorAll("img"), function (img) {
+      if (img.complete) return img.decode ? img.decode().catch(function () { return null; }) : null;
+      return new Promise(function (r) { img.onload = img.onerror = r; });
+    }));
+  }
+  function csNomeBase(s) {
+    var v = (s.meta && s.meta.vars && s.meta.vars.edicao) || current().name || "edicao";
+    return "carrossel_" + safeFileName(v);
+  }
+  function csIgnorar(el) {
+    return el.id === "carrosselView" || el.id === "pautaView" || el.id === "workspace" || !!(el.classList && el.classList.contains("workspace-scale-wrap"));
+  }
+
+  async function csGerar(indices) {
+    var s = state(), c = s.carrossel, ctx = csCtx(s), out = [];
+    await csCarregarH2c();
+    await csFontes();
+    var host = document.createElement("div");
+    host.className = "cs-export-host";
+    document.body.appendChild(host);
+    try {
+      for (var n = 0; n < indices.length; n++) {
+        var k = indices[n];
+        csStatus("Gerando " + (n + 1) + " de " + indices.length + "…");
+        host.innerHTML = csSlideHtml(s, c.slides[k], k, false);
+        var el = host.firstElementChild;
+        await csImagensProntas(el);
+        var canvas = await window.html2canvas(el, { scale: 2, width: CS_W, height: CS_H, backgroundColor: null, logging: false, useCORS: true,
+          scrollX: 0, scrollY: 0, ignoreElements: csIgnorar });
+        var blob = await new Promise(function (r) { canvas.toBlob(r, "image/png"); });
+        if (!blob) throw new Error("o navegador não gerou a imagem");
+        out.push({ nome: csNomeBase(s) + "_" + pad2(ctx.ordem(c.slides[k]) || k + 1) + ".png", blob: blob });
+      }
+    } finally {
+      host.parentNode.removeChild(host);
+    }
+    return out;
+  }
+
+  async function csExportar(modo) {
+    if (cs.ocupado) return;
+    var s = state(), c = s.carrossel;
+    var indices = modo === "um" ? [cs.sel] : c.slides.map(function (x, k) { return k; }).filter(function (k) { return !c.slides[k].oculto; });
+    if (!indices.length) { uiAlert("Todos os slides estão ocultos: nada para exportar."); return; }
+    cs.ocupado = true;
+    cs.prontos = null;
+    renderCsPainel();
+    var fim = "";
+    try {
+      var arq = await csGerar(indices);
+      if (modo === "compartilhar") {
+        cs.prontos = arq;
+        fim = arq.length + " imagens prontas. Toque em Compartilhar e escolha o Instagram.";
+      } else if (arq.length === 1) {
+        await offerFile(arq[0].nome, arq[0].blob);
+        fim = "Imagem gerada: " + arq[0].nome;
+      } else {
+        await offerFile(csNomeBase(s) + ".zip", await csZip(arq));
+        fim = arq.length + " imagens no arquivo " + csNomeBase(s) + ".zip";
+      }
+    } catch (e) {
+      fim = "";
+      uiAlert("Não foi possível gerar as imagens: " + ((e && e.message) || e) + ".");
+    } finally {
+      cs.ocupado = false;
+      cs.msg = fim;
+      renderCsPainel();
+      csChecar();
+    }
+  }
+
+  function csCompartilhar() {
+    var arq = cs.prontos;
+    if (!arq || !navigator.share) return;
+    var files = arq.map(function (a) { return new File([a.blob], a.nome, { type: "image/png" }); });
+    navigator.share({ files: files, title: "Carrossel " + ((state().meta.vars || {}).edicao || "") }).then(function () {
+      cs.prontos = null; csStatus("Imagens enviadas."); renderCsPainel();
+    }).catch(function (e) {
+      if (e && e.name === "AbortError") return;
+      uiAlert("O compartilhamento não funcionou neste aparelho. Use \"Baixar todos\".");
+    });
+  }
+
+  // .zip sem compressão (PNG já é comprimido): cabeçalho local + diretório central.
+  var CS_CRC = null;
+  function csCrc32(u8) {
+    if (!CS_CRC) {
+      CS_CRC = new Uint32Array(256);
+      for (var n = 0; n < 256; n++) { var x = n; for (var b = 0; b < 8; b++) x = x & 1 ? 0xEDB88320 ^ (x >>> 1) : x >>> 1; CS_CRC[n] = x >>> 0; }
+    }
+    var crc = 0xFFFFFFFF;
+    for (var i = 0; i < u8.length; i++) crc = CS_CRC[(crc ^ u8[i]) & 0xFF] ^ (crc >>> 8);
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function csLerBlob(blob) {
+    if (blob.arrayBuffer) return blob.arrayBuffer();
+    return new Promise(function (ok, erro) { var r = new FileReader(); r.onload = function () { ok(r.result); }; r.onerror = erro; r.readAsArrayBuffer(blob); });
+  }
+  async function csZip(arquivos) {
+    var partes = [], central = [], off = 0, agora = new Date();
+    var hora = (agora.getHours() << 11) | (agora.getMinutes() << 5) | (agora.getSeconds() >> 1);
+    var data = ((agora.getFullYear() - 1980) << 9) | ((agora.getMonth() + 1) << 5) | agora.getDate();
+    for (var i = 0; i < arquivos.length; i++) {
+      var dados = new Uint8Array(await csLerBlob(arquivos[i].blob));
+      var nome = new TextEncoder().encode(arquivos[i].nome), crc = csCrc32(dados);
+      var lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+      lh.setUint16(10, hora, true); lh.setUint16(12, data, true); lh.setUint32(14, crc, true);
+      lh.setUint32(18, dados.length, true); lh.setUint32(22, dados.length, true); lh.setUint16(26, nome.length, true);
+      partes.push(lh.buffer, nome, dados);
+      var ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+      ch.setUint16(12, hora, true); ch.setUint16(14, data, true); ch.setUint32(16, crc, true);
+      ch.setUint32(20, dados.length, true); ch.setUint32(24, dados.length, true); ch.setUint16(28, nome.length, true); ch.setUint32(42, off, true);
+      central.push(ch.buffer, nome);
+      off += 30 + nome.length + dados.length;
+    }
+    var tam = central.reduce(function (t, x) { return t + x.byteLength; }, 0);
+    var fim = new DataView(new ArrayBuffer(22));
+    fim.setUint32(0, 0x06054b50, true); fim.setUint16(8, arquivos.length, true); fim.setUint16(10, arquivos.length, true);
+    fim.setUint32(12, tam, true); fim.setUint32(16, off, true);
+    return new Blob(partes.concat(central, [fim.buffer]), { type: "application/zip" });
+  }
+
+  function initCarrossel() {
+    var view = document.getElementById("carrosselView");
+    if (!view) return;
+    var sel = document.getElementById("csNovoTipo");
+    if (sel) sel.innerHTML = CS_TIPOS.map(function (t) { return '<option value="' + t[0] + '"' + (t[0] === "noticia" ? " selected" : "") + ">" + t[1] + "</option>"; }).join("");
+    view.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-cs-act]");
+      if (!b || b.disabled || !view.contains(b)) return;
+      if (REVIEWER && ["sel", "baixar-um", "baixar-todos", "preparar-compartilhar", "compartilhar"].indexOf(b.dataset.csAct) === -1) return;
+      csAcao(b.dataset.csAct, b);
+    });
+    view.addEventListener("keydown", function (e) {
+      var el = e.target;
+      if ((e.key === "Enter" || e.key === " ") && el.classList && el.classList.contains("cs-mini-item")) { e.preventDefault(); el.click(); return; }
+      if (e.key === "Enter" && el.dataset && el.dataset.linha) e.preventDefault();
+    });
+    view.addEventListener("focusin", function (e) {
+      if (e.target.dataset && e.target.dataset.cpath) { cs.armado = e.target; cs.empurrado = false; }
+    });
+    view.addEventListener("paste", function (e) {
+      var el = e.target;
+      if (!el.dataset || !el.dataset.cpath) return;
+      e.preventDefault();
+      var clip = e.clipboardData || window.clipboardData;
+      document.execCommand("insertText", false, clip ? clip.getData("text/plain") : "");
+    });
+    view.addEventListener("input", function (e) {
+      var el = e.target, c = state().carrossel;
+      if (REVIEWER || !c) return;
+      if (el.dataset && el.dataset.cpath) {
+        if (!CS_CAMINHO.test(el.dataset.cpath)) return;
+        if (el === cs.armado && !cs.empurrado) { pushHistory(); cs.empurrado = true; }
+        if (!el.textContent.trim() && el.innerHTML !== "") el.innerHTML = "";
+        setPath(c, el.dataset.cpath, sanitizeRichHtml(el.innerHTML));
+        csVivo(el);
+        scheduleSave();
+        csAgendarMini(el.dataset.cpath === "marca");
+        return;
+      }
+      if (el.dataset && el.dataset.csCampo) {
+        if (!cs.escEmpurrado) { pushHistory(); cs.escEmpurrado = true; }
+        c[el.dataset.csCampo] = el.value;
+        scheduleSave();
+        csAgendarMini(true);
+        return;
+      }
+      if (el.dataset && el.dataset.csEsc) {
+        if (!cs.escEmpurrado) { pushHistory(); cs.escEmpurrado = true; }
+        var sl = c.slides[cs.sel];
+        sl[el.dataset.csEsc] = parseInt(el.value, 10);
+        var palco = document.querySelector("#csPalco .cs-slide");
+        if (palco) palco.style.setProperty(el.dataset.csEsc === "escTitulo" ? "--esc-t" : "--esc-x", csEscala(sl[el.dataset.csEsc]));
+        var rot = el.parentNode.querySelector(".prop-field-label b");
+        if (rot) rot.textContent = el.value + "%";
+        scheduleSave();
+        csAgendarMini();
+      }
+    });
+    view.addEventListener("change", function (e) {
+      var el = e.target, c = state().carrossel;
+      if (REVIEWER || !c) return;
+      if (el.dataset.csCampo || el.dataset.csEsc) { cs.escEmpurrado = false; return; }
+      var sl = c.slides[cs.sel], k = parseInt(el.dataset.k, 10);
+      if (el.dataset.csSel === "cor" && sl.cards[k]) csMudar(function () { sl.cards[k].cor = el.value; });
+      else if (el.dataset.csChk === "previa") { cs.previa = el.checked; renderCarrossel(); }
+      else if (el.dataset.csChk === "cardsTopo") csMudar(function () { sl.cardsTopo = el.checked; });
+      else if (el.dataset.csChk === "destaque" && sl.linhas[k]) csMudar(function () { sl.linhas[k].destaque = el.checked; });
+    });
+    window.addEventListener("resize", function () { if (modoAtual === "carrossel") csAjustarEscala(); });
   }
 
   /* ---------------------------------------------------------------------
@@ -5299,18 +6135,46 @@
       ["reuters", "Reuters", "reuters.com", "intl"],
       ["investing", "Investing.com", "investing.com", "intl"],
       ["yahoo", "Yahoo Finance", "finance.yahoo.com", "intl"],
-      ["advisorperspectives", "Advisor Perspectives", "advisorperspectives.com", "intl"]
+      ["advisorperspectives", "Advisor Perspectives", "advisorperspectives.com", "intl"],
+      ["agenciabrasil", "Agência Brasil", "agenciabrasil.ebc.com.br", "br"],
+      ["valor", "Valor Econômico", "valor.globo.com", "br"],
+      ["estadao", "Estadão", "estadao.com.br", "br"],
+      ["folha", "Folha de S.Paulo", "folha.uol.com.br", "br"],
+      ["g1", "g1", "g1.globo.com", "br"],
+      ["cnnbrasil", "CNN Brasil", "cnnbrasil.com.br", "br"]
     ].map(function (c) {
       var p = COLETA_PADRAO["canal_" + c[0]] || {};
       return { id: "canal_" + c[0], nome: c[1], dominio: c[2], grupo: c[3], validado: false, prioridade: p.prioridade || 99, coleta: JSON.parse(JSON.stringify(p.coleta || null)) };
     });
   }
 
+  // Canais acrescentados em 15/11/2026 para a Pauta não depender de um
+  // veículo só. Entram "a validar" na lista de quem ainda não os tem, depois
+  // de a lista da nuvem chegar (para não passar por cima de uma edição feita
+  // em outro aparelho). Quem remover um deles não o recebe de novo
+  // (store.migrations.canaisRecusados, que sincroniza com as configurações).
+  var CANAIS_NOVOS = ["canal_agenciabrasil", "canal_valor", "canal_estadao", "canal_folha", "canal_g1", "canal_cnnbrasil"];
+  var canaisDaNuvemLidos = false;
+  function garantirCanaisNovos() {
+    if (!Array.isArray(store.canais) || REVIEWER) return false;
+    if ((IN_FIREBASE || IN_ARTIFACT) && !canaisDaNuvemLidos) return false;
+    var recusados = (store.migrations && store.migrations.canaisRecusados) || [];
+    var novos = defaultCanais().filter(function (c) {
+      return CANAIS_NOVOS.indexOf(c.id) !== -1 && recusados.indexOf(c.dominio) === -1 &&
+        !store.canais.some(function (x) { return x.id === c.id || x.dominio === c.dominio; });
+    });
+    if (!novos.length) return false;
+    store.canais = store.canais.concat(novos);
+    store.canaisAt = Date.now();
+    if (cloud.db) scheduleCloudFlush();
+    return true;
+  }
+
   // Como o coletor da Pauta busca as matérias de cada canal padrão (testado em
-  // 25/10/2026; igual a coleta/canais.json). prioridade: 1 = mais alta.
+  // 25/10 e 15/11/2026; igual a coleta/canais.json). prioridade: 1 = mais alta.
   var COLETA_PADRAO = {
     canal_bcb: { prioridade: 1, coleta: { metodo: "atom", idioma: "pt", editoria: "BRASIL · POLÍTICA MONETÁRIA", enderecos: ["https://www.bcb.gov.br/api/feed/sitebcb/sitefeeds/notasImprensa", "https://www.bcb.gov.br/api/feed/sitebcb/sitefeeds/noticias"] } },
-    canal_ibge: { prioridade: 2, coleta: { metodo: "api", idioma: "pt", editoria: "BRASIL · ATIVIDADE", endereco: "https://servicodados.ibge.gov.br/api/v3/noticias/?de={MM}-{DD}-{AAAA}&ate={MM2}-{DD2}-{AAAA2}&qtd=100" } },
+    canal_ibge: { prioridade: 2, coleta: { metodo: "api", idioma: "pt", editoria: "BRASIL · ATIVIDADE", endereco: "https://servicodados.ibge.gov.br/api/v3/noticias/?de={MM}-{DD}-{AAAA}&ate={MM2}-{DD2}-{AAAA2}&qtd=100", reserva: { metodo: "busca_site", busca: "site:agenciadenoticias.ibge.gov.br" } } },
     canal_ifi: { prioridade: 3, coleta: { metodo: "busca_site", idioma: "pt", editoria: "BRASIL · FISCAL", busca: "site:senado.leg.br/ifi" } },
     canal_b3: { prioridade: 4, coleta: { metodo: "busca_site", idioma: "pt", editoria: "BRASIL · BOLSA", busca: "site:b3.com.br/pt_br/noticias" } },
     canal_reuters: { prioridade: 5, coleta: { metodo: "busca_site", idioma: "en", busca: "site:reuters.com (markets OR business OR world/americas)" } },
@@ -5318,7 +6182,13 @@
     canal_advisorperspectives: { prioridade: 7, coleta: { metodo: "rss", idioma: "en", endereco: "https://www.advisorperspectives.com/dshort.rss" } },
     canal_opovo: { prioridade: 8, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:opovo.com.br/noticias/economia" } },
     canal_investing: { prioridade: 9, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:br.investing.com/news" } },
-    canal_yahoo: { prioridade: 10, coleta: { metodo: "busca_site", idioma: "en", busca: "site:finance.yahoo.com" } }
+    canal_yahoo: { prioridade: 10, coleta: { metodo: "busca_site", idioma: "en", busca: "site:finance.yahoo.com" } },
+    canal_agenciabrasil: { prioridade: 11, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:agenciabrasil.ebc.com.br/economia" } },
+    canal_valor: { prioridade: 12, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:valor.globo.com" } },
+    canal_estadao: { prioridade: 13, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:estadao.com.br/economia" } },
+    canal_folha: { prioridade: 14, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:folha.uol.com.br/mercado" } },
+    canal_g1: { prioridade: 15, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:g1.globo.com/economia" } },
+    canal_cnnbrasil: { prioridade: 16, coleta: { metodo: "busca_site", idioma: "pt", busca: "site:cnnbrasil.com.br/economia" } }
   };
   var COLETA_METODOS = [["busca_site", "Busca por site (Google Notícias)"], ["rss", "Feed RSS"], ["atom", "Feed Atom"], ["api", "API do órgão"]];
 
@@ -5930,6 +6800,10 @@
       uiConfirm('Remover o canal "' + (plainText(rc.nome) || rc.dominio || "sem nome") + '"? As fontes já criadas não mudam.', "Remover").then(function (ok) {
         if (!ok) return;
         store.canais = canais().filter(function (c) { return c.id !== rc.id; });
+        // Canal novo da Pauta removido de propósito: não volta sozinho.
+        if (CANAIS_NOVOS.indexOf(rc.id) !== -1) {
+          store.migrations.canaisRecusados = ((store.migrations.canaisRecusados || []).filter(function (d) { return d !== rc.dominio; })).concat([rc.dominio]);
+        }
         if (selection && selection.kind === "canal") selection = null;
         saveCanais();
         render();
@@ -7488,6 +8362,7 @@
     { id: "pdf", grupo: "Geral", nome: "Exportar PDF", padrao: "Ctrl+P", run: function () { clickId("btnPrint"); } },
     { id: "acervo", grupo: "Geral", nome: "Acervo de matérias (busca nas edições)", padrao: "F6", run: function () { openAcervo(); } },
     { id: "pauta", grupo: "Geral", nome: "Abrir ou fechar a Pauta da semana", padrao: "Ctrl+Alt+P", run: function () { setModo(modoAtual === "pauta" ? "pagina" : "pauta"); } },
+    { id: "carrossel", grupo: "Geral", nome: "Abrir ou fechar o Carrossel do Instagram", padrao: "Ctrl+Alt+C", run: function () { setModo(modoAtual === "carrossel" ? "pagina" : "carrossel"); } },
     { id: "configuracoes", grupo: "Geral", nome: "Configurações", padrao: "Ctrl+,", run: function () { openSettings("interface"); } },
     { id: "calculadora", grupo: "Edição", nome: "Calculadora do termômetro", padrao: "F3", autor: true, run: function () { openThermoCalc(); } },
     { id: "observacao", grupo: "Edição", nome: "Nova observação (trecho selecionado, bloco ou geral)", padrao: "F4", run: notaRapida },
@@ -7924,6 +8799,7 @@
     initSettings();
     initAcervo();
     initPauta();
+    initCarrossel();
     initGerenciarPautas();
     document.getElementById("btnThermoCalc").addEventListener("click", openThermoCalc);
     if (IN_ARTIFACT) {

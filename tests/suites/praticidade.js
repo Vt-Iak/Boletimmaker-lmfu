@@ -52,7 +52,7 @@ passo(function () {
     window.__bk = j;
     ok("formato identificado", j.formato === "boletimMaker.backup" && j.versao === 1);
     ok("todas as edições no backup", j.edicoes.length === 2);
-    ok("canais no backup", Array.isArray(j.canais) && j.canais.length === 10);
+    ok("canais no backup", Array.isArray(j.canais) && j.canais.length === 16);
     var refs = (t.match(/imgref:[0-9a-z]+/g) || []);
     ok("imagens referenciadas existem na tabela", refs.every(function (r) { return j.images[r.slice(7)]; }), refs.length + " refs");
   })();
@@ -75,7 +75,7 @@ passo(function () {
   ok("edições restauradas como novas", st.order.length === 4, st.order.length);
   var nomes = st.order.map(function (id) { return st.editions[id].name; });
   ok("nomes preservados", nomes.filter(function (n) { return n === "Edição 06/2026"; }).length === 2, nomes.join(" | "));
-  ok("canais não duplicados", st.canais.length === 10);
+  ok("canais não duplicados", st.canais.length === 16);
   var p = document.createElement("pre"); p.id = "prout"; p.textContent = R.join("\n"); document.body.appendChild(p);
 });
 setTimeout(rodar, 900);

@@ -12,16 +12,16 @@ function rodar() { var p = passos[i++]; if (!p) return; try { p[0](); } catch (e
 passo(function () {
   var st = loja();
   var nomes = (st.canais || []).map(function (c) { return c.nome; });
-  ok("10 canais semeados", nomes.length === 10, nomes.join(", "));
-  ["Banco Central do Brasil", "IBGE", "B3", "Reuters", "InfoMoney", "Investing.com", "IFI/Senado", "Yahoo Finance", "Advisor Perspectives", "O Povo"].forEach(function (n) {
+  ok("16 canais semeados", nomes.length === 16, nomes.join(", "));
+  ["Banco Central do Brasil", "IBGE", "B3", "Reuters", "InfoMoney", "Investing.com", "IFI/Senado", "Yahoo Finance", "Advisor Perspectives", "O Povo", "Agência Brasil", "Valor Econômico", "Estadão", "Folha de S.Paulo", "g1", "CNN Brasil"].forEach(function (n) {
     ok("canal presente: " + n, nomes.indexOf(n) !== -1);
   });
   ok("todos nascem a validar", st.canais.every(function (c) { return c.validado === false; }));
   ok("migração marcada", st.migrations.canais === true);
   $("#tabBtnFontes").click();
-  ok("lista aparece na aba Fontes", $$("#canaisList .canal-item").length === 10);
+  ok("lista aparece na aba Fontes", $$("#canaisList .canal-item").length === 16);
   ok("agrupada em 3 grupos", $$("#canaisList .canal-group").length === 3);
-  ok("contador 0 de 10", /0 de 10/.test($("#canaisCount").textContent), $("#canaisCount").textContent);
+  ok("contador 0 de 16", /0 de 16/.test($("#canaisCount").textContent), $("#canaisCount").textContent);
 });
 passo(function () {
   $('#canaisList [data-canal-id="canal_reuters"]').click();
@@ -33,7 +33,7 @@ passo(function () {
 });
 passo(function () {
   ok("validar grava", loja().canais.filter(function (c) { return c.id === "canal_reuters"; })[0].validado === true);
-  ok("contador 1 de 10", /1 de 10/.test($("#canaisCount").textContent));
+  ok("contador 1 de 16", /1 de 16/.test($("#canaisCount").textContent));
   mudar($('#inspectorSelection input[data-canal-field="dominio"]'), "https://www.Reuters.com/markets/");
 });
 passo(function () {
@@ -43,23 +43,23 @@ passo(function () {
   $('[data-action="add-canal"]').click();
 });
 passo(function () {
-  mudar($('#inspectorSelection input[data-canal-field="nome"]'), "Valor Econômico");
+  mudar($('#inspectorSelection input[data-canal-field="nome"]'), "Bloomberg Línea");
 });
 passo(function () {
-  mudar($('#inspectorSelection input[data-canal-field="dominio"]'), "valor.globo.com");
+  mudar($('#inspectorSelection input[data-canal-field="dominio"]'), "bloomberglinea.com.br");
 });
 passo(function () {
-  ok("canal novo adicionado", loja().canais.length === 11 && loja().canais[10].nome === "Valor Econômico");
+  ok("canal novo adicionado", loja().canais.length === 17 && loja().canais[16].nome === "Bloomberg Línea");
   // Fonte nova: colar link preenche o veículo pelo canal
   $('[data-action="add-source"]').click();
 });
 passo(function () {
-  mudar($('#inspectorSelection input[data-source-field="url"]'), "https://valor.globo.com/financas/noticia/2026/10/22/x.ghtml");
+  mudar($('#inspectorSelection input[data-source-field="url"]'), "https://www.bloomberglinea.com.br/mercados/2026/10/22/x/");
 });
 passo(function () {
   var ed = loja(); var d = ed.editions[ed.currentId].data;
   var src = d.sources[d.sources.length - 1];
-  ok("link colado preenche o veículo pelo canal", src.veiculo === "Valor Econômico", src.veiculo);
+  ok("link colado preenche o veículo pelo canal", src.veiculo === "Bloomberg Línea", src.veiculo);
   $('#canaisList [data-canal-id="canal_opovo"]').click();
 });
 passo(function () {
@@ -69,7 +69,7 @@ passo(function () {
   $("#appDialogOk").click();
 });
 passo(function () {
-  ok("remover canal (com confirmação)", loja().canais.length === 10 && !loja().canais.some(function (c) { return c.id === "canal_opovo"; }));
+  ok("remover canal (com confirmação)", loja().canais.length === 16 && !loja().canais.some(function (c) { return c.id === "canal_opovo"; }));
   ok("canaisAt registrado para sincronizar", loja().canaisAt > 0);
   var p = document.createElement("pre"); p.id = "cnout"; p.textContent = R.join("\n"); document.body.appendChild(p);
 });

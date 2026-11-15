@@ -1,8 +1,8 @@
 {
   "formato": "boletimMaker.canais",
   "versao": 1,
-  "exportadoEm": "2026-10-25T12:00:00-03:00",
-  "origem": "Lista padrão do app (defaultCanais) com os métodos de coleta testados em 25/10/2026. Atualize pelo app: Fontes → Canais de referência → Exportar canais para a coleta.",
+  "exportadoEm": "2026-11-15T12:00:00-03:00",
+  "origem": "Lista padrão do app (defaultCanais) com os métodos de coleta testados em 25/10/2026; 6 canais de imprensa acrescentados em 15/11/2026 para diversificar a pauta. Atualize pelo app: Fontes → Canais de referência → Exportar canais para a coleta.",
   "canais": [
     {
       "id": "canal_bcb", "nome": "Banco Central do Brasil", "dominio": "bcb.gov.br", "grupo": "oficial", "prioridade": 1,
@@ -14,7 +14,8 @@
       "id": "canal_ibge", "nome": "IBGE", "dominio": "ibge.gov.br", "grupo": "oficial", "prioridade": 2,
       "coleta": { "metodo": "api", "idioma": "pt", "editoria": "BRASIL · ATIVIDADE",
         "endereco": "https://servicodados.ibge.gov.br/api/v3/noticias/?de={MM}-{DD}-{AAAA}&ate={MM2}-{DD2}-{AAAA2}&qtd=100",
-        "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "API oficial com filtro de período (de/ate em MM-DD-AAAA). O RSS da Agência IBGE bloqueia robôs." } }
+        "reserva": { "metodo": "busca_site", "busca": "site:agenciadenoticias.ibge.gov.br" },
+        "teste": { "data": "2026-11-15", "resultado": "ok", "nota": "API oficial com filtro de período (de/ate em MM-DD-AAAA), 30 por página. Do GitHub Actions ela voltou vazia em 14/11: a reserva busca a Agência IBGE pelo Google Notícias." } }
     },
     {
       "id": "canal_ifi", "nome": "IFI/Senado", "dominio": "senado.leg.br", "grupo": "oficial", "prioridade": 3,
@@ -56,6 +57,36 @@
       "id": "canal_yahoo", "nome": "Yahoo Finance", "dominio": "finance.yahoo.com", "grupo": "intl", "prioridade": 10,
       "coleta": { "metodo": "busca_site", "idioma": "en", "busca": "site:finance.yahoo.com",
         "teste": { "data": "2026-10-25", "resultado": "ok", "nota": "O RSS antigo (news/rssindex) devolve 404; busca por site." } }
+    },
+    {
+      "id": "canal_agenciabrasil", "nome": "Agência Brasil", "dominio": "agenciabrasil.ebc.com.br", "grupo": "br", "prioridade": 11,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:agenciabrasil.ebc.com.br/economia",
+        "teste": { "data": "2026-11-15", "resultado": "ok", "nota": "Agência pública (EBC). Busca por site na seção Economia: 29 matérias em 11/11, 54 na semana." } }
+    },
+    {
+      "id": "canal_valor", "nome": "Valor Econômico", "dominio": "valor.globo.com", "grupo": "br", "prioridade": 12,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:valor.globo.com",
+        "teste": { "data": "2026-11-15", "resultado": "ok", "nota": "Busca por site: 100 por dia (limite do Google). Parte do conteúdo é para assinantes; título e descrição são públicos." } }
+    },
+    {
+      "id": "canal_estadao", "nome": "Estadão", "dominio": "estadao.com.br", "grupo": "br", "prioridade": 13,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:estadao.com.br/economia",
+        "teste": { "data": "2026-11-15", "resultado": "ok", "nota": "Busca por site na seção Economia: 65 em 11/11." } }
+    },
+    {
+      "id": "canal_folha", "nome": "Folha de S.Paulo", "dominio": "folha.uol.com.br", "grupo": "br", "prioridade": 14,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:folha.uol.com.br/mercado",
+        "teste": { "data": "2026-11-15", "resultado": "ok", "nota": "Busca por site na seção Mercado: 51 em 11/11." } }
+    },
+    {
+      "id": "canal_g1", "nome": "g1", "dominio": "g1.globo.com", "grupo": "br", "prioridade": 15,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:g1.globo.com/economia",
+        "teste": { "data": "2026-11-15", "resultado": "ok", "nota": "Busca por site na seção Economia: 31 em 11/11." } }
+    },
+    {
+      "id": "canal_cnnbrasil", "nome": "CNN Brasil", "dominio": "cnnbrasil.com.br", "grupo": "br", "prioridade": 16,
+      "coleta": { "metodo": "busca_site", "idioma": "pt", "busca": "site:cnnbrasil.com.br/economia",
+        "teste": { "data": "2026-11-15", "resultado": "ok", "nota": "Busca por site na seção Economia: 100 em 11/11." } }
     }
   ]
 }

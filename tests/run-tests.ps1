@@ -47,6 +47,7 @@ $Suites = @(
   @{ Name = "atalhos";               Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "atout" },
   @{ Name = "acervo";                Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "acout" },
   @{ Name = "pauta";                 Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "ptout"; Budget = 200000 },
+  @{ Name = "carrossel";             Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "csout"; Budget = 400000 },
   @{ Name = "ocultar-blocos";        Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "hd" },
   @{ Name = "excluir-blocos";        Setup = "limpo-salvamento-imediato.js";   Query = "";            Out = "rm" },
   @{ Name = "termometro";            Setup = "limpo.js";                       Query = "";            Out = "th" },

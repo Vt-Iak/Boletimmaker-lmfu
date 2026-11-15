@@ -3,6 +3,38 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.5.0-beta] — 2026-11-15
+
+- **Carrossel do Instagram** (botão Carrossel no topo, Ctrl+Alt+C):
+  - slides 1080 × 1350 no padrão da Liga (capa, termômetro, uma notícia por
+    slide, agenda, glossário), montados a partir da edição;
+  - texto editado no próprio slide; painel para mover, duplicar, ocultar e
+    excluir slides, cor da etiqueta, tamanhos, cards, itens, linhas e termos;
+  - aviso quando o conteúdo passa do slide;
+  - PNG 2160 × 2700 de um slide ou de todos num .zip; no celular, envio direto
+    pelo compartilhamento do aparelho;
+  - html2canvas embutido em `js/vendor/` (funciona sem internet, também no
+    aplicativo para Windows); fontes Inter e Source Serif 4 Display (OFL).
+- **Pauta mais equilibrada entre veículos** (o InfoMoney chegava a 44–69% das
+  matérias e dava cerca de dois terços dos títulos de tema):
+  - busca no Google Notícias dia a dia (antes, uma busca por semana, cortada
+    em 100 resultados);
+  - teto de 8 matérias por canal por dia e de 3 por tema;
+  - título do tema rotativo entre veículos (fonte oficial primeiro);
+  - resumo com no máximo uma frase por veículo;
+  - relevância conta veículos diferentes, não matérias;
+  - tema de um veículo só marcado (`fonteUnica`, selo "1 veículo" na aba);
+  - quadro **Equilíbrio das fontes** na aba Pauta;
+  - aviso ao criar notícia de tema com um veículo só.
+- **6 canais novos** (a validar): Agência Brasil, Valor Econômico, Estadão,
+  Folha de S.Paulo, g1 e CNN Brasil.
+  - Quem já usa o app recebe os canais depois que a lista da nuvem chega.
+  - Canal novo removido não volta.
+- **IBGE:** a API pagina (30 por página) e, quando volta vazia (como no GitHub
+  Actions em 14/11), a coleta usa a busca reserva na Agência IBGE.
+- Testes: suíte `carrossel` (exportação real em PNG e .zip) e verificações do
+  equilíbrio na suíte `pauta`.
+
 ## [1.4.6-beta] — 2026-11-08
 
 - **Correção:** no tema escuro, as opções da lista de status ficavam quase invisíveis.
