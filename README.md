@@ -4,7 +4,7 @@ Editor do **Boletim Econômico semanal** da Liga de Mercado Financeiro, publicad
 com o Laboratório de CSA da UNISO. Produz duas páginas A4 (frente e verso) e
 exporta em PDF com links clicáveis.
 
-- Versão: **1.5.0-beta** (Beta)
+- Versão: **1.6.0-beta** (Beta)
 - Autor: João Vitor C. Soares
 - Tecnologia: HTML + CSS + JavaScript ES2017. Não usa framework, build nem servidor.
 - **Plataforma principal:** <https://vt-iak.github.io/Boletimmaker-lmfu/> (GitHub Pages + Firebase; login por e-mail ou Google, sem conta Claude)
@@ -161,6 +161,27 @@ por tema. Não precisa abrir o Claude nem o GitHub.
 - **Offline, no Windows ou no claude.ai:** fica a última pauta aberta no
   aparelho, ou importe um arquivo `.json` de pauta.
 - **Formato do arquivo:** `boletimMaker.pauta`, descrito em `CONTEXTO.md`, seção 5.3.
+
+### No celular
+
+O app reconhece o navegador de celular (`navigator.userAgentData.mobile` ou o
+nome do navegador) e troca a moldura. A folha e os slides continuam iguais.
+Com a **versão para computador** do navegador ligada, vale o layout de
+computador.
+
+- **Em cima:** edição, status, salvamento, desfazer e refazer.
+- **Embaixo:** Página · Pauta · Carrossel · **Painel** (ou **Filtros**, na Pauta) · **Mais**.
+- **Painel:** sobe de baixo, com o bloco selecionado e a estrutura e fontes.
+  Tocar num bloco mostra a etiqueta **Ajustar …**, que abre o painel dele.
+- **Mais:** Verificar, Exportar PDF, Variáveis da edição, Acervo, calculadora,
+  zoom da página, tema, Configurações e as ações da edição (nova, próxima,
+  duplicar, importar, backup…).
+- **Escrever:** tocar num texto da folha ou do slide abre uma **janela de
+  texto** grande, com negrito, itálico e sublinhado. A mudança entra na hora
+  e o desfazer funciona; **Concluir** fecha (Enter também, em campo de uma linha).
+- O botão **voltar** do celular fecha o que estiver aberto.
+- **Configurações → Interface → Layout da tela** força celular ou computador.
+  A escolha vale só neste aparelho (`localStorage["boletimMaker.layout"]`).
 
 ### Carrossel do Instagram
 

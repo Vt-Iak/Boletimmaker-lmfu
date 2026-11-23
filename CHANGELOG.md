@@ -3,6 +3,32 @@
 Formato: alterações agrupadas por etapa do plano
 (`referencia/redesign/melhorar-boletim.md`). Datas em AAAA-MM-DD.
 
+## [1.6.0-beta] — 2026-11-22
+
+- **Layout de celular:** quando o navegador é de celular, a interface muda para
+  uma própria (a "versão para computador" do navegador mantém o layout de
+  computador). A folha e os slides não mudam; só a moldura.
+  - Barra de cima enxuta: edição, status, salvamento, desfazer e refazer.
+  - Navegação embaixo: Página, Pauta, Carrossel, Painel e Mais.
+  - **Painel** sobe de baixo, com o bloco selecionado e a estrutura e fontes.
+    Tocar num bloco mostra a etiqueta "Ajustar …", que abre o painel dele.
+  - **Mais** reúne Verificar, Exportar PDF, Variáveis da edição, Acervo,
+    calculadora, zoom, tema, Configurações e as ações da edição.
+  - **Texto:** tocar num texto da folha ou do slide abre uma janela grande
+    para escrever (negrito, itálico, sublinhado). A mudança entra na hora e
+    pode ser desfeita.
+  - Folha na largura da tela, também ao girar o celular.
+  - **Pauta:** lista de temas, com os filtros no botão Filtros e o detalhe
+    abrindo por cima.
+  - **Carrossel:** faixa de miniaturas, slide na largura da tela e painel
+    embaixo.
+  - O botão **voltar** do celular fecha o que estiver aberto, em vez de sair do site.
+- **Configurações → Interface → Layout da tela** (só neste aparelho):
+  automático, celular ou computador.
+- **Correção:** o aviso de estouro de um slide podia acusar errado antes de as
+  fontes do carrossel carregarem.
+- Testes: suíte `celular` (36 verificações).
+
 ## [1.5.0-beta] — 2026-11-15
 
 - **Carrossel do Instagram** (botão Carrossel no topo, Ctrl+Alt+C):

@@ -39,7 +39,7 @@
   "use strict";
 
   var STORAGE_KEY = "boletimMaker.v1";
-  var APP_VERSION = "1.5.0-beta";
+  var APP_VERSION = "1.6.0-beta";
   // Pasta do site (onde estão js/ e css/), tirada do endereço deste script:
   // arquivos carregados sob demanda (js/vendor/) funcionam no site, no disco
   // e nos testes, que abrem a página de outra pasta.
@@ -964,7 +964,7 @@
 
   function isEditingText() {
     var a = document.activeElement;
-    return !!(a && a.hasAttribute && a.hasAttribute("contenteditable") && a.closest("#workspace, #carrosselView"));
+    return !!(a && a.hasAttribute && a.hasAttribute("contenteditable") && a.closest("#workspace, #carrosselView, #mobEditor"));
   }
 
   function applyRemoteEdition(id, body) {
@@ -2298,11 +2298,13 @@
     renderInspector();
     renderLayers();
     updateBlockToolbar();
+    mobChip();
   }
 
   function clearSelection(skipRender) {
     selection = null;
     if (!skipRender) render();
+    mobChip();
   }
 
   function isSelected(kind, blockIdOrElId) {
@@ -2769,6 +2771,7 @@
     if (modoAtual === "pauta") renderPauta();
     if (modoAtual === "carrossel") renderCarrossel();
     updateBlockToolbar();
+    mobChip();
     scheduleOverflowCheck();
   }
 
@@ -4600,6 +4603,7 @@
     } else {
       updateBlockToolbar();
     }
+    mobAoTrocarModo();
   }
 
   function initPauta() {
@@ -5036,7 +5040,7 @@
   function csAjustarEscala() {
     var palco = document.getElementById("csPalco"), box = palco && palco.querySelector(".cs-escala");
     if (!box || !box.firstElementChild) return;
-    var w = palco.clientWidth - 48, h = window.innerWidth <= 900 ? Infinity : palco.clientHeight - 48;
+    var w = palco.clientWidth - (celular() ? 20 : 48), h = window.innerWidth <= 900 || celular() ? Infinity : palco.clientHeight - 48;
     var k = Math.max(0.15, Math.min(w / CS_W, h / CS_H, 1));
     box.style.width = Math.round(CS_W * k) + "px";
     box.style.height = Math.round(CS_H * k) + "px";
@@ -5456,6 +5460,11 @@
       else if (el.dataset.csChk === "destaque" && sl.linhas[k]) csMudar(function () { sl.linhas[k].destaque = el.checked; });
     });
     window.addEventListener("resize", function () { if (modoAtual === "carrossel") csAjustarEscala(); });
+    // As fontes do carrossel carregam no primeiro desenho: antes disso o texto
+    // é medido com a fonte provisória (mais larga) e o aviso de estouro sairia errado.
+    if (document.fonts && document.fonts.addEventListener) {
+      document.fonts.addEventListener("loadingdone", function () { if (modoAtual === "carrossel") csChecar(); });
+    }
   }
 
   /* ---------------------------------------------------------------------
@@ -8277,8 +8286,11 @@
     }
 
     // Celular: abre com a folha A4 inteira cabendo na largura da tela.
+    wsSetZoom = setZoom;
     var pageWidthPx = 210 * 96 / 25.4 + 48;
-    if (window.innerWidth < pageWidthPx) {
+    if (celular()) {
+      setZoom(Math.floor(((wrap.clientWidth || window.innerWidth) - 12) / (210 * 96 / 25.4) * 100) / 100);
+    } else if (window.innerWidth < pageWidthPx) {
       setZoom(Math.floor((window.innerWidth - 16) / pageWidthPx * 100) / 100);
     } else {
       apply();
@@ -8606,7 +8618,10 @@
           return '<option value="' + o[0] + '"' + (String(prefs[campo]) === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
         }).join("") + "</select></label>";
       };
-      html += opt("Tema do editor", "tema", [["auto", "Automático (segue o sistema)"], ["light", "Claro"], ["dark", "Escuro"]]) +
+      html += '<label class="settings-row"><span>Layout da tela <small>(só neste aparelho)</small></span><select data-pref="layout">' + LAYOUTS.map(function (o) {
+          return '<option value="' + o[0] + '"' + (layoutEscolhido() === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
+        }).join("") + "</select></label>" +
+        opt("Tema do editor", "tema", [["auto", "Automático (segue o sistema)"], ["light", "Claro"], ["dark", "Escuro"]]) +
         opt("Zoom da página ao abrir", "zoom", [["padrao", "Automático (cabe na tela do celular)"], ["ajustar", "Ajustar à largura"], ["100", "100%"]]) +
         opt("Painéis laterais ao abrir", "paineis", [["visiveis", "Visíveis"], ["ocultos", "Ocultos (só a página)"]]) +
         opt("Textos de ajuda nos painéis", "dicas", [["true", "Mostrar"], ["false", "Ocultar (interface mais limpa)"]]) +
@@ -8711,6 +8726,7 @@
       if (!campo) return;
       var v = e.target.value;
       if (campo === "tema") { setThemePref(v); return; }
+      if (campo === "layout") { escolherLayout(v); return; }
       prefs[campo] = campo === "dicas" ? v === "true" : v;
       savePrefs();
       applyPrefs(false);
@@ -8775,6 +8791,411 @@
   }
 
   /* ---------------------------------------------------------------------
+     Layout de celular — quando o navegador é de celular (ou a pessoa escolhe
+     em Configurações → Interface, valendo só neste aparelho), a moldura muda:
+     barra de cima enxuta, navegação embaixo (Página, Pauta, Carrossel,
+     Painel, Mais), painéis que sobem de baixo e edição de texto numa janela
+     grande (o texto da folha A4 encolhida é pequeno demais para o dedo). A
+     folha e os slides continuam idênticos aos do computador.
+     "Versão para computador" do navegador do celular = layout de computador.
+     O botão "voltar" do celular fecha o que estiver aberto (painel, menu,
+     janela de texto), em vez de sair do site.
+     --------------------------------------------------------------------- */
+  var LAYOUT_KEY = "boletimMaker.layout";
+  var LAYOUTS = [["auto", "Automático (pelo navegador: celular ou computador)"], ["celular", "Celular"], ["computador", "Computador"]];
+  var mob = { camada: null, historico: false, ignorarPop: false, orig: null, attr: "path", path: "", linha: false, largura: 0 };
+  var wsSetZoom = null; // vem de initWorkspaceZoom
+
+  function layoutEscolhido() {
+    var v = "auto";
+    try { v = localStorage.getItem(LAYOUT_KEY) || "auto"; } catch (e) { /* padrão */ }
+    return LAYOUTS.some(function (l) { return l[0] === v; }) ? v : "auto";
+  }
+  function navegadorCelular() {
+    var d = navigator.userAgentData;
+    if (d && d.mobile === true) return true;
+    return /Android.*Mobile|iPhone|iPod|Windows Phone|Opera Mini|IEMobile/i.test(navigator.userAgent || "");
+  }
+  function celular() { return document.documentElement.classList.contains("layout-celular"); }
+  function aplicarLayout() {
+    var e = layoutEscolhido(), m = e === "celular" || (e === "auto" && navegadorCelular());
+    if (!m && celular()) mobFecharTudo();
+    document.documentElement.classList.toggle("layout-celular", m);
+    return m;
+  }
+  aplicarLayout(); // já no carregamento, antes do primeiro desenho
+
+  // Escolha em Configurações → Interface (fica neste aparelho, não na conta).
+  function escolherLayout(v) {
+    try { if (v === "auto") localStorage.removeItem(LAYOUT_KEY); else localStorage.setItem(LAYOUT_KEY, v); } catch (e) { /* vale até recarregar */ }
+    var m = aplicarLayout();
+    if (m) mobAjustarZoom();
+    else if (wsSetZoom) wsSetZoom(1);
+    mobAoTrocarModo();
+    uiToast("Layout de " + (m ? "celular" : "computador") + " neste aparelho.");
+  }
+
+  // Folha inteira na largura da tela.
+  function mobAjustarZoom() {
+    if (!celular() || !wsSetZoom) return;
+    var wrap = document.getElementById("workspaceScaleWrap");
+    var w = (wrap && wrap.clientWidth) || window.innerWidth;
+    wsSetZoom(Math.floor((w - 12) / (210 * 96 / 25.4) * 100) / 100);
+  }
+
+  // ---- Camadas: painel, menu "Mais", variáveis, janela de texto, detalhe da Pauta ----
+  var MOB_COM_FUNDO = { painel: 1, mais: 1, vars: 1 };
+  function mobAbrir(nome) {
+    if (mob.camada && mob.camada !== nome) mobFecharVisual(mob.camada);
+    mob.camada = nome;
+    var h = document.documentElement;
+    h.classList.add("camada-" + nome);
+    h.classList.toggle("mob-com-fundo", !!MOB_COM_FUNDO[nome]);
+    if (nome === "mais") mobMontarMais();
+    if (nome === "editor") document.getElementById("mobEditor").hidden = false;
+    if (!mob.historico) {
+      try { history.pushState({ boletimMob: 1 }, ""); mob.historico = true; } catch (e) { /* sem histórico */ }
+    }
+    mobChip();
+  }
+  function mobFecharVisual(nome) {
+    var h = document.documentElement;
+    h.classList.remove("camada-" + nome, "mob-com-fundo");
+    if (nome === "painel") h.classList.remove("mob-painel-estrutura");
+    if (nome === "editor") mobConcluirTexto();
+  }
+  function mobFechar() {
+    if (!mob.camada) return;
+    var nome = mob.camada;
+    mob.camada = null;
+    mobFecharVisual(nome);
+    if (mob.historico) {
+      mob.historico = false;
+      mob.ignorarPop = true;
+      try { history.back(); } catch (e) { mob.ignorarPop = false; }
+    }
+    mobChip();
+  }
+  function mobFecharTudo() {
+    if (mob.camada) mobFechar();
+    document.documentElement.classList.remove("mob-filtros");
+  }
+
+  // ---- Edição de texto numa janela grande ----
+  var MOB_BLOCOS = { headline: "Manchete", columns: "Notícia", ticker: "Cotação", weekTable: "Semana dia a dia", thermometer: "Termômetro",
+    calendar: "Agenda", glossary: "Glossário", superQuarta: "Super Quarta", footerFront: "Rodapé", footerBack: "Rodapé do verso",
+    masthead: "Cabeçalho", page2Header: "Cabeçalho do verso", elements: "Caixa de texto", note: "Nota", meta: "Edição", slides: "Slide", marca: "Nome no topo" };
+  var MOB_CAMPOS = { title: "título", body: "texto", tag: "editoria", deck: "linha fina", paragraphs: "parágrafo", linkText: "fonte", label: "nome",
+    value: "valor", change: "variação", text: "texto", rows: "linha", items: "item", term: "termo", def: "definição", groups: "grupo", name: "nome",
+    ativo: "ativo", fechamento: "fechamento", varDia: "var. dia", varSemana: "var. semana", var2026: "var. ano", data: "data", evento: "evento",
+    pais: "país", relevancia: "relevância", day: "dia", line1: "linha 1", line2: "linha 2", fontes: "fontes", disclaimer: "aviso", autoria: "autoria",
+    verso: "verso", editionLabel: "rótulo", editionInfo: "informações", subtitle: "subtítulo", fontesLegenda: "legenda das fontes",
+    titulo: "título", subtitulo: "subtítulo", itens: "item", cards: "card", rodape: "rodapé", legenda: "legenda", valor: "número", topo: "rótulo",
+    linhas: "linha", detalhe: "detalhe", dia: "dia", termos: "termo", termo: "termo", ctaTitulo: "chamada", ctaTexto: "texto da chamada",
+    aviso: "aviso", edicao: "edição", periodo: "período", destaqueRotulo: "rótulo do destaque", destaqueValor: "número em destaque",
+    destaqueInfo: "informação do destaque", publicadoPor: "publicado por", arraste: "arraste", rotulo: "ativo", variacao: "variação" };
+  function mobRotulo(path) {
+    var p = String(path || "").split("."), out = [];
+    p.forEach(function (x, i) {
+      if (/^\d+$/.test(x)) { if (out.length) out[out.length - 1] += " " + (parseInt(x, 10) + 1); return; }
+      out.push((i === 0 ? MOB_BLOCOS[x] : MOB_CAMPOS[x]) || x);
+    });
+    var t = out.join(" · ");
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+  // Mesma regra do Enter na folha (ver initWorkspaceEvents): campo de uma linha não quebra.
+  function mobMultilinha(el) {
+    if (el.dataset.cpath != null) return !el.dataset.linha;
+    return el.classList.contains("news-body") || el.classList.contains("sq-body") || el.classList.contains("gloss-def") ||
+      el.classList.contains("thermo-fontes-legenda") || el.tagName === "P" || (el.dataset.path && el.dataset.path.indexOf("paragraphs.") !== -1);
+  }
+  function mobCampoEditavel(t) {
+    var el = t && t.closest ? t.closest("#workspace [contenteditable], #csPalco [contenteditable]") : null;
+    while (el && el.dataset.path == null && el.dataset.cpath == null) el = el.parentElement ? el.parentElement.closest("[contenteditable]") : null;
+    return el && el.isContentEditable ? el : null;
+  }
+  function mobAlvo() {
+    var o = mob.orig;
+    if (o && document.body.contains(o)) return o;
+    var sel = mob.attr === "cpath" ? '#csPalco [data-cpath="' : '#workspace [data-path="';
+    o = document.querySelector(sel + String(mob.path).replace(/["\\]/g, "") + '"]');
+    mob.orig = o;
+    return o;
+  }
+  function mobEditar(orig) {
+    var ed = document.getElementById("mobEditor"), campo = ed.querySelector(".mob-editor-campo");
+    mob.orig = orig;
+    mob.attr = orig.dataset.cpath != null ? "cpath" : "path";
+    mob.path = orig.dataset[mob.attr];
+    mob.linha = !mobMultilinha(orig);
+    document.getElementById("mobEditorTitulo").textContent = mobRotulo(mob.path);
+    campo.innerHTML = orig.innerHTML;
+    campo.classList.toggle("is-linha", mob.linha);
+    campo.setAttribute("data-dica", orig.getAttribute("data-dica") || orig.getAttribute("data-placeholder") || "Digite aqui");
+    // O campo da folha "recebe o foco": arma o desfazer e seleciona o bloco, como no computador.
+    orig.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+    mobAbrir("editor");
+    campo.focus();
+    try {
+      var r = document.createRange();
+      r.selectNodeContents(campo);
+      r.collapse(false);
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+    } catch (e) { /* cursor no início */ }
+  }
+  function mobConcluirTexto() {
+    var ed = document.getElementById("mobEditor");
+    if (!ed || ed.hidden) return;
+    ed.hidden = true;
+    var campo = ed.querySelector(".mob-editor-campo");
+    if (document.activeElement === campo) campo.blur();
+    var o = mobAlvo();
+    if (o) o.dispatchEvent(new FocusEvent("focusout", { bubbles: true }));
+    mob.orig = null;
+  }
+
+  // ---- Menu "Mais" ----
+  var MOB_TOPO = ["btnCheck", "btnPrint", "btnAcervo", "btnSettings", "btnTheme"]; // escondidos na barra do celular, mas valem aqui
+  var MOB_ACOES = [
+    ["Boletim", [["btnCheck", "Verificar pendências", "alert"], ["btnPrint", null, "download"], ["#vars", "Variáveis da edição", "calendar"],
+      ["btnAcervo", "Acervo de matérias", "search"], ["btnThermoCalc", "Calculadora do termômetro", "chart"]]],
+    ["Tela", [["#ajustar", "Página na largura da tela", "fit"], ["btnZoomReset", "Página em tamanho real (100%)", "file"],
+      ["btnTheme", "Tema do editor (claro / escuro)", "auto"], ["btnSettings", "Configurações", "gear"]]],
+    ["Edição", [["btnNewEdition", null, "file"], ["btnNextEdition", null, "calendar"], ["btnDuplicate", null, "copy"], ["btnRename", null, "edit"],
+      ["btnImportJson", null, "upload"], ["btnExportJson", null, "download"], ["btnBackupAll", null, "save"],
+      ["btnSetDefault", null, "save"], ["btnClearDefault", null, "reset"], ["btnDelete", null, "trash"]]]
+  ];
+  function mobVisivel(id) {
+    if (id.charAt(0) === "#") return true;
+    var b = document.getElementById(id);
+    if (!b || b.hidden || b.disabled) return false;
+    return MOB_TOPO.indexOf(id) !== -1 || getComputedStyle(b).display !== "none";
+  }
+  function mobMontarMais() {
+    var box = document.getElementById("mobMais");
+    if (!box) return;
+    var badge = function (id) { var b = document.getElementById(id); return b && !b.hidden && b.textContent.trim() ? '<span class="mob-badge">' + esc(b.textContent.trim()) + "</span>" : ""; };
+    box.querySelector(".mob-acoes-lista").innerHTML = MOB_ACOES.map(function (g) {
+      var itens = g[1].filter(function (a) { return mobVisivel(a[0]); }).map(function (a) {
+        var orig = a[0].charAt(0) === "#" ? null : document.getElementById(a[0]);
+        var rot = a[1] || (orig ? orig.textContent.replace(/…$/, "…").trim() : a[0]);
+        var extra = a[0] === "btnCheck" ? badge("checkBadge") : a[0] === "btnSettings" ? badge("pedidosBadge") : "";
+        return '<button type="button" class="mob-acao' + (a[0] === "btnDelete" ? " danger" : "") + '" data-mob-acao="' + esc(a[0]) + '">' + icon(a[2]) + "<span>" + esc(rot) + "</span>" + extra + "</button>";
+      }).join("");
+      return itens ? '<div class="mob-acoes-grupo"><div class="mob-acoes-titulo">' + esc(g[0]) + "</div>" + itens + "</div>" : "";
+    }).join("");
+  }
+  function mobAcao(id) {
+    // Troca de camada reaproveita a mesma entrada do histórico (fechar e
+    // abrir no mesmo instante faria o "voltar" seguinte sair do site).
+    if (id === "#vars") { mobAbrir("vars"); return; }
+    mobFechar();
+    if (id === "#ajustar") { mobAjustarZoom(); return; }
+    setTimeout(function () { clickId(id); }, 0);
+  }
+  // Ponto no botão "Mais" quando há pendência no Verificar ou pedido de acesso.
+  function mobAtualizarPonto() {
+    var nav = document.querySelector('#mobNav [data-mob-nav="mais"]');
+    if (!nav) return;
+    var tem = ["checkBadge", "pedidosBadge"].some(function (id) { var b = document.getElementById(id); return b && !b.hidden; });
+    nav.classList.toggle("has-ponto", tem);
+  }
+
+  // ---- Navegação de baixo e etiqueta do bloco selecionado ----
+  function mobAoTrocarModo() {
+    document.querySelectorAll("#mobNav [data-mob-nav]").forEach(function (b) {
+      var on = b.dataset.mobNav === modoAtual;
+      b.classList.toggle("is-active", on);
+      if (b.dataset.mobNav !== "painel" && b.dataset.mobNav !== "mais") b.setAttribute("aria-current", on ? "page" : "false");
+    });
+    var painel = document.querySelector('#mobNav [data-mob-nav="painel"] span');
+    if (painel) painel.textContent = modoAtual === "pauta" ? "Filtros" : "Painel";
+    mobFecharTudo();
+    mobChip();
+  }
+  function mobPainel() {
+    if (modoAtual === "pauta") {
+      var aberto = document.documentElement.classList.toggle("mob-filtros");
+      var v = document.getElementById("pautaView");
+      if (aberto && v) v.scrollTop = 0;
+      return;
+    }
+    if (modoAtual === "carrossel") {
+      var p = document.getElementById("csPainel");
+      if (p) p.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    if (mob.camada === "painel") { mobFechar(); return; }
+    document.documentElement.classList.toggle("mob-painel-estrutura", !selection);
+    mobAbrir("painel");
+  }
+  function mobChip() {
+    var chip = document.getElementById("mobChip");
+    if (!chip) return;
+    var t = document.querySelector("#inspectorSelection .prop-title");
+    var ver = celular() && modoAtual === "pagina" && !!selection && !mob.camada && !!t;
+    chip.hidden = !ver;
+    if (ver) chip.querySelector("b").textContent = t.textContent;
+  }
+
+  function initCelular() {
+    var nav = document.createElement("nav");
+    nav.className = "mob-nav no-print";
+    nav.id = "mobNav";
+    nav.setAttribute("aria-label", "Navegação");
+    nav.innerHTML = [["pagina", "file", "Página"], ["pauta", "news", "Pauta"], ["carrossel", "slides", "Carrossel"], ["painel", "panels", "Painel"], ["mais", "more", "Mais"]]
+      .map(function (n) { return '<button type="button" data-mob-nav="' + n[0] + '">' + icon(n[1]) + "<span>" + n[2] + "</span></button>"; }).join("");
+    document.body.appendChild(nav);
+
+    var fundo = document.createElement("div");
+    fundo.className = "mob-fundo no-print";
+    fundo.id = "mobFundo";
+    document.body.appendChild(fundo);
+
+    var mais = document.createElement("div");
+    mais.className = "mob-sheet mob-mais-sheet no-print";
+    mais.id = "mobMais";
+    mais.setAttribute("role", "dialog");
+    mais.setAttribute("aria-label", "Mais ações");
+    mais.innerHTML = '<div class="mob-sheet-head"><span class="mob-alca"></span><strong>Mais ações</strong><button type="button" class="mob-fechar" data-mob-act="fechar" aria-label="Fechar">' + icon("plus") + "</button></div>" +
+      '<div class="mob-acoes-lista"></div>';
+    document.body.appendChild(mais);
+
+    var chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "mob-chip no-print";
+    chip.id = "mobChip";
+    chip.hidden = true;
+    chip.innerHTML = icon("edit") + "<span>Ajustar <b></b></span>";
+    document.body.appendChild(chip);
+
+    var ed = document.createElement("div");
+    ed.className = "mob-editor no-print";
+    ed.id = "mobEditor";
+    ed.hidden = true;
+    ed.setAttribute("role", "dialog");
+    ed.setAttribute("aria-modal", "true");
+    ed.setAttribute("aria-labelledby", "mobEditorTitulo");
+    ed.innerHTML = '<div class="mob-editor-head"><span id="mobEditorTitulo">Texto</span><button type="button" class="mob-ok" data-mob-act="fechar">Concluir</button></div>' +
+      '<div class="mob-editor-barra"><button type="button" data-mob-cmd="bold" aria-label="Negrito"><b>N</b></button><button type="button" data-mob-cmd="italic" aria-label="Itálico"><i>I</i></button>' +
+      '<button type="button" data-mob-cmd="underline" aria-label="Sublinhado"><u>S</u></button><span class="mob-editor-dica">As mudanças entram na hora; Concluir fecha.</span></div>' +
+      '<div class="mob-editor-campo" contenteditable="true" spellcheck="true"></div>';
+    document.body.appendChild(ed);
+
+    // Cabeçalho de "folha que sobe" nos painéis existentes (no computador não aparece)
+    var cab = function (titulo, comSeg) {
+      return '<div class="mob-sheet-head"><span class="mob-alca"></span>' +
+        (comSeg ? '<div class="mob-seg" role="tablist"><button type="button" data-mob-aba="props">Bloco</button><button type="button" data-mob-aba="estrutura">Estrutura e fontes</button></div>' : "<strong>" + titulo + "</strong>") +
+        '<button type="button" class="mob-fechar" data-mob-act="fechar" aria-label="Fechar">' + icon("plus") + "</button></div>";
+    };
+    ["inspector", "structurePanel"].forEach(function (id) {
+      var p = document.getElementById(id);
+      if (p) p.insertAdjacentHTML("afterbegin", cab("", true));
+    });
+    var vars = document.getElementById("varsBar");
+    if (vars) vars.insertAdjacentHTML("afterbegin", cab("Variáveis da edição", false));
+    var temasHead = document.querySelector("#pautaView .pauta-temas .pauta-head");
+    if (temasHead) temasHead.insertAdjacentHTML("beforeend", '<button type="button" class="check-btn mob-so" data-mob-act="filtros">' + icon("search") + "Filtros</button>");
+    var pv = document.getElementById("pautaView");
+    if (pv) pv.insertAdjacentHTML("beforeend", '<button type="button" class="mob-voltar mob-so" data-mob-act="fechar">‹ Temas</button>');
+
+    document.addEventListener("click", function (e) {
+      var n = e.target.closest && e.target.closest("[data-mob-nav]");
+      if (n) {
+        var k = n.dataset.mobNav;
+        if (k === "painel") { mobPainel(); return; }
+        if (k === "mais") { if (mob.camada === "mais") mobFechar(); else mobAbrir("mais"); return; }
+        if (k !== modoAtual) setModo(k); else mobFecharTudo();
+        return;
+      }
+      var a = e.target.closest && e.target.closest("[data-mob-act]");
+      if (a) {
+        if (a.dataset.mobAct === "fechar") mobFechar();
+        if (a.dataset.mobAct === "filtros") mobPainel();
+        return;
+      }
+      var aba = e.target.closest && e.target.closest("[data-mob-aba]");
+      if (aba) { document.documentElement.classList.toggle("mob-painel-estrutura", aba.dataset.mobAba === "estrutura"); return; }
+      var ac = e.target.closest && e.target.closest("[data-mob-acao]");
+      if (ac) { mobAcao(ac.dataset.mobAcao); return; }
+      if (e.target === fundo) { mobFechar(); return; }
+      if (e.target.closest && e.target.closest("#mobChip")) { document.documentElement.classList.remove("mob-painel-estrutura"); mobAbrir("painel"); }
+    });
+    // Na captura (antes de a Pauta redesenhar a lista ou a folha reagir ao clique):
+    document.addEventListener("click", function (e) {
+      if (!celular() || !e.target.closest) return;
+      // Tema da Pauta: no celular, o detalhe abre por cima da lista.
+      if (e.target.closest('#pautaTemas [data-pauta-act="sel-tema"]') && !e.target.closest("button")) {
+        setTimeout(function () { mobAbrir("detalhe"); }, 0);
+        return;
+      }
+      // Texto da folha ou do slide: abre a janela de texto.
+      var campo = mobCampoEditavel(e.target);
+      if (campo && !(e.ctrlKey || e.metaKey)) mobEditar(campo);
+    }, true);
+    // No celular, tocar no texto miúdo da folha não abre o teclado ali (abre a janela).
+    document.addEventListener("mousedown", function (e) {
+      if (celular() && mobCampoEditavel(e.target)) e.preventDefault();
+    }, true);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && mob.camada) { e.preventDefault(); mobFechar(); }
+    });
+    window.addEventListener("popstate", function () {
+      if (mob.ignorarPop) { mob.ignorarPop = false; return; }
+      if (!mob.camada) return;
+      mob.historico = false;
+      var nome = mob.camada;
+      mob.camada = null;
+      mobFecharVisual(nome);
+      mobChip();
+    });
+
+    var campo = ed.querySelector(".mob-editor-campo");
+    campo.addEventListener("input", function () {
+      var o = mobAlvo();
+      if (!o) return;
+      o.innerHTML = campo.textContent.trim() || campo.querySelector("img") ? sanitizeRichHtml(campo.innerHTML) : "";
+      o.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    campo.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && mob.linha) { e.preventDefault(); mobFechar(); }
+    });
+    campo.addEventListener("paste", function (e) {
+      e.preventDefault();
+      var clip = e.clipboardData || window.clipboardData;
+      var t = clip ? clip.getData("text/plain") : "";
+      document.execCommand("insertText", false, mob.linha ? t.replace(/\s*\n\s*/g, " ") : t);
+    });
+    ed.addEventListener("mousedown", function (e) { if (e.target.closest("[data-mob-cmd]")) e.preventDefault(); }); // não tira o foco do texto
+    ed.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-mob-cmd]");
+      if (!b) return;
+      campo.focus();
+      document.execCommand(b.dataset.mobCmd, false, null);
+      campo.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+
+    // Girar o celular: a folha volta a caber na largura.
+    mob.largura = window.innerWidth;
+    window.addEventListener("resize", function () {
+      if (Math.abs(window.innerWidth - mob.largura) < 40) return; // teclado abrindo/fechando não conta
+      mob.largura = window.innerWidth;
+      mobAjustarZoom();
+    });
+    if (window.MutationObserver) {
+      var mo = new MutationObserver(mobAtualizarPonto);
+      ["checkBadge", "pedidosBadge"].forEach(function (id) {
+        var b = document.getElementById(id);
+        if (b) mo.observe(b, { attributes: true, childList: true, characterData: true, subtree: true });
+      });
+    }
+    mobAoTrocarModo();
+    mobAtualizarPonto();
+  }
+
+  /* ---------------------------------------------------------------------
      Boot
      --------------------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
@@ -8800,6 +9221,7 @@
     initAcervo();
     initPauta();
     initCarrossel();
+    initCelular();
     initGerenciarPautas();
     document.getElementById("btnThermoCalc").addEventListener("click", openThermoCalc);
     if (IN_ARTIFACT) {
